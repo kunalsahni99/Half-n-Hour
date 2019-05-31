@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState(){
     super.initState();
     Timer(
-      Duration(microseconds: 1000), 
+      Duration(seconds: 5), 
       () => Navigator.push(context, MaterialPageRoute(
         builder: (context) => MyHomePage()
       ))
@@ -61,11 +61,11 @@ class _SplashScreenState extends State<SplashScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 50.0,
-                        child: Icon(
-                          Icons.shopping_cart,
-                          color: Colors.greenAccent,
-                          size: 50.0,
-                        ),
+                        child: Image.asset('images/launcher_icon.png',
+                          fit: BoxFit.cover,
+                          height: 60.0,
+                          width: 60.0,
+                        )
                       ),
 
                       Padding(
@@ -89,11 +89,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
-                    Text('Online Store for\nfor Everyone',
+                    Text('Online Store\nfor Everyone',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
