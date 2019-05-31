@@ -65,8 +65,6 @@ class SingleCartProduct extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Image.asset(cart_prod_picture,
-          width: 80.0,
-          height: 80.0,
         ),
         title: Text(cart_prod_name),
         subtitle: Column(
@@ -101,6 +99,35 @@ class SingleCartProduct extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                    child: IconButton(
+                      icon: Icon(Icons.remove_circle),
+                      color: Colors.red,
+                      onPressed: (){},
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15.0, 8.0, 0.0, 8.0),
+                    child: Text('$cart_prod_qty')
+                  ),
+                ),
+
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                    child: IconButton(
+                      icon: Icon(Icons.add_circle),
+                      color: Colors.green,
+                      onPressed: (){},
+                    ),
+                  ),
+                ),
               ],
             ),
 
@@ -116,19 +143,26 @@ class SingleCartProduct extends StatelessWidget {
             ),
           ],
         ),
-        trailing: Column(
+        /*trailing: Column  (
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_drop_up),
-              onPressed: (){},
+            Expanded(
+              child: IconButton(
+                icon: Icon(Icons.arrow_drop_up),
+                onPressed: (){},
+              ),
             ),
-            Text('$cart_prod_qty'),
-            IconButton(
-              icon: Icon(Icons.arrow_drop_down),
-              onPressed: (){},
+            Expanded(
+              child: Text('$cart_prod_qty')
+            ),
+            Expanded(
+              child: IconButton(
+                icon: Icon(Icons.arrow_drop_down),
+                onPressed: (){},
+              ),
             ),
           ],
-        ),
+        ),*/
+        contentPadding: EdgeInsets.all(5.0)
       ),
     );
   }

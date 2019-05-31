@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-import 'package:HnH/main.dart';
-
 class ProductDetails extends StatefulWidget {
   final product_detail_name;
   final product_detail_picture;
