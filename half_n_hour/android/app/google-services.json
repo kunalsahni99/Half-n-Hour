@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "125579980399",
+    "firebase_url": "https://half-n-hour-aedef.firebaseio.com",
+    "project_id": "half-n-hour-aedef",
+    "storage_bucket": "half-n-hour-aedef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125579980399:android:905dd0165abdb807",
+        "android_client_info": {
+          "package_name": "com.example.half_n_hour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125579980399-8dl5asei0lv98vbgr126qur3bgu8ann2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.half_n_hour",
+            "certificate_hash": "71c445505b4c35689e850e57587d2b6b70d00107"
+          }
+        },
+        {
+          "client_id": "125579980399-v7bb6kql8c6t0r6n4hfhprqta8j1o7jm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8b3edIh8L-TFrYcPY8QqEaUYU9ZcwZ5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125579980399-v7bb6kql8c6t0r6n4hfhprqta8j1o7jm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
