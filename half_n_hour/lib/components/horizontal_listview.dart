@@ -4,43 +4,33 @@ class HorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.0,
+      height: 90.0,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: <Widget>[
           Category(
-            image_location: 'images/cats/tshirt.png',
-            image_caption: 'TShirt'
+            image_location: 'images/fruits.png',
+            image_caption: 'Fruits'
           ),
 
           Category(
-            image_location: 'images/cats/shoe.png',
-            image_caption: 'Shoes'
+            image_location: 'images/vegetables.png',
+            image_caption: 'Vegetables'
           ),
 
           Category(
-            image_location: 'images/cats/jeans.png',
-            image_caption: 'Jeans'
+            image_location: 'images/daily_goods.png',
+            image_caption: 'Daily\ngoods'
           ),
 
           Category(
-            image_location: 'images/cats/informal.png',
-            image_caption: 'Informal'
+            image_location: 'images/medicines.png',
+            image_caption: 'Medicines'
           ),
 
           Category(
-            image_location: 'images/cats/formal.png',
-            image_caption: 'Formal'
-          ),
-
-          Category(
-            image_location: 'images/cats/dress.png',
-            image_caption: 'Dresses'
-          ),
-
-          Category(
-            image_location: 'images/cats/accessories.png',
-            image_caption: 'Accessories'
+            image_location: 'images/cosmetics.png',
+            image_caption: 'Cosmetics'
           ),
         ],
       ),
@@ -64,7 +54,7 @@ class Category extends StatelessWidget {
       child: InkWell(
         onTap: (){},
         child: Container(
-          width: 100.0,
+          width: 120.0,
           child: ListTile(
             title: Image.asset(image_location,
               width: 40.0,
@@ -72,7 +62,7 @@ class Category extends StatelessWidget {
             ),
             subtitle: Container(
               alignment: Alignment.topCenter,
-              child: Text(image_caption,)
+              child: Text(image_caption)
             ),
           ),
         ),

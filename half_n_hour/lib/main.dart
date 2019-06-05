@@ -1,8 +1,10 @@
 import 'dart:async';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:HnH/screens/home_page.dart';
+import './screens/login.dart';
+import './screens/home_page.dart';
 import 'package:flutter/rendering.dart';
 
 void main() => runApp(MyApp());
@@ -23,19 +25,50 @@ class MyApp extends StatelessWidget {
 }
 
 class SplashScreen extends StatefulWidget {
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+  SharedPreferences sharedPreferences;
+  bool loading = false,
+      isLoggedIn = false, isLoggedInEmail = false;
+
   void initState(){
     super.initState();
     Timer(
-      Duration(seconds: 5), 
-      () => Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => MyHomePage()
-      ))
+      Duration(seconds: 5),
+      (){
+        isSignIn();
+      }
     );
+  }
+
+  void isSignIn() async {
+    setState(() {
+      loading = true;
+    });
+    sharedPreferences = await SharedPreferences.getInstance();
+    isLoggedIn = await googleSignIn.isSignedIn();
+    isLoggedInEmail = sharedPreferences.getBool("isLoggedIn") ?? false;
+    if (isLoggedIn) {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }
+    else if (isLoggedInEmail){
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }
+    else{
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => Login()));
+    }
+
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -45,8 +78,11 @@ class _SplashScreenState extends State<SplashScreen> {
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
-              color: Colors.redAccent,
+            color: Colors.black.withOpacity(0.6),
+            child: Image.asset('images/splash.jpg',
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
           Column(

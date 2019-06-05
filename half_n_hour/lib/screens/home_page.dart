@@ -5,6 +5,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:HnH/components/horizontal_listview.dart';
 import 'package:HnH/components/products.dart';
 import 'package:HnH/screens/cart.dart';
+import './profile.dart';
 
 class MyHomePage extends StatefulWidget {
 
@@ -22,12 +23,11 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Carousel(
           boxFit: BoxFit.cover,
           images: [
-            AssetImage('images/c1.jpg'),
-            AssetImage('images/m1.jpeg'),
-            AssetImage('images/m2.jpg'),
-            AssetImage('images/w1.jpeg'),
-            AssetImage('images/w3.jpeg'),
-            AssetImage('images/w4.jpeg'),
+            AssetImage('images/products/fruits1.jpg'),
+            AssetImage('images/products/veg1.jpeg'),
+            AssetImage('images/products/daily1.jpg'),
+            AssetImage('images/products/med1.jpg'),
+            AssetImage('images/products/cos1.jpg'),
           ],
           autoplay: false,
           dotSize: 4.0,
@@ -90,7 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => Profile()
+                ));
+              },
               child: ListTile(
                 title: Text('My Account'),
                 leading: Icon(Icons.person, color: Colors.pink,)
