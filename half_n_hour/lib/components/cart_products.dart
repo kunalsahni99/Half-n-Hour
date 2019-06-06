@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class CartProducts extends StatefulWidget {
   @override

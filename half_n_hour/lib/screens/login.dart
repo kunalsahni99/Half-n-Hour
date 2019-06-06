@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 
 import 'home_page.dart';
 import 'signup.dart';
@@ -21,7 +22,7 @@ class _LoginState extends State<Login> {
   TextEditingController _passwordTextController = TextEditingController();
 
   SharedPreferences sharedPreferences;
-  bool loading = false;
+  bool loading = false, isConnected;
 
   Future handleSignIn() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -29,47 +30,103 @@ class _LoginState extends State<Login> {
       loading = true;
     });
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication = await googleUser
-        .authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-        idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
-    final FirebaseUser firebaseUser =  await firebaseAuth.signInWithCredential(credential);
+    var conResult = await Connectivity().checkConnectivity();
+    if (conResult == ConnectivityResult.mobile || conResult == ConnectivityResult.wifi){
+      isConnected = true;
+    }
+    else{
+      isConnected = false;
+    }
 
-    if (firebaseUser != null) {
-      final QuerySnapshot result = await Firestore.instance.collection("users")
-          .where("id", isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      final List<DocumentSnapshot> documents = result.documents;
-
-      if (documents.length == 0) {
-        // insert user to our collection
-        Firestore.instance.collection("users")
-            .document(firebaseUser.uid)
-            .setData({
-          "id": firebaseUser.uid,
-          "username": firebaseUser.displayName,
-          "profilePicture": firebaseUser.photoUrl
+    if (isConnected) {
+      GoogleSignInAccount googleUser = await googleSignIn.signIn()
+          .catchError((onError){
+        setState(() {
+          loading = false;
+          print(onError.toString());
         });
-        await sharedPreferences.setString("id", firebaseUser.uid);
-        await sharedPreferences.setString("username", firebaseUser.displayName);
-        await sharedPreferences.setString("photoUrl", firebaseUser.photoUrl);
-      }
-      else {
-        await sharedPreferences.setString("id", documents[0]['id']);
-        await sharedPreferences.setString("username", documents[0]['username']);
-        await sharedPreferences.setString("photoUrl", documents[0]['photoUrl']);
-      }
+      });
 
-      Fluttertoast.showToast(msg: "Login Successful");
+      if (googleUser != null){
+        GoogleSignInAuthentication googleSignInAuthentication = await googleUser
+            .authentication;
+        final AuthCredential credential = GoogleAuthProvider.getCredential(
+            idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
+        final FirebaseUser firebaseUser =  await firebaseAuth.signInWithCredential(credential)
+            .catchError((e){
+          setState(() {
+            loading = false;
+            print(e.toString());
+          });
+        });
+
+        if (firebaseUser != null) {
+          final QuerySnapshot result = await Firestore.instance.collection("users")
+              .where("id", isEqualTo: firebaseUser.uid)
+              .getDocuments();
+          final List<DocumentSnapshot> documents = result.documents;
+
+          if (documents.length == 0) {
+            // insert user to our collection
+            Firestore.instance.collection("users")
+                .document(firebaseUser.uid)
+                .setData({
+              "id": firebaseUser.uid,
+              "username": firebaseUser.displayName,
+              "profilePicture": firebaseUser.photoUrl
+            });
+            await sharedPreferences.setString("id", firebaseUser.uid);
+            await sharedPreferences.setString("username", firebaseUser.displayName);
+            await sharedPreferences.setString("photoUrl", firebaseUser.photoUrl);
+          }
+          else {
+            await sharedPreferences.setString("id", documents[0]['id']);
+            await sharedPreferences.setString("username", documents[0]['username']);
+            await sharedPreferences.setString("photoUrl", documents[0]['photoUrl']);
+          }
+
+          Fluttertoast.showToast(msg: "Login Successful");
+          setState(() {
+            loading = false;
+          });
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => MyHomePage()));
+        }
+        else {
+          Fluttertoast.showToast(msg: "Login Failed");
+        }
+      }
+      else{
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+    else{
       setState(() {
         loading = false;
       });
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
-    }
-    else {
-      Fluttertoast.showToast(msg: "Login Failed");
+      showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('No Connection'),
+            content: Text('Please connect to a network to continue'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('OK',
+                  style: TextStyle(
+                    color: Colors.blue
+                  ),
+                ),
+              )
+            ],
+          );
+        }
+      );
     }
   }
 
@@ -78,15 +135,16 @@ class _LoginState extends State<Login> {
     double height = MediaQuery
         .of(context)
         .size
-        .height / 3;
+        .height;
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Stack(
         children: <Widget>[
           Image.asset('images/splash.jpg',
             fit: BoxFit.fill,
-            width: double.infinity,
-            height: double.infinity,
+            width: width,
+            height: height,
           ),
 
           Container(
@@ -130,6 +188,7 @@ class _LoginState extends State<Login> {
                                 hintStyle: TextStyle(
                                   color: Colors.white
                                 ),
+                                border: InputBorder.none
                               ),
                               style: TextStyle(
                                   color: Colors.white
@@ -170,6 +229,7 @@ class _LoginState extends State<Login> {
                                   hintStyle: TextStyle(
                                       color: Colors.white
                                   ),
+                                  border: InputBorder.none
                               ),
                               style: TextStyle(
                                 color: Colors.white

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:flutter/cupertino.dart';
 
 import 'package:HnH/components/horizontal_listview.dart';
 import 'package:HnH/components/products.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class MyHomePage extends StatefulWidget {
 

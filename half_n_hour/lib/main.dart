@@ -2,25 +2,39 @@ import 'dart:async';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 import './screens/login.dart';
 import './screens/home_page.dart';
 import 'package:flutter/rendering.dart';
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Product Sans'
-      ),
-      home: SplashScreen(),
-    );
+    return isIOS ?
+        CupertinoApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Half n Hour',
+          theme: CupertinoThemeData(
+            primaryColor: Colors.pinkAccent,
+          ),
+          home: SplashScreen(),
+        )
+        :MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Half n Hour',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.pinkAccent,
+            fontFamily: 'Product Sans'
+          ),
+          home: SplashScreen(),
+        );
   }
 }
 
@@ -39,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState(){
     super.initState();
     Timer(
-      Duration(seconds: 5),
+      Duration(seconds: 4),
       (){
         isSignIn();
       }
@@ -54,16 +68,35 @@ class _SplashScreenState extends State<SplashScreen> {
     isLoggedIn = await googleSignIn.isSignedIn();
     isLoggedInEmail = sharedPreferences.getBool("isLoggedIn") ?? false;
     if (isLoggedIn) {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
+      if (isIOS){
+        Navigator.pushReplacement(context, CupertinoPageRoute(
+          builder: (context) => MyHomePage()
+        ));
+      }
+      else{
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => MyHomePage()));
+      }
     }
     else if (isLoggedInEmail){
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
+      if (isIOS){
+        Navigator.pushReplacement(context, CupertinoPageRoute(
+            builder: (context) => MyHomePage()));
+      }
+      else{
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => MyHomePage()));
+      }
     }
     else{
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => Login()));
+      if (isIOS){
+        Navigator.pushReplacement(context, CupertinoPageRoute(
+            builder: (context) => Login()));
+      }
+      else{
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => Login()));
+      }
     }
 
     setState(() {
@@ -73,7 +106,81 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isIOS ?
+        CupertinoPageScaffold(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                color: CupertinoColors.black.withOpacity(0.6),
+                child: Image.asset('images/splash.jpg',
+                  fit: BoxFit.fill,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          CircleAvatar(
+                              backgroundColor: CupertinoColors.white,
+                              radius: 50.0,
+                              child: Image.asset('images/launcher_icon.png',
+                                fit: BoxFit.cover,
+                                height: 60.0,
+                                width: 60.0,
+                              )
+                          ),
+
+                          Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                          ),
+
+                          Text('Half n Hour',
+                            style: TextStyle(
+                                color: CupertinoColors.white,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          backgroundColor: CupertinoColors.white,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20.0),
+                        ),
+                        Text('Online Store\nfor Everyone',
+                          style: TextStyle(
+                              color: CupertinoColors.white,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+
+        : Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -95,13 +202,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 50.0,
-                        child: Image.asset('images/launcher_icon.png',
-                          fit: BoxFit.cover,
-                          height: 60.0,
-                          width: 60.0,
-                        )
+                          backgroundColor: Colors.white,
+                          radius: 50.0,
+                          child: Image.asset('images/launcher_icon.png',
+                            fit: BoxFit.cover,
+                            height: 60.0,
+                            width: 60.0,
+                          )
                       ),
 
                       Padding(
@@ -110,9 +217,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
                       Text('Half n Hour',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold
+                            color: Colors.white,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold
                         ),
                       )
                     ],
@@ -133,9 +240,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                     Text('Online Store\nfor Everyone',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold
                       ),
                     )
                   ],

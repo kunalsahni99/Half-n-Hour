@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,7 +23,7 @@ class _SignUpState extends State<SignUp> {
   String gender, groupValue = 'male';
 
   SharedPreferences preferences;
-  bool loading = false, hidePass = true, exists = false;
+  bool loading = false, hidePass = true, exists = false, ConHidePass = true;
 
   @override
   Widget build(BuildContext context) {
@@ -258,12 +259,25 @@ class _SignUpState extends State<SignUp> {
                                 style: TextStyle(
                                     color: Colors.white
                                 ),
-                                obscureText: hidePass,
+                                obscureText: ConHidePass,
                                 validator: (value){
                                   if (value.isEmpty || _passwordTextController.text != value){
                                     return "Passwords don't match";
                                   }
                                   return null;
+                                },
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.remove_red_eye),
+                                onPressed: (){
+                                  setState(() {
+                                    if (ConHidePass){
+                                      ConHidePass = false;
+                                    }
+                                    else{
+                                      ConHidePass = true;
+                                    }
+                                  });
                                 },
                               ),
                             ),
@@ -358,53 +372,87 @@ class _SignUpState extends State<SignUp> {
 
   Future<void> validateForm()async{
     FormState formState = _formKey.currentState;
-    if (formState.validate()){
-      formState.reset();
-      FirebaseUser user = await firebaseAuth.currentUser();
-      setState(() {
-        loading = true;
-      });
-      if (user == null){
-        try{
-          FirebaseUser currentUser = await firebaseAuth.createUserWithEmailAndPassword(
-              email: _emailTextController.text, password: _passwordTextController.text)
-              .then((user){
-            Map value = {
-              "username": _nameTextController.text,
-              "email": _emailTextController.text,
-              "userId": user.uid,
-              "gender": gender
-            };
-            _userServices.createUser(value);
+    bool isConnected;
+    var conResult = await Connectivity().checkConnectivity();
+    if (conResult == ConnectivityResult.mobile || conResult == ConnectivityResult.wifi){
+      isConnected = true;
+    }
+    else{
+      isConnected = false;
+    }
+
+    if (isConnected){
+      if (formState.validate()){
+        formState.reset();
+        FirebaseUser user = await firebaseAuth.currentUser();
+        setState(() {
+          loading = true;
+        });
+        if (user == null){
+          try{
+            FirebaseUser currentUser = await firebaseAuth.createUserWithEmailAndPassword(
+                email: _emailTextController.text, password: _passwordTextController.text)
+                .then((user){
+              Map value = {
+                "username": _nameTextController.text,
+                "email": _emailTextController.text,
+                "userId": user.uid,
+                "gender": gender
+              };
+              _userServices.createUser(value);
+            });
+          }
+          catch (e){
+            exists = true;
+            print(e.toString());
+          }
+        }
+
+        if (exists){
+          setState(() {
+            loading = false;
+            exists = false;
           });
+          Fluttertoast.showToast(msg: "User already exists");
         }
-        catch (e){
-          exists = true;
-          print(e.toString());
+        else{
+          preferences = await SharedPreferences.getInstance();
+          await preferences.setBool("isLoggedIn", true);
+
+          setState(() {
+            loading = false;
+            exists = false;
+          });
+          print("something");
+          Navigator.pop(context);
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) =>  MyHomePage()
+          ));
         }
       }
-
-      if (exists){
-        setState(() {
-          loading = false;
-          exists = false;
-        });
-        Fluttertoast.showToast(msg: "User already exists");
-      }
-      else{
-        preferences = await SharedPreferences.getInstance();
-        await preferences.setBool("isLoggedIn", true);
-
-        setState(() {
-          loading = false;
-          exists = false;
-        });
-        print("something");
-        Navigator.pop(context);
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) =>  MyHomePage()
-        ));
-      }
+    }
+    else{
+      showDialog(
+          context: context,
+          builder: (context){
+            return AlertDialog(
+              title: Text('No Connection'),
+              content: Text('Please connect to a network to continue'),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK',
+                    style: TextStyle(
+                        color: Colors.blue
+                    ),
+                  ),
+                )
+              ],
+            );
+          }
+      );
     }
   }
 }
