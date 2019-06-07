@@ -14,7 +14,7 @@ class _CartState extends State<Cart> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.pinkAccent,
         title: Text('My Cart'),
         actions: <Widget>[
           IconButton(
@@ -43,7 +43,7 @@ class _CartState extends State<Cart> {
             Expanded(
               child: MaterialButton(
                 onPressed: (){},
-                color: Colors.pink,
+                color: Colors.pinkAccent,
                 child: Text('Check Out',
                   style: TextStyle(
                     color: Colors.white,

@@ -84,7 +84,7 @@ class SingleCartProduct extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(cart_prod_size,
                     style: TextStyle(
-                      color: Colors.pink
+                      color: Colors.pinkAccent
                     ),
                   ),
                 ),
@@ -99,7 +99,7 @@ class SingleCartProduct extends StatelessWidget {
                   padding: const EdgeInsets.all(4.0),
                   child: Text(cart_prod_color,
                     style: TextStyle(
-                      color: Colors.pink
+                      color: Colors.pinkAccent
                     ),
                   ),
                 ),
@@ -141,7 +141,7 @@ class SingleCartProduct extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 17.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.pink
+                  color: Colors.pinkAccent
                 ),
               ),
             ),

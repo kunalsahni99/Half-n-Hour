@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.pinkAccent,
         title: Text('My account',
           style: TextStyle(
               color: Colors.white,
@@ -54,7 +54,7 @@ class _ProfileState extends State<Profile> {
           padding: const EdgeInsets.all(8.0),
           child: Material(
               borderRadius: BorderRadius.circular(20.0),
-              color: Colors.pink.shade500,
+              color: Colors.pinkAccent,
               elevation: 0.0,
               child: MaterialButton(
                 onPressed: (){

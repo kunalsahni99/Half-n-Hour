@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:HnH/components/horizontal_listview.dart';
 import 'package:HnH/components/products.dart';
@@ -17,7 +19,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+  SharedPreferences _preferences;
+  String uid = "", uname = "", email ="", avatar = "";
+  bool hasUID = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getValues();
+  }
+
+  void getValues()async{
+    _preferences = await SharedPreferences.getInstance();
+    uid = _preferences.getString("id");
+    
+    if (uid.isNotEmpty){
+      uname = _preferences.getString("username") ?? 'Guest User';
+      email = _preferences.getString("email") ?? 'guest@example.com';
+      avatar = _preferences.getString("photoUrl");
+      hasUID = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.pinkAccent,
         title: Text('Half n Hour'),
         actions: <Widget>[
           IconButton(
@@ -72,26 +94,26 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             // header
             UserAccountsDrawerHeader(
-              accountName: Text('Kunal Sahni'),
-              accountEmail: Text('kunal.sahni1999@gmail.com'),
+              accountName: Text(uname),
+              accountEmail: Text(email),
               currentAccountPicture: GestureDetector(
-                child: CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person, color: Colors.white),
-                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Profile()
+                  ));
+                },
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    placeholder: (context, val) => CircularProgressIndicator(),
+                    imageUrl: avatar,
+                  ),
+                )
               ),
               decoration: BoxDecoration(
-                color: Colors.pink
+                color: Colors.pinkAccent
               ),
             ),
-            // body 
-            InkWell(
-              onTap: (){},
-              child: ListTile(
-                title: Text('Home'),
-                leading: Icon(Icons.home, color: Colors.pink,)
-              ),
-            ),
+            // body
             InkWell(
               onTap: (){
                 Navigator.pop(context);
@@ -101,14 +123,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: ListTile(
                 title: Text('My Account'),
-                leading: Icon(Icons.person, color: Colors.pink,)
+                leading: Icon(Icons.person, color: Colors.pinkAccent,)
               ),
             ),
             InkWell(
               onTap: (){},
               child: ListTile(
                 title: Text('My Orders'),
-                leading: Icon(Icons.shopping_basket, color: Colors.pink,)
+                leading: Icon(Icons.shopping_basket, color: Colors.pinkAccent,)
               ),
             ),
             InkWell(
@@ -120,14 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: ListTile(
                 title: Text('My Cart'),
-                leading: Icon(Icons.shopping_cart, color: Colors.pink,)
+                leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
               ),
             ),
             InkWell(
               onTap: (){},
               child: ListTile(
                 title: Text('Favourites'),
-                leading: Icon(Icons.favorite, color: Colors.pink,)
+                leading: Icon(Icons.favorite, color: Colors.pinkAccent,)
               ),
             ),
 
@@ -137,13 +159,13 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: (){},
               child: ListTile(
                 title: Text('Settings'),
-                leading: Icon(Icons.settings, color: Colors.pink,)
+                leading: Icon(Icons.settings, color: Colors.pinkAccent,)
               ),
             ),InkWell(
               onTap: (){},
               child: ListTile(
                 title: Text('About'),
-                leading: Icon(Icons.help, color: Colors.pink,)
+                leading: Icon(Icons.help, color: Colors.pinkAccent,)
               ),
             ),
           ],

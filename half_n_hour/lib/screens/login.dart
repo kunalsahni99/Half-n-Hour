@@ -73,19 +73,29 @@ class _LoginState extends State<Login> {
                 .setData({
               "id": firebaseUser.uid,
               "username": firebaseUser.displayName,
+              "email": firebaseUser.email,
               "profilePicture": firebaseUser.photoUrl
             });
             await sharedPreferences.setString("id", firebaseUser.uid);
             await sharedPreferences.setString("username", firebaseUser.displayName);
+            await sharedPreferences.setString("email", firebaseUser.email);
             await sharedPreferences.setString("photoUrl", firebaseUser.photoUrl);
           }
           else {
             await sharedPreferences.setString("id", documents[0]['id']);
             await sharedPreferences.setString("username", documents[0]['username']);
-            await sharedPreferences.setString("photoUrl", documents[0]['photoUrl']);
+            await sharedPreferences.setString("email", documents[0]['email']);
+            await sharedPreferences.setString("photoUrl", documents[0]['profilePicture']);
           }
+          print(documents[0]['id']);
+          print(documents[0]['username']);
+          print(documents[0]['email']);
+          print(documents[0]['profilePicture']);
 
-          Fluttertoast.showToast(msg: "Login Successful");
+          Fluttertoast.showToast(msg: "Welcome ${firebaseUser.displayName}",
+              fontSize: 14.0,
+              backgroundColor: Colors.black87
+          );
           setState(() {
             loading = false;
           });
@@ -93,7 +103,13 @@ class _LoginState extends State<Login> {
               builder: (context) => MyHomePage()));
         }
         else {
-          Fluttertoast.showToast(msg: "Login Failed");
+          setState(() {
+            loading = false;
+          });
+          Fluttertoast.showToast(msg: "Login Failed",
+            fontSize: 14.0,
+            backgroundColor: Colors.black87
+          );
         }
       }
       else{
@@ -181,7 +197,10 @@ class _LoginState extends State<Login> {
                             child: TextFormField(
                               controller: _emailTextController,
                               decoration: InputDecoration(
-                                hintText: "Email",
+                                labelText: "Email",
+                                labelStyle: TextStyle(
+                                  color: Colors.white
+                                ),
                                 icon: Icon(Icons.email,
                                   color: Colors.white,
                                 ),
@@ -222,7 +241,10 @@ class _LoginState extends State<Login> {
                             child: TextFormField(
                               controller: _passwordTextController,
                               decoration: InputDecoration(
-                                  hintText: "Password",
+                                  labelText: "Password",
+                                  labelStyle: TextStyle(
+                                      color: Colors.white
+                                  ),
                                   icon: Icon(Icons.lock_outline,
                                     color: Colors.white,
                                   ),
@@ -258,7 +280,7 @@ class _LoginState extends State<Login> {
                           child: MaterialButton(
                             onPressed: (){},
                             minWidth: MediaQuery.of(context).size.width,
-                            child: Text('Login',
+                            child: Text('Sign in',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -323,7 +345,7 @@ class _LoginState extends State<Login> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(25.0),
                             color: Colors.white,
                             elevation: 0.1,
                             child: MaterialButton(
@@ -335,20 +357,20 @@ class _LoginState extends State<Login> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.all(4.0),
-                                    child: Image.asset('images/google.png',
+                                    child: Image.asset('images/g_logo.png',
                                       width: 30.0,
                                       height: 30.0,
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 70.0),
+                                    padding: const EdgeInsets.only(left: 32.0),
                                   ),
-                                  Text('Google',
-                                    textAlign: TextAlign.center,
+                                  Text('Sign in with Google',
+                                    textAlign: TextAlign.left,
                                     style: TextStyle(
-                                      color: Colors.black45,
+                                      color: Colors.black87,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 22.0
+                                      fontSize: 18.0
                                     ),
                                   )
                                 ],

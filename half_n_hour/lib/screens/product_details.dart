@@ -29,7 +29,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           },
           child: Text('Product Detail')
         ),
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.pinkAccent,
         elevation: 0.0,
         actions: <Widget>[
          IconButton(
@@ -74,7 +74,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                          child: Text("\$${widget.product_detail_new_price}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.pink
+                            color: Colors.pinkAccent
                           )
                         ),
                        ),
@@ -206,7 +206,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: MaterialButton(
                   onPressed: (){},
-                  color: Colors.pink,
+                  color: Colors.pinkAccent,
                   elevation: 0.2,
                   textColor: Colors.white,
                   child: Text('Buy Now')  
@@ -215,14 +215,14 @@ class _ProductDetailsState extends State<ProductDetails> {
 
               IconButton(
                 icon: Icon(Icons.add_shopping_cart,
-                  color: Colors.pink,
+                  color: Colors.pinkAccent,
                 ),
                 onPressed: (){},
               ),
 
               IconButton(
                 icon: Icon(Icons.favorite_border,
-                  color: Colors.pink,
+                  color: Colors.pinkAccent,
                 ),
                 onPressed: (){},
               ),
@@ -404,7 +404,7 @@ class SimilarSingleProd extends StatelessWidget {
 
                     Text("\$$prod_price",
                       style: TextStyle(
-                        color: Colors.pink,
+                        color: Colors.pinkAccent,
                         fontWeight: FontWeight.bold,
                       ),
                     )
