@@ -6,12 +6,14 @@ class ProductDetails extends StatefulWidget {
   final product_detail_picture;
   final product_detail_new_price;
   final product_detail_old_price;
+  final String ID;
 
   ProductDetails({
     this.product_detail_name,
     this.product_detail_picture,
     this.product_detail_new_price,
-    this.product_detail_old_price
+    this.product_detail_old_price,
+    this.ID
   });
 
   @override
@@ -41,7 +43,7 @@ class _ProductDetailsState extends State<ProductDetails> {
          ),
         ],
       ),
-      
+
       body: ListView(
         children: <Widget>[
           Container(
@@ -49,7 +51,10 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: GridTile(
               child: Container(
                 color: Colors.white,
-                child: Image.asset(widget.product_detail_picture),
+                child: Hero(
+                  tag: 'prod$widget.ID',
+                  child: Image.asset(widget.product_detail_picture)
+                ),
               ),
               footer: Container(
                 color: Colors.white70,
@@ -67,7 +72,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           style: TextStyle(
                             color: Colors.grey,
                             decoration: TextDecoration.lineThrough
-                          ), 
+                          ),
                         ),
                        ),
                        Expanded(
@@ -209,7 +214,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   color: Colors.pinkAccent,
                   elevation: 0.2,
                   textColor: Colors.white,
-                  child: Text('Buy Now')  
+                  child: Text('Buy Now')
                 ),
               ),
 
@@ -355,8 +360,9 @@ class _SimilarProductsState extends State<SimilarProducts> {
           prod_picture: product_list[index]['picture'],
           prod_old_price: product_list[index]['old_price'],
           prod_price: product_list[index]['price'],
+          simID: index.toString(),
         );
-      },  
+      },
     );
   }
 }
@@ -366,12 +372,14 @@ class SimilarSingleProd extends StatelessWidget {
   final prod_picture;
   final prod_old_price;
   final prod_price;
+  final String simID;
 
   SimilarSingleProd({
     this.prod_name,
     this.prod_price,
     this.prod_picture,
-    this.prod_old_price
+    this.prod_old_price,
+    this.simID
   });
 
   @override
@@ -386,6 +394,7 @@ class SimilarSingleProd extends StatelessWidget {
                 product_detail_picture: prod_picture,
                 product_detail_new_price: prod_price,
                 product_detail_old_price: prod_old_price,
+                ID: simID,
               )
             )),
             child: GridTile(
@@ -411,9 +420,12 @@ class SimilarSingleProd extends StatelessWidget {
                   ],
                 )
               ),
-              child: Image.asset(prod_picture,
-                fit: BoxFit.cover,
+              child: Hero(
+                tag: 'prod$simID',
+                child: Image.asset(prod_picture,
+                  fit: BoxFit.cover,
             ),
+              ),
           ),
         )
       ),

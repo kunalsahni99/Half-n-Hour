@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
-import './screens/login.dart';
 import './screens/home_page.dart';
+import './screens/onboard.dart';
 import 'package:flutter/rendering.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
@@ -91,11 +91,11 @@ class _SplashScreenState extends State<SplashScreen> {
     else{
       if (isIOS){
         Navigator.pushReplacement(context, CupertinoPageRoute(
-            builder: (context) => Login()));
+            builder: (context) => OnBoarding()));
       }
       else{
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => Login()));
+            builder: (context) => OnBoarding()));
       }
     }
 

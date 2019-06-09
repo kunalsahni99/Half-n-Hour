@@ -87,6 +87,7 @@ class _ProductsState extends State<Products> {
             prod_picture: product_list[index]['picture'],
             prod_old_price: product_list[index]['old_price'],
             prod_price: product_list[index]['price'],
+            id: index.toString(),
           ),
         );
       },  
@@ -99,12 +100,14 @@ class SingleProd extends StatelessWidget {
   final prod_picture;
   final prod_old_price;
   final prod_price;
+  final String id;
 
   SingleProd({
     this.prod_name,
     this.prod_price,
     this.prod_picture,
-    this.prod_old_price
+    this.prod_old_price,
+    this.id
   });
 
   @override
@@ -119,6 +122,7 @@ class SingleProd extends StatelessWidget {
                 product_detail_picture: prod_picture,
                 product_detail_new_price: prod_price,
                 product_detail_old_price: prod_old_price,
+                ID: id,
               )
             )),
             child: GridTile(
@@ -144,9 +148,12 @@ class SingleProd extends StatelessWidget {
                   ],
                 )
               ),
-              child: Image.asset(prod_picture,
-                fit: BoxFit.cover,
-            ),
+              child: Hero(
+                tag: 'prod$id',
+                child: Image.asset(prod_picture,
+                  fit: BoxFit.cover,
+                ),
+              ),
           ),
         )
       ),

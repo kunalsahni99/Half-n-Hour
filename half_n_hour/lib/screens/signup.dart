@@ -433,6 +433,10 @@ class _SignUpState extends State<SignUp> {
         else{
           preferences = await SharedPreferences.getInstance();
           await preferences.setBool("isLoggedIn", true);
+          await preferences.setString("id", user.uid);
+          await preferences.setString("username", user.displayName);
+          await preferences.setString("email", user.email);
+          await preferences.setString("id", user.photoUrl);
 
           setState(() {
             loading = false;

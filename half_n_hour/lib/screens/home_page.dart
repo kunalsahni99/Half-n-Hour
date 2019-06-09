@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ClipOval(
                   child: CachedNetworkImage(
                     placeholder: (context, val) => CircularProgressIndicator(),
-                    imageUrl: avatar,
+                    imageUrl: hasUID ? avatar : "https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwid7eDoh9riAhXVZCsKHXMIByUQjRx6BAgBEAU&url=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F202440%2Favatar_business_guy_male_man_people_person_icon&psig=AOvVaw3LwzQLmHy4s6Irq_KavA8D&ust=1560089336801449",
                   ),
                 )
               ),
