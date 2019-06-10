@@ -21,11 +21,12 @@ class _LoginState extends State<Login> {
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
 
-  SharedPreferences sharedPreferences;
+  SharedPreferences _preferences;
   bool loading = false, isConnected;
+  String _email, _password;
 
   Future handleSignIn() async {
-    sharedPreferences = await SharedPreferences.getInstance();
+    _preferences = await SharedPreferences.getInstance();
     setState(() {
       loading = true;
     });
@@ -76,21 +77,17 @@ class _LoginState extends State<Login> {
               "email": firebaseUser.email,
               "profilePicture": firebaseUser.photoUrl
             });
-            await sharedPreferences.setString("id", firebaseUser.uid);
-            await sharedPreferences.setString("username", firebaseUser.displayName);
-            await sharedPreferences.setString("email", firebaseUser.email);
-            await sharedPreferences.setString("photoUrl", firebaseUser.photoUrl);
+            await _preferences.setString("id", firebaseUser.uid);
+            await _preferences.setString("username", firebaseUser.displayName);
+            await _preferences.setString("email", firebaseUser.email);
+            await _preferences.setString("photoUrl", firebaseUser.photoUrl);
           }
           else {
-            await sharedPreferences.setString("id", documents[0]['id']);
-            await sharedPreferences.setString("username", documents[0]['username']);
-            await sharedPreferences.setString("email", documents[0]['email']);
-            await sharedPreferences.setString("photoUrl", documents[0]['profilePicture']);
+            await _preferences.setString("id", documents[0]['id']);
+            await _preferences.setString("username", documents[0]['username']);
+            await _preferences.setString("email", documents[0]['email']);
+            await _preferences.setString("photoUrl", documents[0]['profilePicture']);
           }
-          print(documents[0]['id']);
-          print(documents[0]['username']);
-          print(documents[0]['email']);
-          print(documents[0]['profilePicture']);
 
           Fluttertoast.showToast(msg: "Welcome ${firebaseUser.displayName}",
               fontSize: 14.0,
@@ -225,6 +222,7 @@ class _LoginState extends State<Login> {
                                   }
                                 }
                               },
+                              onSaved: (input) => _email = input,
                             ),
                           ),
                         ),
@@ -266,6 +264,7 @@ class _LoginState extends State<Login> {
                                 }
                                 return null;
                               },
+                              onSaved: (input) => _password = input,
                             ),
                           ),
                         ),
@@ -278,7 +277,9 @@ class _LoginState extends State<Login> {
                           color: Colors.pink.shade500,
                           elevation: 0.0,
                           child: MaterialButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              signIn();
+                            },
                             minWidth: MediaQuery.of(context).size.width,
                             child: Text('Sign in',
                               textAlign: TextAlign.center,
@@ -401,5 +402,43 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
+  }
+
+  void signIn() async {
+    _preferences = await SharedPreferences.getInstance();
+    setState(() {
+      loading = true;
+    });
+    if(_formKey.currentState.validate()){
+      _formKey.currentState.save();
+      try{
+        FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)
+            .then((_firebaseUser){
+              if (_firebaseUser.email != _email){
+                Fluttertoast.showToast(msg: "Incorrect email or password");
+              }
+        });
+
+        Navigator.pop(context);
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) =>  MyHomePage()
+        ));
+        await _preferences.setBool("LoggedInwithMail", true);
+        await _preferences.setString("Uname", user.displayName);
+        await _preferences.setString("Email", user.email);
+        await _preferences.setString("LogUID", user.uid);
+        print(user.uid);
+        Fluttertoast.showToast(msg: "Welcome ${user.displayName}");
+
+        setState(() {
+          loading = false;
+        });
+      }catch(e){
+        setState(() {
+          loading = false;
+        });
+        print(e.toString());
+      }
+    }
   }
 }

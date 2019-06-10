@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
 import '../db/users.dart';
 import './home_page.dart';
@@ -26,7 +27,6 @@ class _SignUpState extends State<SignUp> {
 
   SharedPreferences preferences;
   bool loading = false, hidePass = true, exists = false, ConHidePass = true;
-  bool _autoValidate;
 
   @override
   Widget build(BuildContext context) {
@@ -386,6 +386,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> validateForm()async{
+    preferences = await SharedPreferences.getInstance();
     FormState formState = _formKey.currentState;
     bool isConnected;
     var conResult = await Connectivity().checkConnectivity();
@@ -411,15 +412,20 @@ class _SignUpState extends State<SignUp> {
               Map value = {
                 "username": _nameTextController.text,
                 "email": _emailTextController.text,
-                "userId": user.uid,
-                "gender": gender
+                "gender": gender,
+                "photoUrl": user.photoUrl ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
               };
-              _userServices.createUser(value);
+              _userServices.createUser(user.uid, value);
             });
           }
-          catch (e){
-            exists = true;
+          on PlatformException catch(e){
+            setState(() {
+              exists = true;
+            });
             print(e.toString());
+          }
+          on NullThrownError catch(E){
+            print(E.toString());
           }
         }
 
@@ -433,10 +439,6 @@ class _SignUpState extends State<SignUp> {
         else{
           preferences = await SharedPreferences.getInstance();
           await preferences.setBool("isLoggedIn", true);
-          await preferences.setString("id", user.uid);
-          await preferences.setString("username", user.displayName);
-          await preferences.setString("email", user.email);
-          await preferences.setString("id", user.photoUrl);
 
           setState(() {
             loading = false;

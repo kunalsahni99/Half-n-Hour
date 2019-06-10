@@ -16,14 +16,14 @@ class _ProfileState extends State<Profile> {
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   SharedPreferences preferences;
   bool isLoggedIn = false, isLoggedInEmail;
-  String _ButtText = 'Log Out', UID = "";
+  String _ButtText = 'Log Out', UID;
 
   Future _signOut()async{
     try{
       preferences = await SharedPreferences.getInstance();
       isLoggedIn = await _googleSignIn.isSignedIn();
-      isLoggedInEmail = preferences.getBool("isLoggedIn");
-      UID = await preferences.getString("id");
+      isLoggedInEmail = await preferences.getBool("isLoggedIn");
+      UID = await preferences.getString("id") ?? "";
       await _auth.signOut();
 
       if (isLoggedIn){
