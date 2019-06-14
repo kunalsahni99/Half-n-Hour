@@ -27,9 +27,22 @@ class _AccountState extends State<Account> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   SharedPreferences _preferences;
+
+  @override
+  void initState(){
+    super.initState();
+    getPrefs();
+  }
+
+  Future<Null> getPrefs() async{
+    _preferences = await SharedPreferences.getInstance();
+    setState(() {
+      url = _preferences.getString("photoUrl");
+    });
+  }
+
   Future _signOut()async{
     try{
-      _preferences = await SharedPreferences.getInstance();
       isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
       isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
       isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
@@ -134,7 +147,7 @@ class _AccountState extends State<Account> {
                                 child: ClipOval(
                                   child: CachedNetworkImage(
                                     placeholder: (context, val) => CircularProgressIndicator(),
-                                    imageUrl: "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
+                                    imageUrl: url != null ? url : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
                                   ),
                                 ),
                               )),
@@ -628,20 +641,23 @@ class _AccountState extends State<Account> {
     });
   }
 
-
-  Future<Null> _uploadProfilePicture() async{
+  Future<void> _uploadProfilePicture() async{
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     final StorageReference ref = FirebaseStorage.instance.ref().child('users/${user.email}/${user.email}_profilePicture.jpg');
     ref.putFile(_image);
-    url= ref.getDownloadURL()   as String;
-    await _preferences.setString("photoUrl", url);
+    url= await ref.getDownloadURL();
+    print(url.toString());
+    if (url != null){
+      setState(() async{
+        await _preferences.setString("photoUrl", url.toString());
+      });
+    }
   }
 
   void _selectAndUploadPicture() async{
     await _selectProfilePicture();
     await _uploadProfilePicture();
-
   }
 
   void _takeAndUploadPicture() async{
