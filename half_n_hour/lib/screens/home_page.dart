@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:HnH/components/horizontal_listview.dart';
 import 'package:HnH/components/products.dart';
@@ -21,9 +20,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences _preferences;
-  FirebaseDatabase _firebaseDatabase;
   String uid, uname = "", email ="", avatar;
-  bool hasUID = false, isLoggedIn, loggedwithMail;
+  bool hasUID = false, isLoggedIn, loggedwithMail, loggedwithPhone;
 
   @override
   void initState() {
@@ -31,47 +29,32 @@ class _MyHomePageState extends State<MyHomePage> {
     getValues();
   }
 
-
-  void getValues()async{
+  Future<void> getValues()async{
     _preferences = await SharedPreferences.getInstance();
     uid = await _preferences.getString("id") ?? "";
     isLoggedIn = await _preferences.getBool("isLoggedIn") ?? false;
-    loggedwithMail = await _preferences.getBool("LoggedInwithMail");
+    loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
+    loggedwithPhone = await _preferences.getBool("loggedwithPhone") ?? false;
 
     if (uid.isNotEmpty){  // for google sign in
       uname = await _preferences.getString("username");
       email = await _preferences.getString("email");
       avatar = await _preferences.getString("photoUrl");
-      hasUID = true;
     }
-    else if (isLoggedIn){
-      getValuesEmail();
+    else if (isLoggedIn){   // for email(signup)
+      uname = await _preferences.getString("SignUname");
+      email = await _preferences.getString("SignEmail");
     }
-    else if (loggedwithMail){   // for email-password(login)
-      if (_preferences.getString("LogUID").isNotEmpty){
-        uname = _preferences.getString("Uname");
-        email = _preferences.getString("Email");
-        hasUID = true;
-      }
+    else if (loggedwithMail){   // for email(login)
+      uname = await _preferences.getString("LogUname");
+    }
+    else if (loggedwithPhone){   // for phone
+      uname = await _preferences.getString("Phone");
     }
     else{
       uname = "Guest User";
       email = "guest@gmail.com";
     }
-  }
-
-  // for email-password(sign up)
-  void getValuesEmail()async{
-    uid =  await _preferences.getString("UID");
-    _firebaseDatabase = FirebaseDatabase.instance;
-    final db = _firebaseDatabase.reference().child("Users").child(uid);
-    db.once().then((DataSnapshot snapShot){
-      Map<dynamic, dynamic> values = snapShot.value;
-      uname = values["username"];
-      email = values["email"];
-      avatar = values["photoUrl"];
-      hasUID = true;
-    });
   }
 
   @override
@@ -132,15 +115,13 @@ class _MyHomePageState extends State<MyHomePage> {
               currentAccountPicture: GestureDetector(
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Profile()
+                    builder: (context) => Account()
                   ));
                 },
                 child: ClipOval(
                   child: CachedNetworkImage(
                     placeholder: (context, val) => CircularProgressIndicator(),
-                    imageUrl: hasUID && (avatar != null) ?
-                      avatar :
-                      "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
+                    imageUrl: avatar != null ? avatar : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
                   ),
                 )
               ),
@@ -153,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: (){
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => Profile()
+                  builder: (context) => Account()
                 ));
               },
               child: ListTile(

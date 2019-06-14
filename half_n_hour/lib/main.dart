@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
   final GoogleSignIn googleSignIn = new GoogleSignIn();
   SharedPreferences sharedPreferences;
   bool loading = false,
-      isLoggedIn = false, SignupEmail = false, isLoggedInEmail = false;
+      isLoggedIn, SignupEmail, isLoggedInEmail, isLoggedInPhone;
 
   void initState(){
     super.initState();
@@ -65,10 +65,12 @@ class _SplashScreenState extends State<SplashScreen> {
       loading = true;
     });
     sharedPreferences = await SharedPreferences.getInstance();
-    isLoggedIn = await googleSignIn.isSignedIn();
+    isLoggedIn = await googleSignIn.isSignedIn() ?? false;
     SignupEmail = sharedPreferences.getBool("isLoggedIn") ?? false;
     isLoggedInEmail = sharedPreferences.getBool("LoggedInwithMail") ?? false;
-    if (isLoggedIn || isLoggedInEmail || SignupEmail) {
+    isLoggedInPhone = sharedPreferences.getBool("loggedwithPhone") ?? false;
+
+    if (isLoggedIn || isLoggedInEmail || SignupEmail || isLoggedInPhone) {
       if (isIOS){
         Navigator.pushReplacement(context, CupertinoPageRoute(
           builder: (context) => MyHomePage()

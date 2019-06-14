@@ -6,6 +6,7 @@ import 'package:intro_views_flutter/intro_views_flutter.dart';
 
 import './home_page.dart';
 import './login.dart';
+import './map.dart';
 
 class OnBoarding extends StatefulWidget {
   @override
