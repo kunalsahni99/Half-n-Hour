@@ -44,12 +44,15 @@ class _MyHomePageState extends State<MyHomePage> {
     else if (isLoggedIn){   // for email(signup)
       uname = await _preferences.getString("SignUname");
       email = await _preferences.getString("SignEmail");
+      avatar = await _preferences.getString("photoUrl");
     }
     else if (loggedwithMail){   // for email(login)
       uname = await _preferences.getString("LogUname");
+      avatar = await _preferences.getString("photoUrl");
     }
     else if (loggedwithPhone){   // for phone
       uname = await _preferences.getString("Phone");
+      avatar = await _preferences.getString("photoUrl");
     }
     else{
       uname = "Guest User";

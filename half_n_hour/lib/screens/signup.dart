@@ -216,12 +216,14 @@ class _SignUpState extends State<SignUp> {
                                               color: Colors.black38,
                                             ),
                                             onPressed: (){
-                                              if (hidePass){
-                                                hidePass = false;
-                                              }
-                                              else{
-                                                hidePass = true;
-                                              }
+                                              setState(() {
+                                                if (hidePass){
+                                                  hidePass = false;
+                                                }
+                                                else{
+                                                  hidePass = true;
+                                                }
+                                              });
                                             },
                                           )
                                         ],

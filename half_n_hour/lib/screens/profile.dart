@@ -22,6 +22,8 @@ class _AccountState extends State<Account> {
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   bool isLoggedIn = false, isSignUpWithEmail, isLoggedwithEmail, isLoggedWithPhone;
   String UID, url;
+  bool loading = false;
+  File _image;
   String avatar;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -37,7 +39,7 @@ class _AccountState extends State<Account> {
   Future<Null> getPrefs() async{
     _preferences = await SharedPreferences.getInstance();
     setState(() {
-      url = _preferences.getString("photoUrl");
+      url = _preferences.getString("photoUrl") ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     });
   }
 
@@ -61,14 +63,17 @@ class _AccountState extends State<Account> {
         _preferences.setBool("isLoggedIn", false);
         _preferences.remove("SignUname");
         _preferences.remove("SignEmail");
+        _preferences.remove("photoUrl");
       }
       else if (isLoggedwithEmail){
         _preferences.setBool("LoggedInwithMail", false);
         _preferences.remove("LogUname");
+        _preferences.remove("photoUrl");
       }
       else if (isLoggedWithPhone){
         _preferences.setBool("loggedwithPhone", false);
         _preferences.remove("Phone");
+        _preferences.remove("photoUrl");
       }
       else{
         Fluttertoast.showToast(msg: "You need to login first",
@@ -610,6 +615,18 @@ class _AccountState extends State<Account> {
                         ],
                       ),
                     ),
+                  ),
+                  Visibility(
+                    visible: loading ?? true,
+                    child: Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.white.withOpacity(0.9),
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                        ),
+                      ),
+                    ),
                   )
                 ],
               )
@@ -623,7 +640,6 @@ class _AccountState extends State<Account> {
         content: Text(value)
     ));
   }
-  File _image;
 
   Future _takeProfilePicture() async{
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -634,25 +650,34 @@ class _AccountState extends State<Account> {
   }
 
   Future _selectProfilePicture() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error){
+      setState(() {
+        loading = false;
+      });
+    });
 
     setState((){
+      loading = true;
       _image = image;
     });
   }
 
   Future<void> _uploadProfilePicture() async{
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    String URL = "";
 
     final StorageReference ref = FirebaseStorage.instance.ref().child('users/${user.email}/${user.email}_profilePicture.jpg');
-    ref.putFile(_image);
-    url= await ref.getDownloadURL();
-    print(url.toString());
-    if (url != null){
-      setState(() async{
-        await _preferences.setString("photoUrl", url.toString());
+    final StorageUploadTask uploadTask = ref.putFile(_image);
+    await uploadTask.onComplete.then((TaskSnapShot)async{
+      URL = await TaskSnapShot.ref.getDownloadURL();
+      await _preferences.setString("photoUrl", URL.toString());
+      setState(() {
+        url = URL;
+        loading = false;
       });
-    }
+    });
+
+    print(URL.toString());
   }
 
   void _selectAndUploadPicture() async{

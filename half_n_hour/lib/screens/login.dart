@@ -269,12 +269,14 @@ class _LoginState extends State<Login> {
                                               color: Colors.black38,
                                             ),
                                             onPressed: (){
-                                              if (hidePass){
-                                                hidePass = false;
-                                              }
-                                              else{
-                                                hidePass = true;
-                                              }
+                                              setState(() {
+                                                if (hidePass){
+                                                  hidePass = false;
+                                                }
+                                                else{
+                                                  hidePass = true;
+                                                }
+                                              });
                                             },
                                           )
                                         ],
@@ -463,7 +465,7 @@ class _LoginState extends State<Login> {
                 break;
               }
             }
-            Fluttertoast.showToast(msg: "Welcome $uname}");
+            Fluttertoast.showToast(msg: "Welcome $uname");
             Navigator.pop(context);
             Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) =>  MyHomePage()
