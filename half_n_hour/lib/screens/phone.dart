@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
@@ -80,10 +81,11 @@ class _PhoneSignInSection extends StatefulWidget {
 class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
-
+  SharedPreferences _preferences;
+  final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+  final FirebaseAuth auth = FirebaseAuth.instance;
   String _message = '';
   String _verificationId;
-  SharedPreferences _preferences;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -100,18 +102,20 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
           alignment: Alignment.center,
 
           child: Text('LOGIN',style: TextStyle(
-              color: Colors.pinkAccent,fontSize: 30.0,fontWeight: FontWeight.bold
+              color: Colors.orange,fontSize: 30.0,fontWeight: FontWeight.bold
           ),),
         ),
         SizedBox(height: 40.0,),
 
         Divider(color: Colors.grey,),
 
+
+
         TextFormField(
           controller: _phoneNumberController,
           decoration:
 
-          InputDecoration(labelText: 'Phone number (+x xxx-xxx-xxxx)',icon: Icon(Icons.phone,color: Colors.black38,),),
+          InputDecoration(labelText: 'Phone number ',icon: Icon(Icons.phone,color: Colors.black38,),),
 
           validator: (String value) {
             if (value.isEmpty) {
@@ -139,10 +143,12 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
               minWidth: 70,
 
 
-              child: Text('Send Code',
+              child: Text('Send  Code',
+
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.pink,
-                    fontWeight: FontWeight.w400,
+
+                    fontWeight: FontWeight.bold,
                     fontSize: 20.0
                 ),
               ),
@@ -171,7 +177,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.pink,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     fontSize: 20.0
                 ),
               ),
@@ -188,7 +194,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
           alignment: Alignment.center,
           child: Material(
             borderRadius: BorderRadius.circular(20.0),
-            color: Colors.pinkAccent,
+            color: Colors.pink.shade500,
             elevation: 8.0,
             child: MaterialButton(
               onPressed: (){
@@ -198,6 +204,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
               },
               minWidth: 250.0,
               child: Text('SignUp',
+
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -235,20 +242,29 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) {
       _auth.signInWithCredential(phoneAuthCredential);
-      setState(() {
-        _message = 'Received phone auth credential: $phoneAuthCredential';
+      setState(() async{
+
+        _message = 'Successfully signed in ';
+        userUpdateInfo.displayName=_phoneNumberController.text;
+        final FirebaseUser user = await auth.currentUser();
+        await user.updateProfile(userUpdateInfo);
+
         Navigator.pop(context);
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>  MyHomePage()
         ));
+        await _preferences.setString("Pname",_phoneNumberController.text );
+        await _preferences.setBool("LoginPhone",true);
       });
     };
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
       setState(() {
-        _message =
-        'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}';
+        Fluttertoast.showToast(msg: "Invalid Number",
+            fontSize: 14.0,
+            backgroundColor: Colors.black87
+        );
       });
     };
 
@@ -267,7 +283,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     };
 
     await _auth.verifyPhoneNumber(
-        phoneNumber: _phoneNumberController.text,
+        phoneNumber:'+91'+_phoneNumberController.text,
         timeout: const Duration(seconds: 5),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
@@ -277,7 +293,6 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
   // Example code of how to sign in with phone.
   void _signInWithPhoneNumber() async {
-    _preferences = await SharedPreferences.getInstance();
     final AuthCredential credential = PhoneAuthProvider.getCredential(
       verificationId: _verificationId,
       smsCode: _smsController.text,
@@ -299,19 +314,6 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     final FirebaseUser user = await _auth.signInWithCredential(credential);
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
-    setState(() async{
-      if (user != null) {
-        _message = 'Successfully signed in, uid: ' + user.uid;
-        await _preferences.setBool("loggedwithPhone", true);
-        await _preferences.setString("Phone", _phoneNumberController.text);
-        Navigator.pop(context);
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) =>  MyHomePage()
-        ));
-      }
-      else {
-        _message = 'Sign in failed';
-      }
-    });
+
   }
 }
