@@ -7,8 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 
 import 'home_page.dart';
-import 'signup.dart';
+
 import 'phone.dart';
+import 'signup.dart';
 
 
 class Login extends StatefulWidget {
@@ -29,6 +30,8 @@ class _LoginState extends State<Login> {
   String _email, _password;
 
   String verificationId;
+
+
 
   Future handleSignIn() async {
     _preferences = await SharedPreferences.getInstance();
@@ -150,14 +153,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
+    bool _obscureText = true;
     return new Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
-          title: Text("Half n Hour",
-            style: TextStyle(
-              color: Colors.black87
-            ),
-          ),
+          title: Text('Login'),
           backgroundColor: Colors.white,
         ),
         body: SafeArea(
@@ -230,6 +231,7 @@ class _LoginState extends State<Login> {
                                               borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
                                             ),
                                             icon: Icon(Icons.email,color: Colors.black38,),
+                                            hintText: 'Your email address',
                                             labelText: 'E-mail',
                                             labelStyle: TextStyle(color: Colors.black54)
                                         ),
@@ -281,7 +283,6 @@ class _LoginState extends State<Login> {
                                           )
                                         ],
                                       ),
-
                                       SizedBox(height: 35.0,),
                                       new Container(
                                         child: Row(
@@ -291,9 +292,23 @@ class _LoginState extends State<Login> {
 
                                             new Container(
                                               alignment: Alignment.bottomLeft,
+
                                               margin: EdgeInsets.only(left: 10.0),
+
                                               child: new GestureDetector(
-                                                onTap: (){
+
+                                                onTap: () async {
+                                                  _formKey.currentState.save();
+                                                  try{
+                                                    await firebaseAuth.sendPasswordResetEmail(email: _email);
+                                                    showInSnackBar('Please check your email');}
+                                                  catch (e){
+                                                    String msg=e.toString();
+                                                    showInSnackBar("No User Found!");
+                                                  }
+
+
+
                                                 },
                                                 child: Text('FORGOT PASSWORD?',style: TextStyle(
                                                     color: Colors.blueAccent,fontSize: 13.0
@@ -307,10 +322,14 @@ class _LoginState extends State<Login> {
                                                   _submit();
                                                 },
                                                 child: Text('LOGIN',style: TextStyle(
-                                                    color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
+                                                    color: Colors.orange,fontSize: 20.0,fontWeight: FontWeight.bold
                                                 ),),
                                               ),
                                             ),
+
+
+
+
                                           ],
                                         ),
                                       ),
@@ -320,38 +339,22 @@ class _LoginState extends State<Login> {
                                       SizedBox(height: 35.0,),
                                       new Container(
 
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Material(
-                                            borderRadius: BorderRadius.circular(25.0),
-                                            color: Colors.white,
-                                            elevation: 5.0,
-                                            child: MaterialButton(
-                                              onPressed: (){
-                                                Navigator.push(context, MaterialPageRoute(
-                                                    builder: (context) => SignInPage()
-                                                ));
-                                              },
-                                              minWidth: MediaQuery.of(context).size.width,
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: EdgeInsets.all(4.0),
-                                                    child: Icon(Icons.phone),
-                                                  ),
-
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 32.0),
-                                                    child: Text('Sign in With Phone',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                          color: Colors.black87,
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: 18.0
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                        child: Material(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          color: Colors.pink.shade500,
+                                          elevation: 5.0,
+                                          child: MaterialButton(
+                                            onPressed: (){
+                                              Navigator.push(context, MaterialPageRoute(
+                                                  builder: (context) => SignInPage()
+                                              ));
+                                            },
+                                            minWidth: MediaQuery.of(context).size.width,
+                                            child: Text('LogIn in With Phone',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0
                                               ),
                                             ),
                                           ),
@@ -428,7 +431,7 @@ class _LoginState extends State<Login> {
       signIn();
     }
     else{
-      showInSnackBar('Please give valid email ID and password.');
+      showInSnackBar('Please fix the errors in red before submitting.');
 
     }
   }
@@ -465,7 +468,7 @@ class _LoginState extends State<Login> {
                 break;
               }
             }
-            Fluttertoast.showToast(msg: "Welcome $uname");
+            Fluttertoast.showToast(msg: "Welcome ${_firebaseUser.displayName}");
             Navigator.pop(context);
             Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) =>  MyHomePage()
@@ -480,7 +483,7 @@ class _LoginState extends State<Login> {
         setState(() {
           loading = false;
         });
-        print(e.toString());
+        showInSnackBar('Invalid Email or Password.');
       }
     }
   }
