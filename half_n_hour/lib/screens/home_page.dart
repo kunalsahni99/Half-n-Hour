@@ -4,11 +4,14 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:HnH/components/horizontal_listview.dart';
 import 'package:HnH/components/products.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
+import 'maps.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
@@ -22,6 +25,8 @@ class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences _preferences;
   String uid, uname = "", email ="", avatar;
   bool hasUID = false, isLoggedIn, loggedwithMail, loggedwithPhone;
+  final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -30,29 +35,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> getValues()async{
+    final FirebaseUser user = await auth.currentUser();
     _preferences = await SharedPreferences.getInstance();
-    uid = await _preferences.getString("id") ?? "";
+    uid = await _preferences.getString("id") ?? null;
     isLoggedIn = await _preferences.getBool("isLoggedIn") ?? false;
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
-    loggedwithPhone = await _preferences.getBool("loggedwithPhone") ?? false;
+    loggedwithPhone = await _preferences.getBool("LoginPhone") ?? false;
 
-    if (uid.isNotEmpty){  // for google sign in
-      uname = await _preferences.getString("username");
-      email = await _preferences.getString("email");
-      avatar = await _preferences.getString("photoUrl");
+    if (uid!=null){  // for google sign in
+      uname = user.displayName;
+      email = user.email;
+      avatar = user.photoUrl;
     }
     else if (isLoggedIn){   // for email(signup)
-      uname = await _preferences.getString("SignUname");
-      email = await _preferences.getString("SignEmail");
-      avatar = await _preferences.getString("photoUrl");
+      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("SignUname");
+
+      email = user.email!=null?user.email.toString():await _preferences.getString("SignEmail");
+      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
     else if (loggedwithMail){   // for email(login)
-      uname = await _preferences.getString("LogUname");
-      avatar = await _preferences.getString("photoUrl");
+      print("hello"+user.displayName);
+      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("LogUname");
+      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
     else if (loggedwithPhone){   // for phone
-      uname = await _preferences.getString("Phone");
-      avatar = await _preferences.getString("photoUrl");
+      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("Pname");
+      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
     else{
       uname = "Guest User";
@@ -146,7 +154,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: (){FirebaseDatabase.instance.reference()
+                  .child('users')
+                  .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
+                  .update({
+                'title':'sadab is amazing'   //yes I know.
+              });},
               child: ListTile(
                 title: Text('My Orders'),
                 leading: Icon(Icons.shopping_basket, color: Colors.pinkAccent,)
@@ -165,7 +178,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: ()async{ Navigator.pop(context);
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => Maps()
+              ));},
               child: ListTile(
                 title: Text('Favourites'),
                 leading: Icon(Icons.favorite, color: Colors.pinkAccent,)
