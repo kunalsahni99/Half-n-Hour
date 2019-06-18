@@ -27,6 +27,9 @@ class _AccountState extends State<Account> {
   String avatar;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
 
   SharedPreferences _preferences;
 
@@ -38,13 +41,14 @@ class _AccountState extends State<Account> {
 
   Future<Null> getPrefs() async{
     _preferences = await SharedPreferences.getInstance();
+    final FirebaseUser user = await auth.currentUser();
     setState(() {
-      url = _preferences.getString("photoUrl") ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+      url = user.photoUrl ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     });
   }
 
   Future _signOut()async{
-    try{
+    try{final FirebaseUser user = await auth.currentUser();
       isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
       isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
       isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
@@ -86,8 +90,9 @@ class _AccountState extends State<Account> {
       e.toString();
     }
   }
+  @override
 
-  String username = 'Naomi A. Schultz';
+  String username = "hbk";
   String mobilenumber = '410-422-9171';
   String eid = 'NaomiASchultz@armyspy.com';
 
@@ -179,7 +184,7 @@ class _AccountState extends State<Account> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
-                                    new Text(
+                                    new Text (
                                       username,
                                       style: TextStyle(
                                         color: Colors.black87,
@@ -670,7 +675,9 @@ class _AccountState extends State<Account> {
     final StorageUploadTask uploadTask = ref.putFile(_image);
     await uploadTask.onComplete.then((TaskSnapShot)async{
       URL = await TaskSnapShot.ref.getDownloadURL();
-      await _preferences.setString("photoUrl", URL.toString());
+      userUpdateInfo.photoUrl=URL;
+      final FirebaseUser user = await auth.currentUser();
+      await user.updateProfile(userUpdateInfo);
       setState(() {
         url = URL;
         loading = false;
