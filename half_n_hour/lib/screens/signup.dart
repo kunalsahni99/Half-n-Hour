@@ -48,6 +48,17 @@ class _SignUpState extends State<SignUp> {
         key: scaffoldKey,
         appBar: AppBar(
           backgroundColor: Colors.white,
+          title: Text("Half n Hour",
+            style: TextStyle(
+              color: Colors.black87
+            ),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back,
+              color: Colors.black87,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
         body: SafeArea(
             child: new SingleChildScrollView(
@@ -59,8 +70,8 @@ class _SignUpState extends State<SignUp> {
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.only(top: 7.0),
                     child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        _verticalD(),
                         new GestureDetector(
                           onTap: () {
                             Navigator.pop(context);
@@ -93,182 +104,189 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   new SafeArea(
-
                       top: false,
                       bottom: false,
-                      child: Card(
-                          elevation: 5.0,
-                          child: Form(
-                              key: _formKey,
-                              autovalidate: _autovalidate,
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: <Widget>[
-
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        controller: _firstnameTextController,
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.person,color: Colors.black38,),
-                                            labelText: 'First Name',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        validator: (val) =>
-                                        val.length < 1 ? 'Enter first name' : null,
-                                        onSaved: (val) => _firstname = val,
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        controller: _lastnameTextController,
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.perm_identity,color: Colors.black38,),
-                                            labelText: 'Last Name',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        validator: (val) =>
-                                        val.length < 1 ? 'Enter last name' : null,
-                                        onSaved: (val) => _lastname = val,
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        controller: _emailTextController,
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.email,color: Colors.black38,),
-                                            labelText: 'E-mail',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.emailAddress,
-                                        validator: validateEmail,
-                                        onSaved: (String val) {
-                                          _email = val;
-                                        },
-                                      ),
-
-                                      const SizedBox(height: 24.0),
-                                      TextFormField(
-                                        controller:  _phoneTextController,
-                                        decoration: const InputDecoration(
-                                            border: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            focusedBorder:  UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                            ),
-                                            icon: Icon(Icons.phone_android,color: Colors.black38,),
-                                            labelText: 'Phone',
-                                            labelStyle: TextStyle(color: Colors.black54)
-                                        ),
-                                        keyboardType: TextInputType.phone,
-                                        validator: validateMobile,
-                                        onSaved: (String val) {
-                                          _phone = val;
-                                        },
-                                      ),
-                                      const SizedBox(height: 24.0),
-                                      Row(
+                      child: Stack(
+                        children: <Widget>[
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)
+                              ),
+                              elevation: 5.0,
+                              child: Form(
+                                  key: _formKey,
+                                  autovalidate: _autovalidate,
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
                                         children: <Widget>[
-                                          Expanded(
-                                            flex: 2,
-                                            child: TextFormField(
-                                              controller: _passwordTextController,
-                                              obscureText: hidePass,
-                                              decoration: const InputDecoration(
-                                                  border: UnderlineInputBorder(
-                                                    borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                  ),
-                                                  focusedBorder:  UnderlineInputBorder(
-                                                    borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                  ),
-                                                  icon: Icon(Icons.lock,color: Colors.black38,),
-                                                  labelText: 'Password',
-                                                  labelStyle: TextStyle(color: Colors.black54)
-                                              ),
-                                              validator: (val) =>
-                                              val.length < 6 ? 'Password too short.' : null,
-                                              onSaved: (val) => _password = val,
+
+                                          const SizedBox(height: 24.0),
+                                          TextFormField(
+                                            controller: _firstnameTextController,
+                                            decoration: const InputDecoration(
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                focusedBorder:  UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                icon: Icon(Icons.person,color: Colors.black38,),
+                                                labelText: 'First Name',
+                                                labelStyle: TextStyle(color: Colors.black54)
                                             ),
+                                            keyboardType: TextInputType.text,
+                                            validator: (val) =>
+                                            val.length < 1 ? 'Enter first name' : null,
+                                            onSaved: (val) => _firstname = val,
+                                          ),
+                                          const SizedBox(height: 24.0),
+                                          TextFormField(
+                                            controller: _lastnameTextController,
+                                            decoration: const InputDecoration(
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                focusedBorder:  UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                icon: Icon(Icons.perm_identity,color: Colors.black38,),
+                                                labelText: 'Last Name',
+                                                labelStyle: TextStyle(color: Colors.black54)
+                                            ),
+                                            keyboardType: TextInputType.text,
+                                            validator: (val) =>
+                                            val.length < 1 ? 'Enter last name' : null,
+                                            onSaved: (val) => _lastname = val,
+                                          ),
+                                          const SizedBox(height: 24.0),
+                                          TextFormField(
+                                            controller: _emailTextController,
+                                            decoration: const InputDecoration(
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                focusedBorder:  UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                icon: Icon(Icons.email,color: Colors.black38,),
+                                                labelText: 'E-mail',
+                                                labelStyle: TextStyle(color: Colors.black54)
+                                            ),
+                                            keyboardType: TextInputType.emailAddress,
+                                            validator: validateEmail,
+                                            onSaved: (String val) {
+                                              _email = val;
+                                            },
                                           ),
 
-                                          IconButton(
-                                            icon: Icon(Icons.remove_red_eye,
-                                              color: Colors.black38,
+                                          const SizedBox(height: 24.0),
+                                          TextFormField(
+                                            controller:  _phoneTextController,
+                                            decoration: const InputDecoration(
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                focusedBorder:  UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                icon: Icon(Icons.phone_android,color: Colors.black38,),
+                                                labelText: 'Phone',
+                                                labelStyle: TextStyle(color: Colors.black54)
                                             ),
-                                            onPressed: (){
-                                              setState(() {
-                                                if (hidePass){
-                                                  hidePass = false;
-                                                }
-                                                else{
-                                                  hidePass = true;
-                                                }
-                                              });
+                                            keyboardType: TextInputType.phone,
+                                            validator: validateMobile,
+                                            onSaved: (String val) {
+                                              _phone = val;
                                             },
-                                          )
-                                        ],
-                                      ),
-
-                                      SizedBox(height: 35.0,),
-                                      new Container(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: <Widget>[
-
-                                            new Container(
-                                              alignment: Alignment.bottomRight,
-                                              child: new GestureDetector(
-                                                onTap: (){
-                                                  validateForm();
-                                                },
-                                                child: Text('SIGNUP',style: TextStyle(
-                                                    color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
-                                                ),),
+                                          ),
+                                          const SizedBox(height: 24.0),
+                                          Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                flex: 2,
+                                                child: TextFormField(
+                                                  controller: _passwordTextController,
+                                                  obscureText: hidePass,
+                                                  decoration: const InputDecoration(
+                                                      border: UnderlineInputBorder(
+                                                        borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                      ),
+                                                      focusedBorder:  UnderlineInputBorder(
+                                                        borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                      ),
+                                                      icon: Icon(Icons.lock,color: Colors.black38,),
+                                                      labelText: 'Password',
+                                                      labelStyle: TextStyle(color: Colors.black54)
+                                                  ),
+                                                  validator: (val) =>
+                                                  val.length < 6 ? 'Password too short.' : null,
+                                                  onSaved: (val) => _password = val,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ]
-                                ),
 
-                              )
-                          )        //login,
+                                              IconButton(
+                                                icon: Icon(Icons.remove_red_eye,
+                                                  color: Colors.black38,
+                                                ),
+                                                onPressed: (){
+                                                  setState(() {
+                                                    if (hidePass){
+                                                      hidePass = false;
+                                                    }
+                                                    else{
+                                                      hidePass = true;
+                                                    }
+                                                  });
+                                                },
+                                              )
+                                            ],
+                                          ),
+
+                                          SizedBox(height: 35.0,),
+                                          new Container(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: <Widget>[
+
+                                                new Container(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: new InkWell(
+                                                    splashColor: Colors.pinkAccent,
+                                                    onTap: (){
+                                                      validateForm();
+                                                    },
+                                                    child: Text('SIGNUP',style: TextStyle(
+                                                        color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
+                                                    ),),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ]
+                                    ),
+
+                                  )
+                              )        //login,
+                          ),
+                          Visibility(
+                            visible: loading ?? true,
+                            child: Center(
+                              child: Container(
+                                alignment: Alignment.center,
+                                color: Colors.white.withOpacity(0.9),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       )
                   ),
-                  Visibility(
-                    visible: loading ?? true,
-                    child: Center(
-                      child: Container(
-                        alignment: Alignment.center,
-                        color: Colors.white.withOpacity(0.9),
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
-                        ),
-                      ),
-                    ),
-                  )
                 ],
               ),
             )
@@ -386,7 +404,7 @@ class _SignUpState extends State<SignUp> {
     }
   }
   _verticalD() => Container(
-    margin: EdgeInsets.only(left: 10.0, right: 0.0, top: 0.0, bottom: 0.0),
+    margin: EdgeInsets.only(left: 40.0),
   );
 
 }

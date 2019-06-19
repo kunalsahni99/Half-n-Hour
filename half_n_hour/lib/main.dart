@@ -104,12 +104,14 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Stack(
             children: <Widget>[
               Container(
-                color: CupertinoColors.black.withOpacity(0.6),
-                child: Image.asset('images/splash.jpg',
-                  fit: BoxFit.fill,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
+              decoration: BoxDecoration(
+                color: Color(0xff622F74),
+                gradient: LinearGradient(
+                  colors: [Color(0xff6094e8), Color(0xffde5cbc)],
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft
+                )
+              ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -178,11 +180,13 @@ class _SplashScreenState extends State<SplashScreen> {
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            color: Colors.black.withOpacity(0.6),
-            child: Image.asset('images/splash.jpg',
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: double.infinity,
+            decoration: BoxDecoration(
+                color: Color(0xff622F74),
+                gradient: LinearGradient(
+                    colors: [Color(0xff6094e8), Color(0xffde5cbc)],
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft
+                )
             ),
           ),
           Column(
@@ -225,12 +229,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                    ),
                     Text('Online Store\nfor Everyone',
                       style: TextStyle(
                           color: Colors.white,

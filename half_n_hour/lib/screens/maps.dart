@@ -95,9 +95,9 @@ class MapsState extends State<Maps> {
   }
 
   Future<LatLng> getUserLocation() async {
-   LM.LocationData currentLocation;
+    LM.LocationData currentLocation;
 
-   var location = new LM.Location();
+    var location = new LM.Location();
 
 
     try {
