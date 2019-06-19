@@ -131,10 +131,14 @@ class _AccountState extends State<Account> {
       appBar: new AppBar(
         title: Text(
           'My Account',
+          style: TextStyle(
+            fontWeight: FontWeight.bold
+          ),
         ),
       ),
       body: new Container(
           child: SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height/10),
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: TextDirection.ltr,
@@ -142,7 +146,7 @@ class _AccountState extends State<Account> {
                   new Container(
                     margin: EdgeInsets.all(7.0),
                     alignment: Alignment.topCenter,
-                    height: 260.0,
+                    height: MediaQuery.of(context).size.height / 2.5,
                     child: new Card(
                       elevation: 3.0,
                       child: Column(
@@ -153,7 +157,6 @@ class _AccountState extends State<Account> {
                                 width: 100.0,
                                 height: 100.0,
                                 margin: const EdgeInsets.all(10.0),
-                                // padding: const EdgeInsets.all(3.0),
                                 child: ClipOval(
                                   child: CachedNetworkImage(
                                     placeholder: (context, val) => CircularProgressIndicator(),
@@ -240,23 +243,18 @@ class _AccountState extends State<Account> {
                     ),
                   ),
                   new Container(
-                      height: 170.0,
+                      height: MediaQuery.of(context).size.width / 1.75,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           Container(
-                            height: 170.0,
-                            width: 230.0,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-
                                 children: <Widget>[
                                   new Column(
-
-
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -346,18 +344,15 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            height: 130.0,
-                            width: 230.0,
+                            height: MediaQuery.of(context).size.height / 1.5,
+                            width: MediaQuery.of(context).size.width / 1.5,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-
                                 children: <Widget>[
                                   new Column(
-
-
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -445,18 +440,15 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            height: 130.0,
-                            width: 230.0,
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width / 1.5,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-
                                 children: <Widget>[
                                   new Column(
-
-
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -573,9 +565,6 @@ class _AccountState extends State<Account> {
                     },
                     child: Card(
                       elevation: 3.0,
-
-
-
 
                       child: Row(
                         children: <Widget>[
@@ -697,7 +686,7 @@ class _AccountState extends State<Account> {
     await _uploadProfilePicture();
   }
   _verticalDivider() => Container(
-    padding: EdgeInsets.all(2.0),
+    padding: EdgeInsets.all(5.0),
   );
 
   _verticalD() => Container(
