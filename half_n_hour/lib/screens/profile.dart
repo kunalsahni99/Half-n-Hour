@@ -146,7 +146,7 @@ class _AccountState extends State<Account> {
                   new Container(
                     margin: EdgeInsets.all(7.0),
                     alignment: Alignment.topCenter,
-                    height: MediaQuery.of(context).size.height / 2.5,
+                    height: MediaQuery.of(context).size.height / 2.25,
                     child: new Card(
                       elevation: 3.0,
                       child: Column(
