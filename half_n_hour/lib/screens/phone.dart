@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
 
 import 'signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -81,9 +81,8 @@ class _PhoneSignInSection extends StatefulWidget {
 class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
-  SharedPreferences _preferences;
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
-  final FirebaseAuth auth = FirebaseAuth.instance;
+
   String _message = '';
   String _verificationId;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -91,140 +90,189 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
   @override
   Widget build(BuildContext context) {
     return new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: TextDirection.ltr,
+        children: <Widget>[
+
+
+          new Container(
+            height: 100,
+            width: MediaQuery.of(context).size.width,
+
+            child: new Card(
+              elevation: 5,
+                child:Column(
+
+                children: <Widget>[
+
+                ],
+              )
+            ),
 
 
 
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-
-        SizedBox(height: 40.0,),
-        new Container(
-          alignment: Alignment.center,
-
-          child: Text('LOGIN',style: TextStyle(
-              color: Colors.orange,fontSize: 30.0,fontWeight: FontWeight.bold
-          ),),
-        ),
-        SizedBox(height: 40.0,),
-
-        Divider(color: Colors.grey,),
 
 
 
-        TextFormField(
-          controller: _phoneNumberController,
-          decoration:
-
-          InputDecoration(labelText: 'Phone number ',icon: Icon(Icons.phone,color: Colors.black38,),),
-
-          validator: (String value) {
-            if (value.isEmpty) {
-              widget._scaffold.showSnackBar(SnackBar(
-                content:
-                const Text('Enter a valid No.'),
-              ));
-            }
-
-          },
-        ),
-        SizedBox(height: 15.0,),
-
-        new Container(
-
-          alignment: Alignment.center,
-          child: Material(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.white,
-            elevation: 5.0,
-            child: MaterialButton(
-              onPressed: (){
-                _verifyPhoneNumber();
-              },
-              minWidth: 70,
+          ),
 
 
-              child: Text('Send  Code',
+          new Container(
 
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.pink,
+              margin: EdgeInsets.fromLTRB(5, 1, 5, 1),
+              alignment: Alignment.center,
 
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
+
+
+
+
+              height: 350.0,
+              child: new Card(
+
+                  elevation: 5.0,
+                  child: Column(
+                    children: <Widget>[
+
+
+
+                      TextFormField(
+                        controller: _phoneNumberController,
+                        decoration:
+
+                        InputDecoration(labelText: 'Phone number ',
+                          icon: Icon(Icons.phone, color: Colors.black38,),),
+
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            widget._scaffold.showSnackBar(SnackBar(
+                              content:
+                              const Text('Enter a valid No.'),
+                            ));
+                          }
+                        },
+                      ),
+                      SizedBox(height: 20.0,),
+
+                      new Container(
+
+                        alignment: Alignment.center,
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: Colors.white,
+                          elevation: 5.0,
+                          child: MaterialButton(
+                            onPressed: () {
+                              _verifyPhoneNumber();
+                            },
+                            minWidth: 70,
+
+
+                            child: Text('Send  Code',
+
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.pink,
+
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 40.0,),
+                      TextField(
+                        controller: _smsController,
+                        decoration: InputDecoration(
+                          labelText: 'Verification code',
+                          icon: Icon(Icons.message, color: Colors.black38,),),
+                      ),
+                      SizedBox(height: 20.0,),
+                      new Container(
+                        alignment: Alignment.center,
+
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: Colors.white,
+                          elevation: 5.0,
+                          child: MaterialButton(
+                            onPressed: () {
+                              _signInWithPhoneNumber();
+                            },
+                            minWidth: 70.0,
+                            child: Text('Verify Code',
+
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.pink,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+
+
+
+
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          _message,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ))),
+          SizedBox(height: 5.0,),
+          new Container(
+                  margin: EdgeInsets.fromLTRB(10,0,10,0),
+            alignment: Alignment.center,
+            child: Material(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.pinkAccent,
+              elevation: 5.0,
+              child: MaterialButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => SignUp()
+                  ));
+                },
+                minWidth: MediaQuery.of(context).size.width,
+                child: Text('Sign  Up',
+
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25.0
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 20.0,),
-        TextField(
-          controller: _smsController,
-          decoration: InputDecoration(labelText: 'Verification code',icon: Icon(Icons.message,color: Colors.black38,),),
-        ),
-        SizedBox(height: 15.0,),
-        new Container(
-          alignment: Alignment.center,
+          new Container(
+            height: 70,
+            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            width: MediaQuery.of(context).size.width,
 
-          child: Material(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.white,
-            elevation: 5.0,
-            child: MaterialButton(
-              onPressed: (){
-                _signInWithPhoneNumber();
-              },
-              minWidth: 70.0,
-              child: Text('Verify Code',
+            child: new Card(
+                elevation: 5,
+                child:Column(
 
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.pink,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
-                ),
-              ),
+                  children: <Widget>[
+
+                  ],
+                )
             ),
+
+
+
+
+
+
           ),
-        ),
-
-        SizedBox(height: 20.0,),
-        Divider(color: Colors.grey,),
-        SizedBox(height: 50.0,),
-
-        new Container(
-
-          alignment: Alignment.center,
-          child: Material(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.pink.shade500,
-            elevation: 8.0,
-            child: MaterialButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => SignUp()
-                ));
-              },
-              minWidth: 250.0,
-              child: Text('SignUp',
-
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
-                ),
-              ),
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            _message,
-            style: TextStyle(color: Colors.red),
-          ),
-        )
-      ],
-    );
-
+        ]);
   }
 
   // Exmaple code of how to veify phone number
@@ -242,19 +290,24 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) {
       _auth.signInWithCredential(phoneAuthCredential);
-      setState(() async{
+      setState(() async {
+        SharedPreferences _preferences=await SharedPreferences.getInstance();
+        _preferences.setBool("LoginPhone", true);
+        _preferences.setString("Phone",_phoneNumberController.text);
 
-        _message = 'Successfully signed in ';
+        final FirebaseUser user = await _auth.currentUser();
         userUpdateInfo.displayName=_phoneNumberController.text;
-        final FirebaseUser user = await auth.currentUser();
         await user.updateProfile(userUpdateInfo);
 
         Navigator.pop(context);
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>  MyHomePage()
         ));
-        await _preferences.setString("Pname",_phoneNumberController.text );
-        await _preferences.setBool("LoginPhone",true);
+
+        Fluttertoast.showToast(msg: "Welcome"+_phoneNumberController.text,
+            fontSize: 14.0,
+            backgroundColor: Colors.black87
+        );
       });
     };
 
@@ -314,6 +367,18 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     final FirebaseUser user = await _auth.signInWithCredential(credential);
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+    setState(() {
+      if (user != null) {
+        _message = 'Successfully signed in, uid: ' + user.uid;
 
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) =>  MyHomePage()
+        ));
+
+
+      } else {
+        _message = 'Sign in failed';
+      }
+    });
   }
 }

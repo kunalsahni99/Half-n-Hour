@@ -6,25 +6,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'login.dart';
 
 
 class Account extends StatefulWidget {
   @override
   _AccountState createState() => _AccountState();
+
+
+
 }
 
-class _AccountState extends State<Account> {
+  class _AccountState extends State<Account> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   bool isLoggedIn = false, isSignUpWithEmail, isLoggedwithEmail, isLoggedWithPhone;
   String UID, url;
   bool loading = false;
   File _image;
-  String avatar;
+  String avatar,uname,eid,pno;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
@@ -36,7 +39,10 @@ class _AccountState extends State<Account> {
   @override
   void initState(){
     super.initState();
+
+
     getPrefs();
+
   }
 
   Future<Null> getPrefs() async{
@@ -44,6 +50,8 @@ class _AccountState extends State<Account> {
     final FirebaseUser user = await auth.currentUser();
     setState(() {
       url = user.photoUrl ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+       uname=user.displayName;
+       eid= user.email!=null?user.email.toString():_preferences.getString("Phone");
     });
   }
 
@@ -90,11 +98,8 @@ class _AccountState extends State<Account> {
       e.toString();
     }
   }
-  @override
 
-  String username = "hbk";
-  String mobilenumber = '410-422-9171';
-  String eid = 'NaomiASchultz@armyspy.com';
+
 
 
   @override
@@ -131,14 +136,10 @@ class _AccountState extends State<Account> {
       appBar: new AppBar(
         title: Text(
           'My Account',
-          style: TextStyle(
-            fontWeight: FontWeight.bold
-          ),
         ),
       ),
       body: new Container(
           child: SingleChildScrollView(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height/10),
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: TextDirection.ltr,
@@ -146,7 +147,7 @@ class _AccountState extends State<Account> {
                   new Container(
                     margin: EdgeInsets.all(7.0),
                     alignment: Alignment.topCenter,
-                    height: MediaQuery.of(context).size.height / 2.25,
+                    height: 260.0,
                     child: new Card(
                       elevation: 3.0,
                       child: Column(
@@ -157,6 +158,7 @@ class _AccountState extends State<Account> {
                                 width: 100.0,
                                 height: 100.0,
                                 margin: const EdgeInsets.all(10.0),
+                                // padding: const EdgeInsets.all(3.0),
                                 child: ClipOval(
                                   child: CachedNetworkImage(
                                     placeholder: (context, val) => CircularProgressIndicator(),
@@ -188,7 +190,7 @@ class _AccountState extends State<Account> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     new Text (
-                                      username,
+                                      uname,
                                       style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15.0,
@@ -197,15 +199,7 @@ class _AccountState extends State<Account> {
                                       ),
                                     ),
                                     _verticalDivider(),
-                                    new Text(
-                                      mobilenumber,
-                                      style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5),
-                                    ),
-                                    _verticalDivider(),
+
                                     new Text(
                                       eid,
                                       style: TextStyle(
@@ -243,18 +237,23 @@ class _AccountState extends State<Account> {
                     ),
                   ),
                   new Container(
-                      height: MediaQuery.of(context).size.width / 1.75,
+                      height: 170.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           Container(
+                            height: 170.0,
+                            width: 230.0,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+
                                 children: <Widget>[
                                   new Column(
+
+
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -344,15 +343,18 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            height: MediaQuery.of(context).size.height / 1.5,
-                            width: MediaQuery.of(context).size.width / 1.5,
+                            height: 130.0,
+                            width: 230.0,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+
                                 children: <Widget>[
                                   new Column(
+
+
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -440,15 +442,18 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width / 1.5,
+                            height: 130.0,
+                            width: 230.0,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+
                                 children: <Widget>[
                                   new Column(
+
+
                                     children: <Widget>[
                                       new Container(
                                         margin:
@@ -565,6 +570,9 @@ class _AccountState extends State<Account> {
                     },
                     child: Card(
                       elevation: 3.0,
+
+
+
 
                       child: Row(
                         children: <Widget>[
@@ -686,7 +694,7 @@ class _AccountState extends State<Account> {
     await _uploadProfilePicture();
   }
   _verticalDivider() => Container(
-    padding: EdgeInsets.all(5.0),
+    padding: EdgeInsets.all(2.0),
   );
 
   _verticalD() => Container(
