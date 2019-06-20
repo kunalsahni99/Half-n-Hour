@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     uid = await _preferences.getString("id") ?? null;
     isLoggedIn = await _preferences.getBool("isLoggedIn") ?? false;
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
-    loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
+    loggedwithPhone = await _preferences.getBool("LoginPhone") ?? false;
 
     if (uid!=null){  // for google sign in
       uname = user.displayName;
@@ -56,17 +56,36 @@ class _MyHomePageState extends State<MyHomePage> {
     else if (loggedwithMail){   // for email(login)
       print("hello"+user.displayName);
       uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("LogUname");
-      email = user.email!=null?user.email.toString():await _preferences.getString("SignEmail");
       avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
     else if (loggedwithPhone){   // for phone
-      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("Phone");
+      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("Pname");
       avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
     else{
       uname = "Guest User";
       email = "guest@gmail.com";
     }
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 
   @override
@@ -90,150 +109,156 @@ class _MyHomePageState extends State<MyHomePage> {
           //animationDuration: Duration(milliseconds: 1000),
         ),
     );
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.pinkAccent,
-        title: Text('Half n Hour'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.search
+    
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.pinkAccent,
+          title: Text('Half n Hour',
+            style: TextStyle(
+              fontWeight: FontWeight.bold
             ),
-            color: Colors.white,
-            onPressed: (){},
           ),
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart
-            ),
-            color: Colors.white,
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Cart()
-              ));
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            // header
-            UserAccountsDrawerHeader(
-              accountName: Text(uname),
-              accountEmail: Text(email),
-              currentAccountPicture: GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Account()
-                  ));
-                },
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    placeholder: (context, val) => CircularProgressIndicator(),
-
-                    imageUrl: avatar != null ? avatar : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
-                  ),
-                )
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.search
               ),
-              decoration: BoxDecoration(
-                color: Colors.pinkAccent
-              ),
+              color: Colors.white,
+              onPressed: (){},
             ),
-            // body
-            InkWell(
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => Account()
-                ));
-              },
-              child: ListTile(
-                title: Text('My Account'),
-                leading: Icon(Icons.person, color: Colors.pinkAccent,)
+            IconButton(
+              icon: Icon(
+                Icons.shopping_cart
               ),
-            ),
-            InkWell(
-              onTap: (){FirebaseDatabase.instance.reference()
-                  .child('users')
-                  .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
-                  .update({
-                'title':'sadab is amazing'   //yes I know.
-              });},
-              child: ListTile(
-                title: Text('My Orders'),
-                leading: Icon(Icons.shopping_basket, color: Colors.pinkAccent,)
-              ),
-            ),
-            InkWell(
-              onTap: (){
-                Navigator.pop(context);
+              color: Colors.white,
+              onPressed: (){
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => Cart()
                 ));
               },
-              child: ListTile(
-                title: Text('My Cart'),
-                leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
-              ),
-            ),
-            InkWell(
-              onTap: ()async{ Navigator.pop(context);
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => Maps()
-              ));},
-              child: ListTile(
-                title: Text('Maps'),
-                leading: Icon(Icons.map, color: Colors.pinkAccent,)
-              ),
-            ),
-
-            Divider(),
-
-            InkWell(
-              onTap: (){},
-              child: ListTile(
-                title: Text('Settings'),
-                leading: Icon(Icons.settings, color: Colors.pinkAccent,)
-              ),
-            ),InkWell(
-              onTap: (){},
-              child: ListTile(
-                title: Text('About'),
-                leading: Icon(Icons.help, color: Colors.pinkAccent,)
-              ),
             ),
           ],
         ),
-      ),
-      body: Column(
-        children: <Widget>[
-          image_carousel,
-          Padding(
-            //padding widget
-            padding: const EdgeInsets.all(4.0),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text('Categories'))
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              // header
+              UserAccountsDrawerHeader(
+                accountName: Text(uname),
+                accountEmail: Text(email),
+                currentAccountPicture: GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => Account()
+                    ));
+                  },
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      placeholder: (context, val) => CircularProgressIndicator(),
+                      imageUrl: avatar != null ? avatar : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
+                    ),
+                  )
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.pinkAccent
+                ),
+              ),
+              // body
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Account()
+                  ));
+                },
+                child: ListTile(
+                  title: Text('My Account'),
+                  leading: Icon(Icons.person, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: (){FirebaseDatabase.instance.reference()
+                    .child('users')
+                    .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
+                    .update({
+                  'title':'sadab is amazing'   //yes I know.
+                });},
+                child: ListTile(
+                  title: Text('My Orders'),
+                  leading: Icon(Icons.shopping_basket, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Cart()
+                  ));
+                },
+                child: ListTile(
+                  title: Text('My Cart'),
+                  leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: ()async{ Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Maps()
+                ));},
+                child: ListTile(
+                  title: Text('Favourites'),
+                  leading: Icon(Icons.favorite, color: Colors.pinkAccent,)
+                ),
+              ),
+
+              Divider(),
+
+              InkWell(
+                onTap: (){},
+                child: ListTile(
+                  title: Text('Settings'),
+                  leading: Icon(Icons.settings, color: Colors.pinkAccent,)
+                ),
+              ),InkWell(
+                onTap: (){},
+                child: ListTile(
+                  title: Text('About'),
+                  leading: Icon(Icons.help, color: Colors.pinkAccent,)
+                ),
+              ),
+            ],
           ),
+        ),
+        body: Column(
+          children: <Widget>[
+            image_carousel,
+            Padding(
+              //padding widget
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text('Categories'))
+            ),
 
-          // Horizontal List View begins here
-          HorizontalList(),
+            // Horizontal List View begins here
+            HorizontalList(),
 
-          Padding(
-            //padding widget
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text('Recent Products'))
-          ),
+            Padding(
+              //padding widget
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text('Recent Products'))
+            ),
 
-          Flexible(
-            child: Products(),
-          )
-        ],
+            Flexible(
+              child: Products(),
+            )
+          ],
+        ),
       ),
     );
   }
