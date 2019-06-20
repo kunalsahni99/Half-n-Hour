@@ -100,20 +100,14 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
             width: MediaQuery.of(context).size.width,
 
             child: new Card(
-              elevation: 5,
+                elevation: 5,
                 child:Column(
 
-                children: <Widget>[
+                  children: <Widget>[
 
-                ],
-              )
+                  ],
+                )
             ),
-
-
-
-
-
-
           ),
 
 
@@ -121,11 +115,6 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
               margin: EdgeInsets.fromLTRB(5, 1, 5, 1),
               alignment: Alignment.center,
-
-
-
-
-
               height: 350.0,
               child: new Card(
 
@@ -211,10 +200,6 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                         ),
                       ),
 
-
-
-
-
                       Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -227,7 +212,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                   ))),
           SizedBox(height: 5.0,),
           new Container(
-                  margin: EdgeInsets.fromLTRB(10,0,10,0),
+            margin: EdgeInsets.fromLTRB(10,0,10,0),
             alignment: Alignment.center,
             child: Material(
               borderRadius: BorderRadius.circular(20.0),
@@ -265,12 +250,6 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                   ],
                 )
             ),
-
-
-
-
-
-
           ),
         ]);
   }

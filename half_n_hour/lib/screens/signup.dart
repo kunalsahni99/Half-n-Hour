@@ -27,12 +27,16 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _firstnameTextController = TextEditingController();
   TextEditingController _lastnameTextController = TextEditingController();
   TextEditingController _phoneTextController = TextEditingController();
+  TextEditingController _addressTextController = TextEditingController();
+
+  final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
 
   String _email;
   String _password;
   String _firstname;
   String _lastname;
   String _phone;
+  String _address;
   String gender, groupValue = 'male';
 
   SharedPreferences preferences;
@@ -160,6 +164,7 @@ class _SignUpState extends State<SignUp> {
                                             val.length < 1 ? 'Enter last name' : null,
                                             onSaved: (val) => _lastname = val,
                                           ),
+
                                           const SizedBox(height: 24.0),
                                           TextFormField(
                                             controller: _emailTextController,
@@ -201,6 +206,28 @@ class _SignUpState extends State<SignUp> {
                                               _phone = val;
                                             },
                                           ),
+
+                                          const SizedBox(height: 24.0),
+                                          TextFormField(
+                                            controller:  _addressTextController,
+                                            decoration: const InputDecoration(
+                                                border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                focusedBorder:  UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                ),
+                                                icon: Icon(Icons.home,color: Colors.black38,),
+                                                labelText: 'Address',
+                                                labelStyle: TextStyle(color: Colors.black54)
+                                            ),
+                                            keyboardType: TextInputType.multiline,
+                                            validator: validateAddress,
+                                            onSaved: (String val) {
+                                              _address = val;
+                                            },
+                                          ),
+
                                           const SizedBox(height: 24.0),
                                           Row(
                                             children: <Widget>[
@@ -310,6 +337,13 @@ class _SignUpState extends State<SignUp> {
       return null;
   }
 
+  String validateAddress(String value) {
+    if (value.length == 0)
+      return 'Enter valid address';
+    else
+      return null;
+  }
+
   Future<void> validateForm()async{
     FormState formState = _formKey.currentState;
     bool isConnected;
@@ -337,10 +371,14 @@ class _SignUpState extends State<SignUp> {
                 "username": _firstnameTextController.text + " " + _lastnameTextController.text,
                 "email": _emailTextController.text,
                 "phone": _phoneTextController.text,
+                "address_1": _addressTextController.text,
                 "photoUrl": user.photoUrl ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
               };
               _userServices.createUser(user.uid, value);
             });
+            userUpdateInfo.displayName = _firstnameTextController.text + " " + _lastnameTextController.text;
+            final FirebaseUser user = await firebaseAuth.currentUser();
+            await user.updateProfile(userUpdateInfo);
           }
           on PlatformException catch(e){
             setState(() {
@@ -372,6 +410,7 @@ class _SignUpState extends State<SignUp> {
 
           await preferences.setString("SignUname", (_firstnameTextController.text + " " + _lastnameTextController.text));
           await preferences.setString("SignEmail", _emailTextController.text);
+          Fluttertoast.showToast(msg: "Welcome ${_firstnameTextController.text + " " + _lastnameTextController.text}");
           Navigator.pop(context);
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) =>  MyHomePage()

@@ -181,7 +181,7 @@ class _LoginState extends State<Login> {
           appBar: new AppBar(
             title: Text('Half n Hour',
               style: TextStyle(
-                color: Colors.black87
+                  color: Colors.black87
               ),
             ),
             backgroundColor: Colors.white,
@@ -238,9 +238,9 @@ class _LoginState extends State<Login> {
                         child: Stack(
                           children: <Widget>[
                             Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)
-                              ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)
+                                ),
                                 elevation: 5.0,
                                 child: Form(
                                     key: _formKey,
@@ -543,4 +543,3 @@ class _LoginState extends State<Login> {
     margin: EdgeInsets.only(left: 40.0),
   );
 }
-

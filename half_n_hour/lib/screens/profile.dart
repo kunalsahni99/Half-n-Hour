@@ -20,7 +20,7 @@ class Account extends StatefulWidget {
 
 }
 
-  class _AccountState extends State<Account> {
+class _AccountState extends State<Account> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   bool isLoggedIn = false, isSignUpWithEmail, isLoggedwithEmail, isLoggedWithPhone;
@@ -39,10 +39,7 @@ class Account extends StatefulWidget {
   @override
   void initState(){
     super.initState();
-
-
     getPrefs();
-
   }
 
   Future<Null> getPrefs() async{
@@ -50,49 +47,49 @@ class Account extends StatefulWidget {
     final FirebaseUser user = await auth.currentUser();
     setState(() {
       url = user.photoUrl ?? "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-       uname=user.displayName;
-       eid= user.email!=null?user.email.toString():_preferences.getString("Phone");
+      uname=user.displayName;
+      eid= user.email!=null?user.email.toString():_preferences.getString("Phone");
     });
   }
 
   Future _signOut()async{
     try{final FirebaseUser user = await auth.currentUser();
-      isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
-      isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
-      isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
-      isLoggedWithPhone = await _preferences.getBool("loggedwithPhone") ?? false;  // phone login in
-      UID = await _preferences.getString("id") ?? "";
-      await _auth.signOut();
+    isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
+    isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
+    isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
+    isLoggedWithPhone = await _preferences.getBool("loggedwithPhone") ?? false;  // phone login in
+    UID = await _preferences.getString("id") ?? "";
+    await _auth.signOut();
 
-      if (isLoggedIn){
-        await _googleSignIn.signOut();
-        _preferences.remove("id");
-        _preferences.remove("username");
-        _preferences.remove("email");
-        _preferences.remove("photoUrl");
-      }
-      else if (isSignUpWithEmail){
-        _preferences.setBool("isLoggedIn", false);
-        _preferences.remove("SignUname");
-        _preferences.remove("SignEmail");
-        _preferences.remove("photoUrl");
-      }
-      else if (isLoggedwithEmail){
-        _preferences.setBool("LoggedInwithMail", false);
-        _preferences.remove("LogUname");
-        _preferences.remove("photoUrl");
-      }
-      else if (isLoggedWithPhone){
-        _preferences.setBool("loggedwithPhone", false);
-        _preferences.remove("Phone");
-        _preferences.remove("photoUrl");
-      }
-      else{
-        Fluttertoast.showToast(msg: "You need to login first",
-            fontSize: 14.0,
-            backgroundColor: Colors.black87
-        );
-      }
+    if (isLoggedIn){
+      await _googleSignIn.signOut();
+      _preferences.remove("id");
+      _preferences.remove("username");
+      _preferences.remove("email");
+      _preferences.remove("photoUrl");
+    }
+    else if (isSignUpWithEmail){
+      _preferences.setBool("isLoggedIn", false);
+      _preferences.remove("SignUname");
+      _preferences.remove("SignEmail");
+      _preferences.remove("photoUrl");
+    }
+    else if (isLoggedwithEmail){
+      _preferences.setBool("LoggedInwithMail", false);
+      _preferences.remove("LogUname");
+      _preferences.remove("photoUrl");
+    }
+    else if (isLoggedWithPhone){
+      _preferences.setBool("loggedwithPhone", false);
+      _preferences.remove("Phone");
+      _preferences.remove("photoUrl");
+    }
+    else{
+      Fluttertoast.showToast(msg: "You need to login first",
+          fontSize: 14.0,
+          backgroundColor: Colors.black87
+      );
+    }
     }
     catch (e){
       e.toString();

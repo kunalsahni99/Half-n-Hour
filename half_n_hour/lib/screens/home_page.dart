@@ -233,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
               InkWell(
                 onTap: () async {
                   Navigator.pop(context);
-                  Navigator.pushReplacement(context, MaterialPageRoute(
+                  Navigator.push(context, MaterialPageRoute(
                       builder: (context) => Maps()
                   ));
                 },
