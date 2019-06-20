@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -23,8 +24,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences _preferences;
-  String uid, uname = "", email ="", avatar;
-  bool hasUID = false, isLoggedIn, loggedwithMail, loggedwithPhone;
+  String uid,
+      uname = "",
+      email = "",
+      avatar;
+  bool hasUID = false,
+      isLoggedIn,
+      loggedwithMail,
+      loggedwithPhone;
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -34,35 +41,52 @@ class _MyHomePageState extends State<MyHomePage> {
     getValues();
   }
 
-  Future<void> getValues()async{
+  Future<void> getValues() async {
     final FirebaseUser user = await auth.currentUser();
     _preferences = await SharedPreferences.getInstance();
     uid = await _preferences.getString("id") ?? null;
     isLoggedIn = await _preferences.getBool("isLoggedIn") ?? false;
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
-    loggedwithPhone = await _preferences.getBool("LoginPhone") ?? false;
+    loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
 
-    if (uid!=null){  // for google sign in
+    if (uid != null) { // for google sign in
       uname = user.displayName;
       email = user.email;
       avatar = user.photoUrl;
     }
-    else if (isLoggedIn){   // for email(signup)
-      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("SignUname");
+    else if (isLoggedIn) { // for email(signup)
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("SignUname");
 
-      email = user.email!=null?user.email.toString():await _preferences.getString("SignEmail");
-      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+      email =
+      user.email != null ? user.email.toString() : await _preferences.getString(
+          "SignEmail");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
-    else if (loggedwithMail){   // for email(login)
-      print("hello"+user.displayName);
-      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("LogUname");
-      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+    else if (loggedwithMail) { // for email(login)
+      print("hello" + user.displayName);
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("LogUname");
+      email =
+      user.email != null ? user.email.toString() : await _preferences.getString(
+          "SignEmail");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
-    else if (loggedwithPhone){   // for phone
-      uname = user.displayName!=null?user.displayName.toString():await _preferences.getString("Pname");
-      avatar = user.photoUrl!=null?user.photoUrl.toString():"https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+    else if (loggedwithPhone) { // for phone
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("Phone");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
     }
-    else{
+    else {
       uname = "Guest User";
       email = "guest@gmail.com";
     }
@@ -93,50 +117,46 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget image_carousel = new Container(
       height: 200.0,
       child: Carousel(
-          boxFit: BoxFit.cover,
-          images: [
-            AssetImage('images/products/fruits1.jpg'),
-            AssetImage('images/products/veg1.jpeg'),
-            AssetImage('images/products/daily1.jpg'),
-            AssetImage('images/products/med1.jpg'),
-            AssetImage('images/products/cos1.jpg'),
-          ],
-          autoplay: false,
-          dotSize: 4.0,
-          indicatorBgPadding: 8.0,
-          dotBgColor: Colors.transparent,
-          //animationCurve: Curves.fastOutSlowIn,
-          //animationDuration: Duration(milliseconds: 1000),
-        ),
+        boxFit: BoxFit.cover,
+        images: [
+          AssetImage('images/products/fruits1.jpg'),
+          AssetImage('images/products/veg1.jpeg'),
+          AssetImage('images/products/daily1.jpg'),
+          AssetImage('images/products/med1.jpg'),
+          AssetImage('images/products/cos1.jpg'),
+        ],
+        autoplay: false,
+        dotSize: 4.0,
+        indicatorBgPadding: 8.0,
+        dotBgColor: Colors.transparent,
+        //animationCurve: Curves.fastOutSlowIn,
+        //animationDuration: Duration(milliseconds: 1000),
+      ),
     );
-    
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.pinkAccent,
-          title: Text('Half n Hour',
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
+          title: Text('Half n Hour'),
           actions: <Widget>[
             IconButton(
               icon: Icon(
-                Icons.search
+                  Icons.search
               ),
               color: Colors.white,
-              onPressed: (){},
+              onPressed: () {},
             ),
             IconButton(
               icon: Icon(
-                Icons.shopping_cart
+                  Icons.shopping_cart
               ),
               color: Colors.white,
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => Cart()
+                    builder: (context) => Cart()
                 ));
               },
             ),
@@ -150,83 +170,92 @@ class _MyHomePageState extends State<MyHomePage> {
                 accountName: Text(uname),
                 accountEmail: Text(email),
                 currentAccountPicture: GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => Account()
-                    ));
-                  },
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      placeholder: (context, val) => CircularProgressIndicator(),
-                      imageUrl: avatar != null ? avatar : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
-                    ),
-                  )
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => Account()
+                      ));
+                    },
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        placeholder: (context, val) =>
+                            CircularProgressIndicator(),
+
+                        imageUrl: avatar != null
+                            ? avatar
+                            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
+                      ),
+                    )
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.pinkAccent
+                    color: Colors.pinkAccent
                 ),
               ),
               // body
               InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Account()
+                      builder: (context) => Account()
                   ));
                 },
                 child: ListTile(
-                  title: Text('My Account'),
-                  leading: Icon(Icons.person, color: Colors.pinkAccent,)
+                    title: Text('My Account'),
+                    leading: Icon(Icons.person, color: Colors.pinkAccent,)
                 ),
               ),
               InkWell(
-                onTap: (){FirebaseDatabase.instance.reference()
-                    .child('users')
-                    .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
-                    .update({
-                  'title':'sadab is amazing'   //yes I know.
-                });},
+                onTap: () {
+                  FirebaseDatabase.instance.reference()
+                      .child('users')
+                      .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
+                      .update({
+                    'title': 'sadab is amazing' //yes I know.
+                  });
+                },
                 child: ListTile(
-                  title: Text('My Orders'),
-                  leading: Icon(Icons.shopping_basket, color: Colors.pinkAccent,)
+                    title: Text('My Orders'),
+                    leading: Icon(
+                      Icons.shopping_basket, color: Colors.pinkAccent,)
                 ),
               ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Cart()
+                      builder: (context) => Cart()
                   ));
                 },
                 child: ListTile(
-                  title: Text('My Cart'),
-                  leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
+                    title: Text('My Cart'),
+                    leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
                 ),
               ),
               InkWell(
-                onTap: ()async{ Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Maps()
-                ));},
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context) => Maps()
+                  ));
+                },
                 child: ListTile(
-                  title: Text('Favourites'),
-                  leading: Icon(Icons.favorite, color: Colors.pinkAccent,)
+                    title: Text('Maps'),
+                    leading: Icon(Icons.map, color: Colors.pinkAccent,)
                 ),
               ),
 
               Divider(),
 
               InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: ListTile(
-                  title: Text('Settings'),
-                  leading: Icon(Icons.settings, color: Colors.pinkAccent,)
+                    title: Text('Settings'),
+                    leading: Icon(Icons.settings, color: Colors.pinkAccent,)
                 ),
-              ),InkWell(
-                onTap: (){},
+              ), InkWell(
+                onTap: () {},
                 child: ListTile(
-                  title: Text('About'),
-                  leading: Icon(Icons.help, color: Colors.pinkAccent,)
+                    title: Text('About'),
+                    leading: Icon(Icons.help, color: Colors.pinkAccent,)
                 ),
               ),
             ],
@@ -237,10 +266,10 @@ class _MyHomePageState extends State<MyHomePage> {
             image_carousel,
             Padding(
               //padding widget
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text('Categories'))
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Categories'))
             ),
 
             // Horizontal List View begins here
@@ -248,10 +277,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
             Padding(
               //padding widget
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text('Recent Products'))
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Recent Products'))
             ),
 
             Flexible(
