@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     else {
       uname = "Guest User";
-      email = "guest@gmail.com";
+      email = "guest@example.com";
     }
   }
 
@@ -140,7 +140,11 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.pinkAccent,
-          title: Text('Half n Hour'),
+          title: Text('Half n Hour',
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+          ),
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -171,6 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 accountEmail: Text(email),
                 currentAccountPicture: GestureDetector(
                     onTap: () {
+                      Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => Account()
                       ));
@@ -179,7 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: CachedNetworkImage(
                         placeholder: (context, val) =>
                             CircularProgressIndicator(),
-
                         imageUrl: avatar != null
                             ? avatar
                             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
@@ -204,14 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               InkWell(
-                onTap: () {
-                  FirebaseDatabase.instance.reference()
-                      .child('users')
-                      .child('1pNUbrSr0eYOECeY7oe9FLLZBst1')
-                      .update({
-                    'title': 'sadab is amazing' //yes I know.
-                  });
-                },
+                onTap: () {},
                 child: ListTile(
                     title: Text('My Orders'),
                     leading: Icon(

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'home_page.dart';
 
@@ -325,6 +326,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
   // Example code of how to sign in with phone.
   void _signInWithPhoneNumber() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
     final AuthCredential credential = PhoneAuthProvider.getCredential(
       verificationId: _verificationId,
       smsCode: _smsController.text,
@@ -349,6 +351,18 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
     setState(() {
       if (user != null) {
         _message = 'Successfully signed in, uid: ' + user.uid;
+
+        final FirebaseDatabase _database = FirebaseDatabase.instance;
+        _database.reference().child("users").child(user.uid)
+            .once().then((DataSnapshot snapShot){
+          Map<dynamic, dynamic> value = snapShot.value;
+          if (value["address_1"] != null){
+            _preferences.setString("address1", value["address_1"]);
+          }
+          if (value["address_2"] != null){
+            _preferences.setString("address2", value["address_2"]);
+          }
+        });
 
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>  MyHomePage()

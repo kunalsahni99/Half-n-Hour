@@ -1,3 +1,5 @@
+import 'package:HnH/db/users.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -96,6 +98,18 @@ class _LoginState extends State<Login> {
             await _preferences.setString("email", documents[0]['email']);
             await _preferences.setString("photoUrl", documents[0]['profilePicture']);
           }
+
+          final FirebaseDatabase _db = FirebaseDatabase.instance;
+          _db.reference().child("users").child(firebaseUser.uid)
+            .once().then((DataSnapshot snapShot){
+              Map<dynamic, dynamic> value = snapShot.value;
+              if (value["address_1"] != null){
+                _preferences.setString("address1", value["address_1"]);
+              }
+              if (value["address_2"] != null){
+                _preferences.setString("address2", value["address_2"]);
+              }
+          });
 
           Fluttertoast.showToast(msg: "Welcome ${firebaseUser.displayName}",
               fontSize: 14.0,
@@ -511,16 +525,23 @@ class _LoginState extends State<Login> {
           else
           {
             _preferences.setBool("LoggedInwithMail", true);
-
             _preferences.setString("LogUname", _email);
-            String uname = _email;
-            for (int i = 0; i < _email.length; i++){
-              if (_email.indexOf(new RegExp(r'@')) != i){
-                uname = _email.substring(0, _email.indexOf(new RegExp(r'@')));
-                break;
-              }
-            }
-            Fluttertoast.showToast(msg: "Welcome ${_firebaseUser.displayName}");
+            final FirebaseDatabase _database = FirebaseDatabase.instance;
+
+            String address = "";
+            _database.reference().child("users").once().then((DataSnapshot snapShot) {
+              Map<dynamic, dynamic> values = snapShot.value;
+              values.forEach((key, value)async {
+                if (_email == value["email"]) {
+                  print(value["email"]);
+                  address = value["address_1"];
+                  print(address);
+                  _preferences.setString("address1", address);
+                }
+              });
+            });
+
+            Fluttertoast.showToast(msg: "Welcome back ${_firebaseUser.displayName}");
             Navigator.pop(context);
             Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) =>  MyHomePage()

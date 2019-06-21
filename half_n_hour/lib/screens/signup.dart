@@ -410,8 +410,10 @@ class _SignUpState extends State<SignUp> {
 
           await preferences.setString("SignUname", (_firstnameTextController.text + " " + _lastnameTextController.text));
           await preferences.setString("SignEmail", _emailTextController.text);
+          await preferences.setString("address1", _addressTextController.text);
           Fluttertoast.showToast(msg: "Welcome ${_firstnameTextController.text + " " + _lastnameTextController.text}");
           Navigator.pop(context);
+          Fluttertoast.showToast(msg: "Welcome ${_firstnameTextController.text + " " + _lastnameTextController.text}");
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) =>  MyHomePage()
           ));
