@@ -33,8 +33,6 @@ class _LoginState extends State<Login> {
 
   String verificationId;
 
-
-
   Future handleSignIn() async {
     _preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -103,11 +101,18 @@ class _LoginState extends State<Login> {
           _db.reference().child("users").child(firebaseUser.uid)
             .once().then((DataSnapshot snapShot){
               Map<dynamic, dynamic> value = snapShot.value;
-              if (value["address_1"] != null){
-                _preferences.setString("address1", value["address_1"]);
-              }
-              if (value["address_2"] != null){
-                _preferences.setString("address2", value["address_2"]);
+              if (snapShot.value != null){
+                if (value["address_1Line1"] != null){
+                  _preferences.setString("address1Line1", value["address_1Line1"]);
+                  _preferences.setString("address1Line2", value["address_1Line2"]);
+                  _preferences.setString("address1pin", value["address_1pin"]);
+
+                }
+                if (value["address_2Line1"] != null){
+                  _preferences.setString("address2Line1", value["address_2Line1"]);
+                  _preferences.setString("address2Line2", value["address_2Line2"]);
+                  _preferences.setString("address2pin", value["address_2pin"]);
+                }
               }
           });
 
@@ -528,15 +533,21 @@ class _LoginState extends State<Login> {
             _preferences.setString("LogUname", _email);
             final FirebaseDatabase _database = FirebaseDatabase.instance;
 
-            String address = "";
             _database.reference().child("users").once().then((DataSnapshot snapShot) {
               Map<dynamic, dynamic> values = snapShot.value;
               values.forEach((key, value)async {
                 if (_email == value["email"]) {
-                  print(value["email"]);
-                  address = value["address_1"];
-                  print(address);
-                  _preferences.setString("address1", address);
+                  if (value["address_1Line1"] != null){
+                    _preferences.setString("address1Line1", value["address_1Line1"]);
+                    _preferences.setString("address1Line2", value["address_1Line2"]);
+                    _preferences.setString("address1pin", value["address_1pin"]);
+
+                  }
+                  if (value["address_2Line1"] != null){
+                    _preferences.setString("address2Line1", value["address_2Line1"]);
+                    _preferences.setString("address2Line2", value["address_2Line2"]);
+                    _preferences.setString("address2pin", value["address_2pin"]);
+                  }
                 }
               });
             });

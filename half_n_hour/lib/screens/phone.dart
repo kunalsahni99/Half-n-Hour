@@ -356,11 +356,18 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
         _database.reference().child("users").child(user.uid)
             .once().then((DataSnapshot snapShot){
           Map<dynamic, dynamic> value = snapShot.value;
-          if (value["address_1"] != null){
-            _preferences.setString("address1", value["address_1"]);
-          }
-          if (value["address_2"] != null){
-            _preferences.setString("address2", value["address_2"]);
+          if (snapShot.value != null){
+            if (value["address_1Line1"] != null){
+              _preferences.setString("address1Line1", value["address_1Line1"]);
+              _preferences.setString("address1Line2", value["address_1Line2"]);
+              _preferences.setString("address1pin", value["address_1pin"]);
+
+            }
+            if (value["address_2Line1"] != null){
+              _preferences.setString("address2Line1", value["address_2Line1"]);
+              _preferences.setString("address2Line2", value["address_2Line2"]);
+              _preferences.setString("address2pin", value["address_2pin"]);
+            }
           }
         });
 

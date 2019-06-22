@@ -10,8 +10,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'login.dart';
-import 'package:HnH/db/users.dart';
-
 
 class Account extends StatefulWidget {
   @override
@@ -26,14 +24,24 @@ class _AccountState extends State<Account> {
   String UID, url;
   bool loading = false;
   File _image;
-  String avatar="",uname="Guest User",eid="guest@example.com",pno="", address1 = "", address2 = "";
+  String avatar="",uname="Guest User",eid="guest@example.com",pno="";
+  String address1Line1 = "", address1Line2 = "", address1pin = "";
+  String address2Line1 = "", address2Line2 = "", address2pin = "";
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  TextEditingController _address1Controller = new TextEditingController();
-  TextEditingController _address2Controller = new TextEditingController();
+  final Form1Key = GlobalKey<FormState>();
+  final Form2Key = GlobalKey<FormState>();
+
+  TextEditingController _address1Line1Controller = new TextEditingController();
+  TextEditingController _address1Line2Controller = new TextEditingController();
+  TextEditingController _pincode1Controller = new TextEditingController();
+
+  TextEditingController _address2Line1Controller = new TextEditingController();
+  TextEditingController _address2Line2Controller = new TextEditingController();
+  TextEditingController _pincode2Controller = new TextEditingController();
   SharedPreferences _preferences;
 
   @override
@@ -51,8 +59,13 @@ class _AccountState extends State<Account> {
           "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
       uname = user.displayName;
       eid = user.email != null ? user.email.toString() : _preferences.getString("Phone");
-      address1 = _preferences.getString("address1") ?? "";
-      address2 = _preferences.getString("address2") ?? "";
+      address1Line1 = _preferences.getString("address1Line1") ?? "";
+      address1Line2 = _preferences.getString("address1Line2") ?? "";
+      address1pin = _preferences.getString("address1pin") ?? "";
+
+      address2Line1 = _preferences.getString("address2Line1") ?? "";
+      address2Line2 = _preferences.getString("address2Line2") ?? "";
+      address2pin = _preferences.getString("address2pin") ?? "";
     });
   }
 
@@ -71,30 +84,50 @@ class _AccountState extends State<Account> {
       _preferences.remove("username");
       _preferences.remove("email");
       _preferences.remove("photoUrl");
-      _preferences.remove("address1");
-      _preferences.remove("address2");
+      _preferences.remove("address1Line1");
+      _preferences.remove("address1Line2");
+      _preferences.remove("address1pin");
+
+      _preferences.remove("address2Line1");
+      _preferences.remove("address2Line2");
+      _preferences.remove("address2pin");
     }
     else if (isSignUpWithEmail){
       _preferences.setBool("isLoggedIn", false);
       _preferences.remove("SignUname");
       _preferences.remove("SignEmail");
       _preferences.remove("photoUrl");
-      _preferences.remove("address1");
-      _preferences.remove("address2");
+      _preferences.remove("address1Line1");
+      _preferences.remove("address1Line2");
+      _preferences.remove("address1pin");
+
+      _preferences.remove("address2Line1");
+      _preferences.remove("address2Line2");
+      _preferences.remove("address2pin");
     }
     else if (isLoggedwithEmail){
       _preferences.setBool("LoggedInwithMail", false);
       _preferences.remove("LogUname");
       _preferences.remove("photoUrl");
-      _preferences.remove("address1");
-      _preferences.remove("address2");
+      _preferences.remove("address1Line1");
+      _preferences.remove("address1Line2");
+      _preferences.remove("address1pin");
+
+      _preferences.remove("address2Line1");
+      _preferences.remove("address2Line2");
+      _preferences.remove("address2pin");
     }
     else if (isLoggedWithPhone){
       _preferences.setBool("loggedwithPhone", false);
       _preferences.remove("Phone");
       _preferences.remove("photoUrl");
-      _preferences.remove("address1");
-      _preferences.remove("address2");
+      _preferences.remove("address1Line1");
+      _preferences.remove("address1Line2");
+      _preferences.remove("address1pin");
+
+      _preferences.remove("address2Line1");
+      _preferences.remove("address2Line2");
+      _preferences.remove("address2pin");
     }
     else{
       Fluttertoast.showToast(msg: "You need to login first",
@@ -108,7 +141,7 @@ class _AccountState extends State<Account> {
     }
   }
 
-  addAddress1(){
+  addAddress1(bool isEdit){
     showGeneralDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
@@ -118,11 +151,42 @@ class _AccountState extends State<Account> {
           child: Opacity(
             opacity: a1.value,
             child: AlertDialog(
-              title: Text("Add"),
-              content: TextFormField(
-                controller: _address1Controller,
-                decoration: InputDecoration(
-                  hintText: "Address",
+              title: Text(isEdit ? "Edit" : "Add new address  "),
+              content: Form(
+                key: Form1Key,
+                child: Container(
+                  height: MediaQuery.of(context).size.height/3.5,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _address1Line1Controller,
+                        decoration: InputDecoration(
+                          hintText: "House No.",
+                          helperText: "Ex: 23-C, MIG Flats",
+                          hintMaxLines: 2
+                        ),
+                        validator: (val) => val.length == 0 ? "Enter valid address" : null,
+                      ),
+                      TextFormField(
+                        controller: _address1Line2Controller,
+                        decoration: InputDecoration(
+                            hintText: "Sector, City",
+                            helperText: "Ex: Sector-82, Noida",
+                            hintMaxLines: 2
+                        ),
+                        validator: (val) => val.length == 0 ? "Enter valid address" : null,
+                      ),
+                      TextFormField(
+                        controller: _pincode1Controller,
+                        decoration: InputDecoration(
+                            hintText: "Pincode",
+                            helperText: "Ex: 201304",
+                            hintMaxLines: 2
+                        ),
+                        validator: (val) => val.length != 6 ? "Enter valid pincode" : null,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               actions: <Widget>[
@@ -133,35 +197,50 @@ class _AccountState extends State<Account> {
                     setState(() {
                       loading = true;
                     });
+                    FormState formState = Form1Key.currentState;
                     final FirebaseUser _user = await auth.currentUser();
                     final FirebaseDatabase _db = FirebaseDatabase.instance;
 
-                    _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
-                      if (snapshot.value != null){
-                        _db.reference().child("users").child(_user.uid)
-                            .update({
-                          "address_1": _address1Controller.text
-                        });
-                        print("address1 updated");
-                      }
-                      else{
-                        _db.reference().child("users").child(_user.uid)
-                            .set({
-                          "username": _user.displayName,
-                          "email": _user.email,
-                          "address_1": _address1Controller.text,
-                          "phone": _user.phoneNumber,
-                          "photoUrl": _user.photoUrl ??
-                              "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
-                        });
-                        print("address1 added");
-                      }
-                    });
-                    _preferences.setString("address1", _address1Controller.text);
-                    setState(() {
-                      loading = false;
-                      address1 = _address1Controller.text;
-                    });
+                    if (formState.validate()){
+                      formState.save();
+                      _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
+                        if (snapshot.value != null){
+                          _db.reference().child("users").child(_user.uid)
+                              .update({
+                            "address_1Line1": _address1Line1Controller.text,
+                            "address_1Line2": _address1Line2Controller.text,
+                            "address_1pin": _pincode1Controller.text
+                          });
+                          print("address1 updated");
+                        }
+                        else{
+                          _db.reference().child("users").child(_user.uid)
+                              .set({
+                            "username": _user.displayName,
+                            "email": _user.email,
+                            "address_1Line1": _address1Line1Controller.text,
+                            "address_1Line2": _address1Line2Controller.text,
+                            "address_1pin": _pincode1Controller.text,
+                            "phone": _user.phoneNumber,
+                            "photoUrl": _user.photoUrl ??
+                                "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
+                          });
+                          print("address1 added");
+                        }
+                      });
+                      _preferences.setString("address1Line1", _address1Line1Controller.text);
+                      _preferences.setString("address1Line2", _address1Line2Controller.text);
+                      _preferences.setString("address1pin", _pincode1Controller.text);
+                      setState(() {
+                        loading = false;
+                        address1Line1 = _address1Line1Controller.text;
+                        address1Line2 = _address1Line2Controller.text;
+                        address1pin = _pincode1Controller.text;
+                      });
+                    }
+                    else{
+                      Fluttertoast.showToast(msg: "Enter valid details");
+                    }
                   },
                 ),
                 FlatButton(
@@ -182,7 +261,7 @@ class _AccountState extends State<Account> {
     );
   }
 
-  addAddress2(){
+  addAddress2(bool isEdit){
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
         context: context,
@@ -192,11 +271,42 @@ class _AccountState extends State<Account> {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
-                title: Text("Add"),
-                content: TextFormField(
-                  controller: _address2Controller,
-                  decoration: InputDecoration(
-                    hintText: "Address",
+                title: Text(isEdit ? "Edit" : "Address new address"),
+                content: Form(
+                  key: Form2Key,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/3.5,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _address2Line1Controller,
+                          decoration: InputDecoration(
+                              hintText: "House No.",
+                              helperText: "Ex: 23-C, MIG Flats",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length == 0 ? "Enter valid address" : null,
+                        ),
+                        TextFormField(
+                          controller: _address2Line2Controller,
+                          decoration: InputDecoration(
+                              hintText: "Sector, City",
+                              helperText: "Ex: Sector-82, Noida",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length == 0 ? "Enter valid address" : null,
+                        ),
+                        TextFormField(
+                          controller: _pincode2Controller,
+                          decoration: InputDecoration(
+                              hintText: "Pincode",
+                              helperText: "Ex: 201304",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length != 6 ? "Enter valid pincode" : null,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 actions: <Widget>[
@@ -207,35 +317,50 @@ class _AccountState extends State<Account> {
                       setState(() {
                         loading = true;
                       });
+                      FormState formState = Form2Key.currentState;
                       final FirebaseUser _user = await auth.currentUser();
                       final FirebaseDatabase _db = FirebaseDatabase.instance;
 
-                      _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
-                        if (snapshot.value != null){
-                          _db.reference().child("users").child(_user.uid)
-                              .update({
-                            "address_2": _address2Controller.text
-                          });
-                          print("address2 updated");
-                        }
-                        else{
-                          _db.reference().child("users").child(_user.uid)
-                              .set({
-                            "username": _user.displayName,
-                            "email": _user.email,
-                            "address_2": _address2Controller.text,
-                            "phone": _user.phoneNumber,
-                            "photoUrl": _user.photoUrl ??
-                                "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
-                          });
-                          print("address2 added");
-                        }
-                      });
-                      _preferences.setString("address2", _address2Controller.text);
-                      setState(() {
-                        loading = false;
-                        address2 = _address2Controller.text;
-                      });
+                      if (formState.validate()){
+                        formState.save();
+                        _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
+                          if (snapshot.value != null){
+                            _db.reference().child("users").child(_user.uid)
+                                .update({
+                              "address_2Line1": _address2Line1Controller.text,
+                              "address_2Line2": _address2Line2Controller.text,
+                              "address_2pin": _pincode2Controller.text
+                            });
+                            print("address2 updated");
+                          }
+                          else{
+                            _db.reference().child("users").child(_user.uid)
+                                .set({
+                              "username": _user.displayName,
+                              "email": _user.email,
+                              "address_2Line1": _address2Line1Controller.text,
+                              "address_2Line2": _address2Line2Controller.text,
+                              "address_2pin": _pincode2Controller.text,
+                              "phone": _user.phoneNumber,
+                              "photoUrl": _user.photoUrl ??
+                                  "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
+                            });
+                            print("address2 added");
+                          }
+                        });
+                        _preferences.setString("address2Line1", _address2Line1Controller.text);
+                        _preferences.setString("address2Line2", _address2Line2Controller.text);
+                        _preferences.setString("address2pin", _pincode2Controller.text);
+                        setState(() {
+                          loading = false;
+                          address2Line1 = _address2Line1Controller.text;
+                          address2Line2 = _address2Line2Controller.text;
+                          address2pin = _pincode2Controller.text;
+                        });
+                      }
+                      else{
+                        Fluttertoast.showToast(msg: "Enter valid details");
+                      }
                     },
                   ),
                   FlatButton(
@@ -277,13 +402,8 @@ class _AccountState extends State<Account> {
       color: Colors.black38,
     );
 
-    Icon menu = new Icon(
-      Icons.more_vert,
-      color: Colors.black38,
-    );
     bool checkboxValueA = true;
     bool checkboxValueB = false;
-    bool checkboxValueC = false;
 
     return new Scaffold(
       appBar: new AppBar(
@@ -371,7 +491,10 @@ class _AccountState extends State<Account> {
                                 child: IconButton(
                                     icon: ofericon,
                                     color: Colors.blueAccent,
-                                    onPressed: null),
+                                    onPressed: (){
+
+                                    })
+                                ,
                               )
                             ],
                           ),
@@ -392,16 +515,16 @@ class _AccountState extends State<Account> {
                     ),
                   ),
                   new Container(
-                      height: MediaQuery.of(context).size.width/2,
+                      height: MediaQuery.of(context).size.width/1.75,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           Container(
-                            width: MediaQuery.of(context).size.width/1.5,
+                            width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
-                              child:  address1 != "" ?
+                              child:  address1Line1 != "" ?
                                 Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -423,15 +546,7 @@ class _AccountState extends State<Account> {
                                             ),
                                             _verticalDivider(),
                                             new Text(
-                                              address1,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            /*_verticalDivider(),
-                                            new Text(
-                                              'Salisbury',
+                                              address1Line1,
                                               style: TextStyle(
                                                   color: Colors.black45,
                                                   fontSize: 13.0,
@@ -439,15 +554,23 @@ class _AccountState extends State<Account> {
                                             ),
                                             _verticalDivider(),
                                             new Text(
-                                              ' MD 21801',
+                                              address1Line2,
                                               style: TextStyle(
                                                   color: Colors.black45,
                                                   fontSize: 13.0,
                                                   letterSpacing: 0.5),
-                                            ),*/
+                                            ),
+                                            _verticalDivider(),
+                                            new Text(
+                                              address1pin,
+                                              style: TextStyle(
+                                                  color: Colors.black45,
+                                                  fontSize: 13.0,
+                                                  letterSpacing: 0.5),
+                                            ),
 
                                             Padding(
-                                              padding: EdgeInsets.only(top: 45.0),
+                                              padding: EdgeInsets.only(top: 10.0),
                                             ),
 
                                             new Container(
@@ -466,14 +589,17 @@ class _AccountState extends State<Account> {
                                                   ),
                                                   _verticalD(),
 
-                                                  new Checkbox(
-                                                    value: checkboxValueA,
-                                                    onChanged: (bool value) {
-                                                      setState(() {
-                                                        checkboxValueA = value;
-                                                      });
-                                                    },
-                                                  ),
+                                                  new Switch(
+                                                      value: checkboxValueA,
+                                                      onChanged: (value){
+                                                        setState(() {
+                                                          checkboxValueA = value;
+                                                          if (checkboxValueB){
+                                                            checkboxValueB = false;
+                                                          }
+                                                        });
+                                                      }
+                                                  )
                                                 ],
                                               ),
                                             )
@@ -484,11 +610,19 @@ class _AccountState extends State<Account> {
                                   ),
                                   new Container(
                                     alignment: Alignment.topRight,
-                                    padding: EdgeInsets.only(left: 20.0),
+                                    padding: EdgeInsets.only(left: 60.0),
                                     child: IconButton(
-                                        icon: menu,
+                                        icon: ofericon,
                                         color: Colors.black38,
-                                        onPressed: (){}
+                                        onPressed: ()async{
+                                          final FirebaseUser _user = await auth.currentUser();
+                                          if (_user != null){
+                                            addAddress1(true);
+                                          }
+                                          else{
+                                            Fluttertoast.showToast(msg: "You need to login first");
+                                          }
+                                        }
                                     ),
                                   )
                                 ],
@@ -505,7 +639,7 @@ class _AccountState extends State<Account> {
                                       onPressed: ()async{
                                         final FirebaseUser _user = await auth.currentUser();
                                         if (_user != null){
-                                          addAddress1();
+                                          addAddress1(false);
                                         }
                                         else{
                                           Fluttertoast.showToast(msg: "You need to login first");
@@ -525,11 +659,11 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width/1.5,
+                            width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                               elevation: 3.0,
-                              child: address2 != "" ?
+                              child: address2Line1 != "" ?
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -553,15 +687,7 @@ class _AccountState extends State<Account> {
                                             ),
                                             _verticalDivider(),
                                             new Text(
-                                              address2,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            _verticalDivider(),
-                                            /*new Text(
-                                              'Philadelphia',
+                                              address2Line1,
                                               style: TextStyle(
                                                   color: Colors.black45,
                                                   fontSize: 13.0,
@@ -569,15 +695,23 @@ class _AccountState extends State<Account> {
                                             ),
                                             _verticalDivider(),
                                             new Text(
-                                              ' PA 19103',
+                                              address2Line2,
                                               style: TextStyle(
                                                   color: Colors.black45,
                                                   fontSize: 13.0,
                                                   letterSpacing: 0.5),
-                                            ),*/
+                                            ),
+                                            _verticalDivider(),
+                                            new Text(
+                                              address2pin,
+                                              style: TextStyle(
+                                                  color: Colors.black45,
+                                                  fontSize: 13.0,
+                                                  letterSpacing: 0.5),
+                                            ),
 
                                             Padding(
-                                              padding: EdgeInsets.only(top: 45.0),
+                                              padding: EdgeInsets.only(top: 10.0),
                                             ),
                                             new Container(
                                               margin: EdgeInsets.only(left: 00.0,top: 05.0,right: 0.0,bottom: 5.0),
@@ -588,24 +722,26 @@ class _AccountState extends State<Account> {
                                                   new Text(
                                                     'Delivery Address',
                                                     style: TextStyle(
-                                                      fontSize: 15.0,
+                                                      fontSize: 12.0,
                                                       color: Colors.black12,
                                                     ),
 
                                                   ),
                                                   _verticalD(),
 
-                                                  new Checkbox(
-                                                    value: checkboxValueB,
-                                                    onChanged: (bool value) {
-                                                      setState(() {
-                                                        checkboxValueB = value;
-                                                      });
-                                                    },
-                                                  ),
+                                                  new Switch(
+                                                      value: checkboxValueB,
+                                                      onChanged: (value){
+                                                        setState(() {
+                                                          checkboxValueB = value;
+                                                          if (checkboxValueA){
+                                                            checkboxValueA = false;
+                                                          }
+                                                        });
+                                                      }
+                                                  )
                                                 ],
                                               ),
-
                                             )
                                           ],
                                         ),
@@ -615,10 +751,20 @@ class _AccountState extends State<Account> {
                                   ),
                                   new Container(
                                     alignment: Alignment.topRight,
+                                    padding: EdgeInsets.only(left: 60.0),
                                     child: IconButton(
-                                        icon: menu,
+                                        icon: ofericon,
                                         color: Colors.black38,
-                                        onPressed: null),
+                                        onPressed: ()async{
+                                          final FirebaseUser _user = await auth.currentUser();
+                                          if (_user != null){
+                                            addAddress2(true);
+                                          }
+                                          else{
+                                            Fluttertoast.showToast(msg: "You need to login first");
+                                          }
+                                        }
+                                    ),
                                   )
                                 ],
                               ) :
@@ -634,7 +780,7 @@ class _AccountState extends State<Account> {
                                       onPressed: ()async{
                                         final FirebaseUser _user = await auth.currentUser();
                                         if (_user != null){
-                                          addAddress2();
+                                          addAddress2(false);
                                         }
                                         else{
                                           Fluttertoast.showToast(msg: "You need to login first");
@@ -801,7 +947,7 @@ class _AccountState extends State<Account> {
     await _uploadProfilePicture();
   }
   _verticalDivider() => Container(
-    padding: EdgeInsets.all(2.0),
+    padding: EdgeInsets.all(3.0),
   );
 
   _verticalD() => Container(
