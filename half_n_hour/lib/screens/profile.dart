@@ -109,174 +109,150 @@ class _AccountState extends State<Account> {
   }
 
   addAddress1(){
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (context){
-        return AlertDialog(
-          title: Text("Add"),
-          content: TextFormField(
-            controller: _address1Controller,
-            decoration: InputDecoration(
-              hintText: "Address",
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Add"),
-              onPressed: ()async{
-                Navigator.pop(context);
-                setState(() {
-                  loading = true;
-                });
-                final FirebaseUser _user = await auth.currentUser();
-                final FirebaseDatabase _db = FirebaseDatabase.instance;
-                /*_db.reference().child("users").once().then((DataSnapshot snapShot){
-                  Map<dynamic, dynamic> values = snapShot.value;
-                  values.forEach((key, value)async{
-                    if (_user.uid == key){
-                      _db.reference().child("users").child(_user.uid)
-                          .update({
-                        "address_1": _address1Controller.text
-                      });
-                      print("address1 updated");
-                    }
-                    else{
-                      _db.reference().child("users").child(_user.uid)
-                          .set({
-                        "username": _user.displayName,
-                        "email": _user.email,
-                        "address_1": _address1Controller.text,
-                        "phone": _user.phoneNumber,
-                        "photoUrl": _user.photoUrl ??
-                            "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
-                      });
-                      print("address1 added");
-                    }
-                  });
-                });*/
-                _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
-                  if (snapshot.value != null){
-                    _db.reference().child("users").child(_user.uid)
-                        .update({
-                      "address_1": _address1Controller.text
-                    });
-                    print("address1 updated");
-                  }
-                  else{
-                    _db.reference().child("users").child(_user.uid)
-                        .set({
-                      "username": _user.displayName,
-                      "email": _user.email,
-                      "address_1": _address1Controller.text,
-                      "phone": _user.phoneNumber,
-                      "photoUrl": _user.photoUrl ??
-                          "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
-                    });
-                    print("address1 added");
-                  }
-                });
-                _preferences.setString("address1", _address1Controller.text);
-                setState(() {
-                  loading = false;
-                  address1 = _address1Controller.text;
-                });
-              },
-            ),
-            FlatButton(
-              child: Text("Cancel"),
-              onPressed: (){
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      }
-    );
-  }
-
-  addAddress2(){
-    showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text("Add"),
-            content: TextFormField(
-              controller: _address2Controller,
-              decoration: InputDecoration(
-                hintText: "Address",
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionBuilder: (context, a1, a2, widget){
+        return Transform.scale(
+          scale: a1.value,
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              title: Text("Add"),
+              content: TextFormField(
+                controller: _address1Controller,
+                decoration: InputDecoration(
+                  hintText: "Address",
+                ),
               ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Add"),
-                onPressed: ()async{
-                  Navigator.pop(context);
-                  setState(() {
-                    loading = true;
-                  });
-                  final FirebaseUser _user = await auth.currentUser();
-                  final FirebaseDatabase _db = FirebaseDatabase.instance;
-                  /*_db.reference().child("users").once().then((DataSnapshot snapShot){
-                    Map<dynamic, dynamic> values = snapShot.value;
-                    values.forEach((key, value)async{
-                      if (_user.uid == key){
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Add"),
+                  onPressed: ()async{
+                    Navigator.pop(context);
+                    setState(() {
+                      loading = true;
+                    });
+                    final FirebaseUser _user = await auth.currentUser();
+                    final FirebaseDatabase _db = FirebaseDatabase.instance;
+
+                    _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
+                      if (snapshot.value != null){
                         _db.reference().child("users").child(_user.uid)
                             .update({
-                          "address_2": _address2Controller.text
+                          "address_1": _address1Controller.text
                         });
-                        print("address2 update");
+                        print("address1 updated");
                       }
                       else{
                         _db.reference().child("users").child(_user.uid)
                             .set({
                           "username": _user.displayName,
                           "email": _user.email,
-                          "address_2": _address2Controller.text,
+                          "address_1": _address1Controller.text,
                           "phone": _user.phoneNumber,
                           "photoUrl": _user.photoUrl ??
                               "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
                         });
-                        print("address2 added");
+                        print("address1 added");
                       }
                     });
-                  });*/
-                  _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
-                    if (snapshot.value != null){
-                      _db.reference().child("users").child(_user.uid)
-                          .update({
-                        "address_2": _address2Controller.text
+                    _preferences.setString("address1", _address1Controller.text);
+                    setState(() {
+                      loading = false;
+                      address1 = _address1Controller.text;
+                    });
+                  },
+                ),
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+      barrierDismissible: true,
+      barrierLabel: "",
+      pageBuilder: (context, animation1, animation2){}
+    );
+  }
+
+  addAddress2(){
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        context: context,
+        transitionBuilder: (context, a1, a2, widget){
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                title: Text("Add"),
+                content: TextFormField(
+                  controller: _address2Controller,
+                  decoration: InputDecoration(
+                    hintText: "Address",
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Add"),
+                    onPressed: ()async{
+                      Navigator.pop(context);
+                      setState(() {
+                        loading = true;
                       });
-                      print("address2 updated");
-                    }
-                    else{
-                      _db.reference().child("users").child(_user.uid)
-                          .set({
-                        "username": _user.displayName,
-                        "email": _user.email,
-                        "address_2": _address2Controller.text,
-                        "phone": _user.phoneNumber,
-                        "photoUrl": _user.photoUrl ??
-                            "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
+                      final FirebaseUser _user = await auth.currentUser();
+                      final FirebaseDatabase _db = FirebaseDatabase.instance;
+
+                      _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
+                        if (snapshot.value != null){
+                          _db.reference().child("users").child(_user.uid)
+                              .update({
+                            "address_2": _address2Controller.text
+                          });
+                          print("address2 updated");
+                        }
+                        else{
+                          _db.reference().child("users").child(_user.uid)
+                              .set({
+                            "username": _user.displayName,
+                            "email": _user.email,
+                            "address_2": _address2Controller.text,
+                            "phone": _user.phoneNumber,
+                            "photoUrl": _user.photoUrl ??
+                                "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
+                          });
+                          print("address2 added");
+                        }
                       });
-                      print("address2 added");
-                    }
-                  });
-                  _preferences.setString("address2", _address2Controller.text);
-                  setState(() {
-                    loading = false;
-                    address2 = _address2Controller.text;
-                  });
-                },
+                      _preferences.setString("address2", _address2Controller.text);
+                      setState(() {
+                        loading = false;
+                        address2 = _address2Controller.text;
+                      });
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Cancel"),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
               ),
-              FlatButton(
-                child: Text("Cancel"),
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-              )
-            ],
+            ),
           );
-        }
+        },
+      transitionDuration: Duration(milliseconds: 200),
+      barrierDismissible: true,
+      barrierLabel: "",
+      pageBuilder: (context, animation1, animation2){}
     );
   }
 
