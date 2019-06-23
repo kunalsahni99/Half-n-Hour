@@ -34,6 +34,7 @@ class _AccountState extends State<Account> {
 
   final Form1Key = GlobalKey<FormState>();
   final Form2Key = GlobalKey<FormState>();
+  final Form3Key = GlobalKey<FormState>();
 
   TextEditingController _address1Line1Controller = new TextEditingController();
   TextEditingController _address1Line2Controller = new TextEditingController();
@@ -42,17 +43,24 @@ class _AccountState extends State<Account> {
   TextEditingController _address2Line1Controller = new TextEditingController();
   TextEditingController _address2Line2Controller = new TextEditingController();
   TextEditingController _pincode2Controller = new TextEditingController();
+
+  TextEditingController _changeNameController = new TextEditingController();
   SharedPreferences _preferences;
+  bool checkboxValueA ,  checkboxValueB ,a1,a2;
 
   @override
   void initState(){
     super.initState();
     getPrefs();
+
+    checkboxValueA=a1??true;
+    checkboxValueB=a2??false;
   }
 
   Future<Null> getPrefs() async {
     _preferences = await SharedPreferences.getInstance();
     final FirebaseUser user = await auth.currentUser();
+
 
     setState(() {
       url = user.photoUrl ??
@@ -66,6 +74,8 @@ class _AccountState extends State<Account> {
       address2Line1 = _preferences.getString("address2Line1") ?? "";
       address2Line2 = _preferences.getString("address2Line2") ?? "";
       address2pin = _preferences.getString("address2pin") ?? "";
+      a1=_preferences.getBool("a1")??true;
+      a2=_preferences.getBool("a2")??false;
     });
   }
 
@@ -143,121 +153,121 @@ class _AccountState extends State<Account> {
 
   addAddress1(bool isEdit){
     showGeneralDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.5),
-      transitionBuilder: (context, a1, a2, widget){
-        return Transform.scale(
-          scale: a1.value,
-          child: Opacity(
-            opacity: a1.value,
-            child: AlertDialog(
-              title: Text(isEdit ? "Edit" : "Add new address  "),
-              content: Form(
-                key: Form1Key,
-                child: Container(
-                  height: MediaQuery.of(context).size.height/3.5,
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _address1Line1Controller,
-                        decoration: InputDecoration(
-                          hintText: "House No.",
-                          helperText: "Ex: 23-C, MIG Flats",
-                          hintMaxLines: 2
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget){
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                title: Text(isEdit ? "Edit" : "Add new address  "),
+                content: Form(
+                  key: Form1Key,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/3.5,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _address1Line1Controller,
+                          decoration: InputDecoration(
+                              hintText: "House No.",
+                              helperText: "Ex: 23-C, MIG Flats",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length == 0 ? "Enter valid address" : null,
                         ),
-                        validator: (val) => val.length == 0 ? "Enter valid address" : null,
-                      ),
-                      TextFormField(
-                        controller: _address1Line2Controller,
-                        decoration: InputDecoration(
-                            hintText: "Sector, City",
-                            helperText: "Ex: Sector-82, Noida",
-                            hintMaxLines: 2
+                        TextFormField(
+                          controller: _address1Line2Controller,
+                          decoration: InputDecoration(
+                              hintText: "Sector, City",
+                              helperText: "Ex: Sector-82, Noida",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length == 0 ? "Enter valid address" : null,
                         ),
-                        validator: (val) => val.length == 0 ? "Enter valid address" : null,
-                      ),
-                      TextFormField(
-                        controller: _pincode1Controller,
-                        decoration: InputDecoration(
-                            hintText: "Pincode",
-                            helperText: "Ex: 201304",
-                            hintMaxLines: 2
+                        TextFormField(
+                          controller: _pincode1Controller,
+                          decoration: InputDecoration(
+                              hintText: "Pincode",
+                              helperText: "Ex: 201304",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length != 6 ? "Enter valid pincode" : null,
                         ),
-                        validator: (val) => val.length != 6 ? "Enter valid pincode" : null,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Add"),
-                  onPressed: ()async{
-                    Navigator.pop(context);
-                    setState(() {
-                      loading = true;
-                    });
-                    FormState formState = Form1Key.currentState;
-                    final FirebaseUser _user = await auth.currentUser();
-                    final FirebaseDatabase _db = FirebaseDatabase.instance;
-
-                    if (formState.validate()){
-                      formState.save();
-                      _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
-                        if (snapshot.value != null){
-                          _db.reference().child("users").child(_user.uid)
-                              .update({
-                            "address_1Line1": _address1Line1Controller.text,
-                            "address_1Line2": _address1Line2Controller.text,
-                            "address_1pin": _pincode1Controller.text
-                          });
-                          print("address1 updated");
-                        }
-                        else{
-                          _db.reference().child("users").child(_user.uid)
-                              .set({
-                            "username": _user.displayName,
-                            "email": _user.email,
-                            "address_1Line1": _address1Line1Controller.text,
-                            "address_1Line2": _address1Line2Controller.text,
-                            "address_1pin": _pincode1Controller.text,
-                            "phone": _user.phoneNumber,
-                            "photoUrl": _user.photoUrl ??
-                                "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
-                          });
-                          print("address1 added");
-                        }
-                      });
-                      _preferences.setString("address1Line1", _address1Line1Controller.text);
-                      _preferences.setString("address1Line2", _address1Line2Controller.text);
-                      _preferences.setString("address1pin", _pincode1Controller.text);
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Add"),
+                    onPressed: ()async{
+                      Navigator.pop(context);
                       setState(() {
-                        loading = false;
-                        address1Line1 = _address1Line1Controller.text;
-                        address1Line2 = _address1Line2Controller.text;
-                        address1pin = _pincode1Controller.text;
+                        loading = true;
                       });
-                    }
-                    else{
-                      Fluttertoast.showToast(msg: "Enter valid details");
-                    }
-                  },
-                ),
-                FlatButton(
-                  child: Text("Cancel"),
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                )
-              ],
+                      FormState formState = Form1Key.currentState;
+                      final FirebaseUser _user = await auth.currentUser();
+                      final FirebaseDatabase _db = FirebaseDatabase.instance;
+
+                      if (formState.validate()){
+                        formState.save();
+                        _db.reference().child("users").child(_user.uid).once().then((DataSnapshot snapshot){
+                          if (snapshot.value != null){
+                            _db.reference().child("users").child(_user.uid)
+                                .update({
+                              "address_1Line1": _address1Line1Controller.text,
+                              "address_1Line2": _address1Line2Controller.text,
+                              "address_1pin": _pincode1Controller.text
+                            });
+                            print("address1 updated");
+                          }
+                          else{
+                            _db.reference().child("users").child(_user.uid)
+                                .set({
+                              "username": _user.displayName,
+                              "email": _user.email,
+                              "address_1Line1": _address1Line1Controller.text,
+                              "address_1Line2": _address1Line2Controller.text,
+                              "address_1pin": _pincode1Controller.text,
+                              "phone": _user.phoneNumber,
+                              "photoUrl": _user.photoUrl ??
+                                  "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png"
+                            });
+                            print("address1 added");
+                          }
+                        });
+                        _preferences.setString("address1Line1", _address1Line1Controller.text);
+                        _preferences.setString("address1Line2", _address1Line2Controller.text);
+                        _preferences.setString("address1pin", _pincode1Controller.text);
+                        setState(() {
+                          loading = false;
+                          address1Line1 = _address1Line1Controller.text;
+                          address1Line2 = _address1Line2Controller.text;
+                          address1pin = _pincode1Controller.text;
+                        });
+                      }
+                      else{
+                        Fluttertoast.showToast(msg: "Enter valid details");
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Cancel"),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      },
-      transitionDuration: Duration(milliseconds: 200),
-      barrierDismissible: true,
-      barrierLabel: "",
-      pageBuilder: (context, animation1, animation2){}
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: "",
+        pageBuilder: (context, animation1, animation2){}
     );
   }
 
@@ -374,10 +384,83 @@ class _AccountState extends State<Account> {
             ),
           );
         },
-      transitionDuration: Duration(milliseconds: 200),
-      barrierDismissible: true,
-      barrierLabel: "",
-      pageBuilder: (context, animation1, animation2){}
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: "",
+        pageBuilder: (context, animation1, animation2){}
+    );
+  }
+  changeName(bool isEdit){
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        context: context,
+        transitionBuilder: (context, a1, a2, widget){
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                title: Text(isEdit ? "Edit" : "Change Name"),
+                content: Form(
+                  key: Form3Key,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height/3.5,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _changeNameController,
+                          decoration: InputDecoration(
+                              hintText: "Name ",
+                              helperText: "Ex: Paul Walker",
+                              hintMaxLines: 2
+                          ),
+                          validator: (val) => val.length == 0 ? "Enter Valid Name" : null,
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Add"),
+                    onPressed: ()async{
+                      Navigator.pop(context);
+                      setState(() {
+                        loading = true;
+                      });
+                      FormState formState = Form3Key.currentState;
+                      final FirebaseUser _user = await auth.currentUser();
+                      final FirebaseDatabase _db = FirebaseDatabase.instance;
+
+                      if (formState.validate()){
+                        formState.save();
+                        final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+                        userUpdateInfo.displayName = _changeNameController.text;
+
+                        await _user.updateProfile(userUpdateInfo);
+
+                      }
+                      else{
+                        Fluttertoast.showToast(msg: "Enter valid name");
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Cancel"),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: "",
+        pageBuilder: (context, animation1, animation2){}
     );
   }
 
@@ -402,14 +485,14 @@ class _AccountState extends State<Account> {
       color: Colors.black38,
     );
 
-    bool checkboxValueA = true;
-    bool checkboxValueB = false;
+
+
 
     return new Scaffold(
       appBar: new AppBar(
         title: Text('My Account',
           style: TextStyle(
-            fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold
           ),
         ),
       ),
@@ -491,7 +574,13 @@ class _AccountState extends State<Account> {
                                 child: IconButton(
                                     icon: ofericon,
                                     color: Colors.blueAccent,
-                                    onPressed: (){
+                                    onPressed: ()async{  final FirebaseUser _user = await auth.currentUser();
+                                    if (_user != null){
+                                      changeName(true);
+                                    }
+                                    else{
+                                      Fluttertoast.showToast(msg: "You need to login first");
+                                    }
 
                                     })
                                 ,
@@ -523,280 +612,289 @@ class _AccountState extends State<Account> {
                             width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
-                              elevation: 3.0,
-                              child:  address1Line1 != "" ?
+                                elevation: 3.0,
+                                child:  address1Line1 != "" ?
                                 Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  new Column(
-                                    children: <Widget>[
-                                      new Container(
-                                        margin: EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            new Text(
-                                              uname,
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 0.5,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Column(
+                                      children: <Widget>[
+                                        new Container(
+                                          margin: EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              new Text(
+                                                uname,
+                                                style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 0.5,
+                                                ),
                                               ),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address1Line1,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address1Line2,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address1pin,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address1Line1,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address1Line2,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address1pin,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
 
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 10.0),
-                                            ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 10.0),
+                                              ),
 
-                                            new Container(
-                                              margin: EdgeInsets.only(left: 00.0,top: 05.0,right: 0.0,bottom: 5.0),
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    'Delivery Address',
-                                                    style: TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.black26,
+                                              new Container(
+                                                margin: EdgeInsets.only(left: 00.0,top: 05.0,right: 0.0,bottom: 5.0),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    new Text(
+                                                      'Delivery Address',
+                                                      style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        color: Colors.black26,
+                                                      ),
+
                                                     ),
+                                                    _verticalD(),
 
-                                                  ),
-                                                  _verticalD(),
+                                                     Switch(
+                                                       value: checkboxValueA,
+                                                        onChanged: (bool value){
+                                                          setState(() {
 
-                                                  new Switch(
-                                                      value: checkboxValueA,
-                                                      onChanged: (value){
-                                                        setState(() {
-                                                          checkboxValueA = value;
-                                                          if (checkboxValueB){
-                                                            checkboxValueB = false;
-                                                          }
-                                                        });
-                                                      }
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
+                                                            checkboxValueA= a1 = value;
+                                                            checkboxValueB=a2=!checkboxValueA;
+                                                            _preferences.setBool("a1", checkboxValueA);
+                                                            _preferences.setBool("a2", checkboxValueB);
+
+                                                          });
+                                                        },
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
+                                      ],
+                                    ),
+                                    new Container(
+                                      alignment: Alignment.topRight,
+                                      padding: EdgeInsets.only(left: 60.0),
+                                      child: IconButton(
+                                          icon: ofericon,
+                                          color: Colors.black38,
+                                          onPressed: ()async{
+                                            final FirebaseUser _user = await auth.currentUser();
+                                            if (_user != null){
+                                              addAddress1(true);
+                                            }
+                                            else{
+                                              Fluttertoast.showToast(msg: "You need to login first");
+                                            }
+                                          }
                                       ),
-                                    ],
-                                  ),
-                                  new Container(
-                                    alignment: Alignment.topRight,
-                                    padding: EdgeInsets.only(left: 60.0),
-                                    child: IconButton(
-                                        icon: ofericon,
-                                        color: Colors.black38,
+                                    )
+                                  ],
+                                ) :
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.add_circle,
+                                          color: Colors.pinkAccent,
+                                          size: 30.0,
+                                        ),
                                         onPressed: ()async{
                                           final FirebaseUser _user = await auth.currentUser();
                                           if (_user != null){
-                                            addAddress1(true);
+                                            addAddress1(false);
                                           }
                                           else{
                                             Fluttertoast.showToast(msg: "You need to login first");
                                           }
-                                        }
-                                    ),
-                                  )
-                                ],
-                              ) :
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: Icon(Icons.add_circle,
-                                        color: Colors.pinkAccent,
-                                        size: 30.0,
+                                        },
                                       ),
-                                      onPressed: ()async{
-                                        final FirebaseUser _user = await auth.currentUser();
-                                        if (_user != null){
-                                          addAddress1(false);
-                                        }
-                                        else{
-                                          Fluttertoast.showToast(msg: "You need to login first");
-                                        }
-                                      },
-                                    ),
-                                    Text("Add address",
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 13.0,
-                                        letterSpacing: 0.5,
+                                      Text("Add address",
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 13.0,
+                                            letterSpacing: 0.5,
+                                          )
                                       )
-                                    )
-                                  ],
-                                ),
-                              )
+                                    ],
+                                  ),
+                                )
                             ),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
-                              elevation: 3.0,
-                              child: address2Line1 != "" ?
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  new Column(
-                                    children: <Widget>[
-                                      new Container(
-                                        margin:
-                                        EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                elevation: 3.0,
+                                child: address2Line1 != "" ?
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Column(
+                                      children: <Widget>[
+                                        new Container(
+                                          margin:
+                                          EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
 
-                                          children: <Widget>[
-                                            new Text(
-                                              uname,
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 0.5,
+                                            children: <Widget>[
+                                              new Text(
+                                                uname,
+                                                style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 0.5,
+                                                ),
                                               ),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address2Line1,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address2Line2,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
-                                            _verticalDivider(),
-                                            new Text(
-                                              address2pin,
-                                              style: TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 13.0,
-                                                  letterSpacing: 0.5),
-                                            ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address2Line1,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address2Line2,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
+                                              _verticalDivider(),
+                                              new Text(
+                                                address2pin,
+                                                style: TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 13.0,
+                                                    letterSpacing: 0.5),
+                                              ),
 
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 10.0),
-                                            ),
-                                            new Container(
-                                              margin: EdgeInsets.only(left: 00.0,top: 05.0,right: 0.0,bottom: 5.0),
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    'Delivery Address',
-                                                    style: TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.black12,
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 10.0),
+                                              ),
+                                              new Container(
+                                                margin: EdgeInsets.only(left: 00.0,top: 05.0,right: 0.0,bottom: 5.0),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    new Text(
+                                                      'Delivery Address',
+                                                      style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        color: Colors.black12,
+                                                      ),
+
                                                     ),
+                                                    _verticalD(),
 
-                                                  ),
-                                                  _verticalD(),
+                                                     Switch(
 
-                                                  new Switch(
                                                       value: checkboxValueB,
-                                                      onChanged: (value){
-                                                        setState(() {
-                                                          checkboxValueB = value;
-                                                          if (checkboxValueA){
-                                                            checkboxValueA = false;
-                                                          }
-                                                        });
-                                                      }
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                                       onChanged: (bool value){
+                                                         setState(() {
+                                                           print(value);
 
-                                    ],
-                                  ),
-                                  new Container(
-                                    alignment: Alignment.topRight,
-                                    padding: EdgeInsets.only(left: 60.0),
-                                    child: IconButton(
-                                        icon: ofericon,
-                                        color: Colors.black38,
+                                                           checkboxValueB=a2=value;
+
+                                                           print(checkboxValueB);
+                                                           checkboxValueA=a1=!checkboxValueB;
+                                                           _preferences.setBool("a1", checkboxValueA);
+                                                           _preferences.setBool("a2", checkboxValueB);
+
+
+                                                         });
+                                                       },
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                    new Container(
+                                      alignment: Alignment.topRight,
+                                      padding: EdgeInsets.only(left: 60.0),
+                                      child: IconButton(
+                                          icon: ofericon,
+                                          color: Colors.black38,
+                                          onPressed: ()async{
+                                            final FirebaseUser _user = await auth.currentUser();
+                                            if (_user != null){
+                                              addAddress2(true);
+                                            }
+                                            else{
+                                              Fluttertoast.showToast(msg: "You need to login first");
+                                            }
+                                          }
+                                      ),
+                                    )
+                                  ],
+                                ) :
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.add_circle,
+                                          color: Colors.pinkAccent,
+                                          size: 30.0,
+                                        ),
                                         onPressed: ()async{
                                           final FirebaseUser _user = await auth.currentUser();
                                           if (_user != null){
-                                            addAddress2(true);
+                                            addAddress2(false);
                                           }
                                           else{
                                             Fluttertoast.showToast(msg: "You need to login first");
                                           }
-                                        }
-                                    ),
-                                  )
-                                ],
-                              ) :
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: Icon(Icons.add_circle,
-                                        color: Colors.pinkAccent,
-                                        size: 30.0,
+                                        },
                                       ),
-                                      onPressed: ()async{
-                                        final FirebaseUser _user = await auth.currentUser();
-                                        if (_user != null){
-                                          addAddress2(false);
-                                        }
-                                        else{
-                                          Fluttertoast.showToast(msg: "You need to login first");
-                                        }
-                                      },
-                                    ),
-                                    Text("Add address",
-                                        style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 13.0,
-                                          letterSpacing: 0.5,
-                                        )
-                                    )
-                                  ],
-                                ),
-                              )
+                                      Text("Add address",
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 13.0,
+                                            letterSpacing: 0.5,
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                )
                             ),
                           ),
                         ],
