@@ -65,7 +65,7 @@ class _AccountState extends State<Account> {
     setState(() {
       url = user.photoUrl ??
           "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      uname = user.displayName;
+      uname = user.displayName!=null?user.displayName:_preferences.getString("Phone");
       eid = user.email != null ? user.email.toString() : _preferences.getString("Phone");
       address1Line1 = _preferences.getString("address1Line1") ?? "";
       address1Line2 = _preferences.getString("address1Line2") ?? "";
@@ -74,8 +74,7 @@ class _AccountState extends State<Account> {
       address2Line1 = _preferences.getString("address2Line1") ?? "";
       address2Line2 = _preferences.getString("address2Line2") ?? "";
       address2pin = _preferences.getString("address2pin") ?? "";
-      a1=_preferences.getBool("a1")??true;
-      a2=_preferences.getBool("a2")??false;
+
     });
   }
 
