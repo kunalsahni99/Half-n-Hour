@@ -37,8 +37,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+
     super.initState();
     getValues();
+
   }
 
   Future<void> getValues() async {
@@ -48,48 +50,52 @@ class _MyHomePageState extends State<MyHomePage> {
     isLoggedIn = await _preferences.getBool("isLoggedIn") ?? false;
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
     loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
+    setState(() async{
+      if (uid != null) { // for google sign in
+        uname = user.displayName;
+        email = user.email;
+        avatar = user.photoUrl;
+      }
+      else if (isLoggedIn) { // for email(signup)
+        uname = user.displayName != null
+            ? user.displayName.toString()
+            : await _preferences.getString("SignUname");
 
-    if (uid != null) { // for google sign in
-      uname = user.displayName;
-      email = user.email;
-      avatar = user.photoUrl;
-    }
-    else if (isLoggedIn) { // for email(signup)
-      uname = user.displayName != null
-          ? user.displayName.toString()
-          : await _preferences.getString("SignUname");
+        email =
+        user.email != null ? user.email.toString() : await _preferences.getString(
+            "SignEmail");
+        avatar = user.photoUrl != null
+            ? user.photoUrl.toString()
+            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+      }
+      else if (loggedwithMail) { // for email(login)
+        print("hello" + user.displayName);
+        uname = user.displayName != null
+            ? user.displayName.toString()
+            : await _preferences.getString("LogUname");
+        email =
+        user.email != null ? user.email.toString() : await _preferences.getString(
+            "SignEmail");
+        avatar = user.photoUrl != null
+            ? user.photoUrl.toString()
+            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+      }
+      else if (loggedwithPhone) { // for phone
+        uname = user.displayName != null
+            ? user.displayName.toString()
+            : await _preferences.getString("Phone");
+        avatar = user.photoUrl != null
+            ? user.photoUrl.toString()
+            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+      }
+      else {
+        uname = "Guest User";
+        email = "guest@example.com";
+      }
 
-      email =
-      user.email != null ? user.email.toString() : await _preferences.getString(
-          "SignEmail");
-      avatar = user.photoUrl != null
-          ? user.photoUrl.toString()
-          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-    }
-    else if (loggedwithMail) { // for email(login)
-      print("hello" + user.displayName);
-      uname = user.displayName != null
-          ? user.displayName.toString()
-          : await _preferences.getString("LogUname");
-      email =
-      user.email != null ? user.email.toString() : await _preferences.getString(
-          "SignEmail");
-      avatar = user.photoUrl != null
-          ? user.photoUrl.toString()
-          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-    }
-    else if (loggedwithPhone) { // for phone
-      uname = user.displayName != null
-          ? user.displayName.toString()
-          : await _preferences.getString("Phone");
-      avatar = user.photoUrl != null
-          ? user.photoUrl.toString()
-          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-    }
-    else {
-      uname = "Guest User";
-      email = "guest@example.com";
-    }
+    });
+
+
   }
 
   Future<bool> _onWillPop() {
