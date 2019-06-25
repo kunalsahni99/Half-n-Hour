@@ -12,6 +12,8 @@ import 'package:HnH/components/products.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
 import 'maps.dart';
+import 'product_new.dart';
+import 'product_popular.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 
@@ -411,7 +413,10 @@ class home extends State<MyHomePage> {
     _verticalD(),
     new GestureDetector(
     onTap: () {
-
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProductPopular()));
     },
     child: new Text(
     'Popular',
@@ -426,7 +431,10 @@ class home extends State<MyHomePage> {
     children: <Widget>[
     new GestureDetector(
     onTap: () {
-
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProductNew()));
     },
     child: new Text(
     'Whats New',
@@ -467,6 +475,7 @@ class home extends State<MyHomePage> {
     //  mainAxisSize: MainAxisSize.max,
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.center,
+
     children: <Widget>[
     SizedBox(
     height: 152.0,
@@ -500,7 +509,7 @@ class home extends State<MyHomePage> {
     ),
     ),
 
-   
+
     ],
     ),
     ),
