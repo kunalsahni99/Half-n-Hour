@@ -52,6 +52,8 @@ class home extends State<MyHomePage> {
     Photo(
       assetName: 'images/veg.jpg',
       title: 'Fruits & Vegetables',
+
+
     ),
     Photo(
       assetName: 'images/frozen.jpg',
@@ -498,17 +500,7 @@ class home extends State<MyHomePage> {
     ),
     ),
 
-    Positioned(
-    child: FittedBox(
-
-    fit: BoxFit.fill,
-    alignment: Alignment.centerLeft,
-    child: Text(photos[index].title,
-    style: TextStyle(color: Colors.black87,fontSize: 15.0),
-    ),
-
-    )
-    )
+   
     ],
     ),
     ),
