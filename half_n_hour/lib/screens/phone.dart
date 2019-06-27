@@ -29,18 +29,18 @@ class SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
         leading: IconButton(
           icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
           onPressed: (){
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: Colors.white70,
         actions: <Widget>[
           Builder(builder: (BuildContext context) {
             return FlatButton(
-              child: const Text('Sign out'),
+              child: const Text('Sign out',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold  )),
               textColor: Theme.of(context).buttonColor,
               onPressed: () async {
                 final FirebaseUser user = await _auth.currentUser();
@@ -124,8 +124,9 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
           new Container(
 
-              margin: EdgeInsets.fromLTRB(5, 1, 5, 1),
-              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(20, 1, 20, 1),
+
+              alignment: Alignment.centerRight,
               height: 350.0,
               child: new Card(
 
@@ -140,7 +141,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                         decoration:
 
                         InputDecoration(labelText: 'Phone number ',
-                          icon: Icon(Icons.phone, color: Colors.black38,),),
+                          icon: Icon(Icons.phone, color: Colors.black,),),
 
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -184,7 +185,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                         controller: _smsController,
                         decoration: InputDecoration(
                           labelText: 'Verification code',
-                          icon: Icon(Icons.message, color: Colors.black38,),),
+                          icon: Icon(Icons.message, color: Colors.black,),),
                       ),
                       SizedBox(height: 20.0,),
                       new Container(
@@ -223,11 +224,11 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                   ))),
           SizedBox(height: 5.0,),
           new Container(
-            margin: EdgeInsets.fromLTRB(10,0,10,0),
+            margin: EdgeInsets.fromLTRB(25,0,25,0),
             alignment: Alignment.center,
             child: Material(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(25.0),
+              color: Colors.blue[400],
               elevation: 5.0,
               child: MaterialButton(
                 onPressed: () {
@@ -241,16 +242,17 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 25.0
+                      fontSize: 22.0
                   ),
                 ),
               ),
             ),
           ),
           new Container(
-            height: 70,
-            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            height: 100,
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
             width: MediaQuery.of(context).size.width,
+
 
             child: new Card(
                 elevation: 5,
