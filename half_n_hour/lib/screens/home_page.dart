@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -6,62 +7,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:HnH/components/horizontal_listview.dart';
+import 'package:HnH/components/products.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
 import 'maps.dart';
-import 'product_new.dart';
-import 'product_popular.dart';
-import 'package:HnH/components/photo.dart';
-
-import 'package:flutter/foundation.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
-const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
 
 class MyHomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new home();
-// TODO: implement createState
 
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class home extends State<MyHomePage> {
-  List list = ['12', '11'];
-
-  List<Photo> photos = <Photo>[
-    Photo(
-      imageUrl: 'images/veg.jpg',
-      title: 'Fruits & Vegetables',
-    ),
-    Photo(
-      imageUrl: 'images/frozen.jpg',
-      title: 'Frozen Veg',
-    ),
-    Photo(
-      imageUrl: 'images/bev.jpg',
-      title: 'Beverages',
-    ),
-    Photo(
-      imageUrl: 'images/brand_f.jpg',
-      title: 'Brannded Food',
-    ),
-    Photo(
-      imageUrl: 'images/be.jpg',
-      title: 'Beauty & Personal Care',
-    ),
-    Photo(
-      imageUrl: 'images/home.jpg',
-      title: 'Home Care & Fashion',
-    ),
-    Photo(
-      imageUrl: 'images/nonveg.jpg',
-      title: 'Non Veg',
-    ),
-    Photo(
-      imageUrl: 'images/eggs.jpg',
-      title: 'Dairy, Bakery & Eggs',
-    ),
-  ];
+class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences _preferences;
   String uid,
       uname = "",
@@ -88,51 +49,47 @@ class home extends State<MyHomePage> {
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
     loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
 
-    setState((){
-      if (uid != null) { // for google sign in
-        uname = user.displayName;
-        email = user.email;
-        avatar = user.photoUrl;
-      }
-      else if (isLoggedIn) { // for email(signup)
-        uname = user.displayName != null
-            ? user.displayName.toString()
-            : _preferences.getString("SignUname");
+    if (uid != null) { // for google sign in
+      uname = user.displayName;
+      email = user.email;
+      avatar = user.photoUrl;
+    }
+    else if (isLoggedIn) { // for email(signup)
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("SignUname");
 
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
-        avatar = user.photoUrl != null
-            ? user.photoUrl.toString()
-            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithMail) { // for email(login)
-        print("hello" + user.displayName);
-        uname = user.displayName != null
-            ? user.displayName.toString()
-            : _preferences.getString("LogUname");
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
-        avatar = user.photoUrl != null
-            ? user.photoUrl.toString()
-            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithPhone) { // for phone
-        uname = user.displayName != null
-            ? user.displayName.toString()
-            : _preferences.getString("Phone");
-        avatar = user.photoUrl != null
-            ? user.photoUrl.toString()
-            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else {
-        uname = "Guest User";
-        email = "guest@example.com";
-      }
-    });
-
-
+      email =
+      user.email != null ? user.email.toString() : await _preferences.getString(
+          "SignEmail");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+    }
+    else if (loggedwithMail) { // for email(login)
+      print("hello" + user.displayName);
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("LogUname");
+      email =
+      user.email != null ? user.email.toString() : await _preferences.getString(
+          "SignEmail");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+    }
+    else if (loggedwithPhone) { // for phone
+      uname = user.displayName != null
+          ? user.displayName.toString()
+          : await _preferences.getString("Phone");
+      avatar = user.photoUrl != null
+          ? user.photoUrl.toString()
+          : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
+    }
+    else {
+      uname = "Guest User";
+      email = "guest@example.com";
+    }
   }
 
   Future<bool> _onWillPop() {
@@ -155,30 +112,20 @@ class home extends State<MyHomePage> {
     ) ?? false;
   }
 
-  final List<String> items = ['Balbhadra', 'Maulik', 'Roshi'];
-  static const double height = 366.0;
-  String name ='My Wishlist';
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    final Orientation orientation = MediaQuery.of(context).orientation;
-    final ThemeData theme = Theme.of(context);
-    final TextStyle titleStyle =
-    theme.textTheme.headline.copyWith(color: Colors.black54);
-    final TextStyle descriptionStyle = theme.textTheme.subhead;
-    ShapeBorder shapeBorder;
     Widget image_carousel = new Container(
       height: 200.0,
       child: Carousel(
         boxFit: BoxFit.cover,
         images: [
-          AssetImage('images/groceries.jpg'),
-          AssetImage('images/grthre.jpg'),
-          AssetImage('images/grtwo.jpg'),
-          AssetImage('images/brand_f.jpg'),
-          AssetImage('images/home.jpg'),
+          AssetImage('images/products/fruits1.jpg'),
+          AssetImage('images/products/veg1.jpeg'),
+          AssetImage('images/products/daily1.jpg'),
+          AssetImage('images/products/med1.jpg'),
+          AssetImage('images/products/cos1.jpg'),
         ],
-        autoplay: true,
+        autoplay: false,
         dotSize: 4.0,
         indicatorBgPadding: 8.0,
         dotBgColor: Colors.transparent,
@@ -187,338 +134,158 @@ class home extends State<MyHomePage> {
       ),
     );
 
-
     return WillPopScope(
-        onWillPop: _onWillPop,
-        child: Scaffold(
-          appBar: new AppBar(
-            backgroundColor: Colors.white70,
-            iconTheme: IconThemeData(color: Colors.black87),
-            title: Text("Half n Hour",style: TextStyle(
-                color: Colors.black87,fontWeight: FontWeight.bold)),
-
-            actions: <Widget>[
-              IconButton(
-                tooltip: 'Search',
-                icon: const Icon(Icons.search),
-                color: Colors.black,
-                onPressed: () async {
-                  final int selected = await showSearch<int>(
-                    context: context,
-                    //delegate: _delegate,
-                  );
-
-                },
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.pinkAccent,
+          title: Text('Half n Hour',
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+          ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                  Icons.search
               ),
-              new Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: new Container(
-                  height: 150.0,
-                  width: 30.0,
-                  child: new GestureDetector(
+              color: Colors.white,
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                  Icons.shopping_cart
+              ),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => Cart()
+                ));
+              },
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              // header
+              UserAccountsDrawerHeader(
+                accountName: Text(uname),
+                accountEmail: Text(email),
+                currentAccountPicture: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          new MaterialPageRoute(
-                              builder:(BuildContext context) =>
-                                  Cart()
-                          )
-                      );
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => Account()
+                      ));
                     },
-                    child: Stack(
-                      children: <Widget>[
-                        new IconButton(
-                            icon: new Icon(
-                              Icons.shopping_cart,
-                              color: Colors.black,
-                            ),
-                            onPressed: (){
-                              Navigator.of(context).push(
-                                  new MaterialPageRoute(
-                                      builder:(BuildContext context) =>
-                                          Cart()
-                                  )
-                              );
-                            }),
-                        list.length == 0
-                            ? new Container()
-                            : new Positioned(
-                            child: new Stack(
-                              children: <Widget>[
-                                new Icon(Icons.brightness_1,
-                                    size: 20.0, color: Colors.orange.shade500),
-                                new Positioned(
-                                    top: 4.0,
-                                    right: 5.5,
-                                    child: new Center(
-                                      child: new Text(
-                                        list.length.toString(),
-                                        style: new TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11.0,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )),
-                              ],
-                            )),
-                      ],
-                    ),
-                  ),
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        placeholder: (context, val) =>
+                            CircularProgressIndicator(),
+                        imageUrl: avatar != null
+                            ? avatar
+                            : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
+                      ),
+                    )
                 ),
-              )
+                decoration: BoxDecoration(
+                    color: Colors.pinkAccent
+                ),
+              ),
+              // body
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => Account()
+                  ));
+                },
+                child: ListTile(
+                    title: Text('My Account'),
+                    leading: Icon(Icons.person, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: () {},
+                child: ListTile(
+                    title: Text('My Orders'),
+                    leading: Icon(
+                      Icons.shopping_basket, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => Cart()
+                  ));
+                },
+                child: ListTile(
+                    title: Text('My Cart'),
+                    leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => Maps()
+                  ));
+                },
+                child: ListTile(
+                    title: Text('Maps'),
+                    leading: Icon(Icons.map, color: Colors.pinkAccent,)
+                ),
+              ),
+
+              Divider(),
+
+              InkWell(
+                onTap: () {},
+                child: ListTile(
+                    title: Text('Settings'),
+                    leading: Icon(Icons.settings, color: Colors.pinkAccent,)
+                ),
+              ), InkWell(
+                onTap: () {},
+                child: ListTile(
+                    title: Text('About'),
+                    leading: Icon(Icons.help, color: Colors.pinkAccent,)
+                ),
+              ),
             ],
           ),
-          drawer: Drawer(
-            child: ListView(
-              children: <Widget>[
-                // header
-                UserAccountsDrawerHeader(
-                  accountName: Text(uname,
-                    style: TextStyle(
-                        color: Colors.black87
-                    ),
-                  ),
-                  accountEmail: Text(email,
-                    style: TextStyle(
-                        color: Colors.black87
-                    ),
-                  ),
-                  currentAccountPicture: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => Account()
-                        ));
-                      },
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          placeholder: (context, val) =>
-                              CircularProgressIndicator(),
-                          imageUrl: avatar != null
-                              ? avatar
-                              : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
-                        ),
-                      )
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.white70
-                  ),
-                ),
-                // body
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Account()
-                    ));
-                  },
-                  child: ListTile(
-                      title: Text('My Account'),
-                      leading: Icon(Icons.person, color: Colors.black87,)
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: ListTile(
-                      title: Text('My Orders'),
-                      leading: Icon(
-                        Icons.shopping_basket, color: Colors.black87,)
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Cart()
-                    ));
-                  },
-                  child: ListTile(
-                      title: Text('My Cart'),
-                      leading: Icon(Icons.shopping_cart, color: Colors.black87,)
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Maps()
-                    ));
-                  },
-                  child: ListTile(
-                      title: Text('Maps'),
-                      leading: Icon(Icons.map, color: Colors.black87,)
-                  ),
-                ),
-
-                Divider(),
-
-                InkWell(
-                  onTap: () {},
-                  child: ListTile(
-                      title: Text('Settings'),
-                      leading: Icon(Icons.settings, color: Colors.black87,)
-                  ),
-                ), InkWell(
-                  onTap: () {},
-                  child: ListTile(
-                      title: Text('About'),
-                      leading: Icon(Icons.help, color: Colors.black87,)
-                  ),
-                ),
-              ],
+        ),
+        body: Column(
+          children: <Widget>[
+            image_carousel,
+            Padding(
+              //padding widget
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Categories'))
             ),
-          ),
 
-          body: new SingleChildScrollView(
-            child: Container(
-              child: new Column(children: <Widget>[
-                _verticalD(),
-                image_carousel,
+            // Horizontal List View begins here
+            HorizontalList(),
 
-                new Container(
-                  margin: EdgeInsets.only(top: 7.0),
-                  child: new Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        _verticalD(),
-                        new GestureDetector(
-                          onTap: () {
-
-                          },
-                          child: new Text(
-                            'Categories',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        _verticalD(),
-                        new GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProductPopular()));
-                          },
-                          child: new Text(
-                            'Popular',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black26,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        _verticalD(),
-                        new Row(
-                          children: <Widget>[
-                            new GestureDetector(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ProductNew()));
-                              },
-                              child: new Text(
-                                'Whats New',
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.black26,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        )
-                      ]),
-                ),
-                new Container(
-                  alignment: Alignment.topCenter,
-                  height: 700.0,
-
-                  child: new GridView.builder(
-                      itemCount: photos.length,
-                      primary: false,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(10.0),
-                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                      itemBuilder: (BuildContext context, int index) {
-                        return new GestureDetector(
-                            onTap: (){
-
-                            },
-                            child: new Container(
-                                margin: EdgeInsets.all(5.0),
-                                child: new Card(
-                                  shape: shapeBorder,
-                                  elevation: 5.0,
-                                  child: new Container(
-                                    //  mainAxisSize: MainAxisSize.max,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 152.0,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Positioned.fill(
-                                                  child: Image.asset(
-                                                    photos[index].imageUrl,
-                                                    fit: BoxFit.cover,
-                                                  )),
-                                              Container(
-                                                color: Colors.black38,
-                                              ),
-                                              Container(
-                                                //margin: EdgeInsets.only(left: 10.0),
-                                                padding: EdgeInsets.only(
-                                                    left: 3.0, bottom: 3.0),
-                                                alignment: Alignment.bottomLeft,
-                                                child: new GestureDetector(
-                                                  onTap: () {
-
-                                                  },
-                                                  child: new Text(
-                                                    photos[index].title,
-                                                    style: TextStyle(
-                                                        fontSize: 18.0,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                        FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-
-
-                                            ],
-                                          ),
-                                        ),
-
-                                        // new Text(photos[index].title.toString()),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                            )
-
-                        );
-                      }),
-                ),
-
-              ]),
+            Padding(
+              //padding widget
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Recent Products'))
             ),
-          ),
-        ));
+
+            Flexible(
+              child: Products(),
+            )
+          ],
+        ),
+      ),
+    );
   }
-
-
-
-
-
-  _verticalD() => Container(
-    margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
-  );
-
-
 }

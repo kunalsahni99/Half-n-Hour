@@ -284,15 +284,16 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
         SharedPreferences _preferences=await SharedPreferences.getInstance();
         _preferences.setBool("LoginPhone", true);
         _preferences.setString("Phone",_phoneNumberController.text);
-
-        final FirebaseUser user = await _auth.currentUser();
-        userUpdateInfo.displayName=_phoneNumberController.text;
-        await user.updateProfile(userUpdateInfo);
-
         Navigator.pop(context);
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>  MyHomePage()
         ));
+
+
+        _preferences.setBool("a1", true);
+        _preferences.setBool("a2", false);
+
+
 
         Fluttertoast.showToast(msg: "Welcome"+_phoneNumberController.text,
             fontSize: 14.0,
