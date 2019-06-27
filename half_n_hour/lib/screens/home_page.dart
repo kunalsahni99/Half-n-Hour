@@ -138,8 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black87),
           elevation: 0.0,
-          backgroundColor: Colors.pinkAccent,
+          backgroundColor: Colors.white70,
           title: Text('Half n Hour',
             style: TextStyle(
               fontWeight: FontWeight.bold
@@ -150,14 +151,14 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(
                   Icons.search
               ),
-              color: Colors.white,
+              color: Colors.black87,
               onPressed: () {},
             ),
             IconButton(
               icon: Icon(
                   Icons.shopping_cart
               ),
-              color: Colors.white,
+              color: Colors.black87,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => Cart()
@@ -191,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     )
                 ),
                 decoration: BoxDecoration(
-                    color: Colors.pinkAccent
+                    color: Colors.white70
                 ),
               ),
               // body
@@ -204,7 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: ListTile(
                     title: Text('My Account'),
-                    leading: Icon(Icons.person, color: Colors.pinkAccent,)
+                    leading: Icon(Icons.person, color: Colors.black87,)
                 ),
               ),
               InkWell(
@@ -212,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListTile(
                     title: Text('My Orders'),
                     leading: Icon(
-                      Icons.shopping_basket, color: Colors.pinkAccent,)
+                      Icons.shopping_basket, color: Colors.black87,)
                 ),
               ),
               InkWell(
@@ -224,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: ListTile(
                     title: Text('My Cart'),
-                    leading: Icon(Icons.shopping_cart, color: Colors.pinkAccent,)
+                    leading: Icon(Icons.shopping_cart, color: Colors.black87,)
                 ),
               ),
               InkWell(
@@ -236,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: ListTile(
                     title: Text('Maps'),
-                    leading: Icon(Icons.map, color: Colors.pinkAccent,)
+                    leading: Icon(Icons.map, color: Colors.black87,)
                 ),
               ),
 
@@ -246,13 +247,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {},
                 child: ListTile(
                     title: Text('Settings'),
-                    leading: Icon(Icons.settings, color: Colors.pinkAccent,)
+                    leading: Icon(Icons.settings, color: Colors.black87,)
                 ),
               ), InkWell(
                 onTap: () {},
                 child: ListTile(
                     title: Text('About'),
-                    leading: Icon(Icons.help, color: Colors.pinkAccent,)
+                    leading: Icon(Icons.help, color: Colors.black87,)
                 ),
               ),
             ],
