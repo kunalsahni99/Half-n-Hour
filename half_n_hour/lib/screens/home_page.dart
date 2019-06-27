@@ -212,7 +212,7 @@ class home extends State<MyHomePage> {
 
 
         ],
-        autoplay: true,
+        
         dotSize: 4.0,
         indicatorBgPadding: 8.0,
         dotBgColor: Colors.transparent,
@@ -309,12 +309,13 @@ class home extends State<MyHomePage> {
                 UserAccountsDrawerHeader(
                   accountName: Text(uname,
                     style: TextStyle(
-                        color: Colors.black87
+                        color: Colors.black87,fontWeight: FontWeight.bold,
+
                     ),
                   ),
                   accountEmail: Text(email,
                     style: TextStyle(
-                        color: Colors.black87
+                        color: Colors.black38
                     ),
                   ),
                   currentAccountPicture: GestureDetector(
@@ -431,6 +432,7 @@ class home extends State<MyHomePage> {
                         _verticalD(),
                         new GestureDetector(
                           onTap: () {
+                            Navigator.pop(context);
                             Navigator.pushReplacement(context, MaterialPageRoute(
                                 builder: (context) => ProductPopular()));
                           },
