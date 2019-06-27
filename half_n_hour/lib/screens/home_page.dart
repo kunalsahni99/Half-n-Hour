@@ -204,11 +204,13 @@ class home extends State<MyHomePage> {
       child: Carousel(
         boxFit: BoxFit.cover,
         images: [
-          AssetImage('images/groceries.jpg'),
-          AssetImage('images/grthre.jpg'),
-          AssetImage('images/grtwo.jpg'),
-          AssetImage('images/brand_f.jpg'),
-          AssetImage('images/home.jpg'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi1.jpg?alt=media&token=ba548dea-24e2-41a1-ab49-66eccaf6c4ee'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi2.jpg?alt=media&token=368c9fd8-b1fc-4d7c-a254-5972f334f2c7'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi3.jpg?alt=media&token=7c18f1cc-dcfe-4c64-9b1c-621345c29d53'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi4.jpg?alt=media&token=f27e14f7-36ac-41bb-b8b5-555b027e3d7d'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi5.jpg?alt=media&token=ac9cc479-b34f-4b02-845b-d172096e54fe'),
+
+
         ],
         autoplay: true,
         dotSize: 4.0,
@@ -333,7 +335,7 @@ class home extends State<MyHomePage> {
                       )
                   ),
                   decoration: BoxDecoration(
-                      color: Colors.white70
+                      color: Colors.orangeAccent
                   ),
                 ),
                 // body
