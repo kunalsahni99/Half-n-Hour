@@ -119,18 +119,18 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Carousel(
         boxFit: BoxFit.cover,
         images: [
-          AssetImage('images/products/fruits1.jpg'),
-          AssetImage('images/products/veg1.jpeg'),
-          AssetImage('images/products/daily1.jpg'),
-          AssetImage('images/products/med1.jpg'),
-          AssetImage('images/products/cos1.jpg'),
+          AssetImage('images/groceries.jpg'),
+          AssetImage('images/grthre.jpg'),
+          AssetImage('images/grtwo.jpg'),
+          AssetImage('images/brand_f.jpg'),
+          AssetImage('images/home.jpg'),
         ],
         autoplay: false,
         dotSize: 4.0,
         indicatorBgPadding: 8.0,
         dotBgColor: Colors.transparent,
-        //animationCurve: Curves.fastOutSlowIn,
-        //animationDuration: Duration(milliseconds: 1000),
+        animationCurve: Curves.fastOutSlowIn,
+        animationDuration: Duration(milliseconds: 1000),
       ),
     );
 
