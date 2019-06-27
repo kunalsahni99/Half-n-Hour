@@ -8,6 +8,9 @@ import 'home_page.dart';
 
 import 'signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,6 +30,13 @@ class SignInPageState extends State<SignInPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: IconButton(
+          icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.pinkAccent,
         actions: <Widget>[
           Builder(builder: (BuildContext context) {
             return FlatButton(

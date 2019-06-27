@@ -7,6 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'place_detail.dart';
 
 import 'package:location/location.dart'as LM;
+import 'package:flutter/foundation.dart' as foundation;
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 const kGoogleApiKey = "AIzaSyDW4mdZtZa8vBkcckoYtOPKLxzRrtC_cf4";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
@@ -42,7 +45,14 @@ class MapsState extends State<Maps> {
     return Scaffold(
         key: homeScaffoldKey,
         appBar: AppBar(
-          title: const Text("PlaceZ"),
+          title: const Text("Maps"),
+          leading: IconButton(
+            icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: Colors.pinkAccent,
           actions: <Widget>[
             isLoading
                 ? IconButton(
@@ -59,7 +69,6 @@ class MapsState extends State<Maps> {
               icon: Icon(Icons.search),
               onPressed: () {
                 _handlePressButton();
-
               },
             ),
           ],

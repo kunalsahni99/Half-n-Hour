@@ -118,11 +118,9 @@ class SingleProd extends StatelessWidget {
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
               // passing the details of the product to Product Details screen
               builder: (BuildContext context) => ProductDetails(
-                product_detail_name: prod_name,
-                product_detail_picture: prod_picture,
-                product_detail_new_price: prod_price,
-                product_detail_old_price: prod_old_price,
-                ID: id,
+                title: prod_name,
+                imageUrl: prod_picture,
+                price: prod_price,
               )
             )),
             child: GridTile(

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'as foundation;
+import 'package:flutter/cupertino.dart';
 
 import 'package:HnH/components/cart_products.dart';
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class Cart extends StatefulWidget {
   @override
@@ -14,17 +18,30 @@ class _CartState extends State<Cart> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.pinkAccent,
-        title: Text('My Cart'),
+        backgroundColor: Colors.white70,
+        title: Text('My Cart',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Icons.search
+                Icons.search
             ),
-            color: Colors.white,
+            color: Colors.black87,
             onPressed: (){},
           ),
         ],
+        leading: IconButton(
+          icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+            color: Colors.black87,
+          ),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
       ),
 
       body: CartProducts(),
@@ -42,14 +59,14 @@ class _CartState extends State<Cart> {
 
             Expanded(
               child: MaterialButton(
-                onPressed: (){},
-                color: Colors.pinkAccent,
-                child: Text('Check Out',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                  ),
-                )
+                  onPressed: (){},
+                  color: Colors.pinkAccent,
+                  child: Text('Check Out',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                    ),
+                  )
               ),
             )
           ],

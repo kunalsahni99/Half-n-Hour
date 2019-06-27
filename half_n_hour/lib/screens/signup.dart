@@ -9,7 +9,9 @@ import 'package:flutter/services.dart';
 
 import '../db/users.dart';
 import './home_page.dart';
-import './login.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class SignUp extends StatefulWidget {
   @override
@@ -51,14 +53,14 @@ class _SignUpState extends State<SignUp> {
     return new Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white70,
           title: Text("Half n Hour",
             style: TextStyle(
               color: Colors.black87
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back,
+            icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
               color: Colors.black87,
             ),
             onPressed: () => Navigator.pop(context),

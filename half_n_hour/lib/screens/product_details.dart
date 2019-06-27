@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:flutter/cupertino.dart';
+
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class ProductDetails extends StatefulWidget {
-  final product_detail_name;
-  final product_detail_picture;
-  final product_detail_new_price;
-  final product_detail_old_price;
-  final String ID;
+  final String imageUrl;
+  final String category;
+  final String title;
+  final String desc;
+  final String price;
+  final String Prod_id;
 
   ProductDetails({
-    this.product_detail_name,
-    this.product_detail_picture,
-    this.product_detail_new_price,
-    this.product_detail_old_price,
-    this.ID
+    this.imageUrl,
+    this.category,
+    this.title,
+    this.desc,
+    this.price,
+    this.Prod_id
   });
 
   @override
@@ -21,6 +27,35 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  int currQty;
+  List<int> qtyList = [1, 2, 3, 5, 10, 15, 25];
+
+  List<DropdownMenuItem<int>> _dropDownMenuItems;
+
+  @override
+  void initState() {
+    super.initState();
+    _dropDownMenuItems = getDropDownMenuItems();
+    currQty = _dropDownMenuItems[0].value;
+  }
+
+  List<DropdownMenuItem<int>> getDropDownMenuItems(){
+    List<DropdownMenuItem<int>> items = new List();
+    for (int qty in qtyList){
+      items.add(DropdownMenuItem(
+        value: qty,
+        child: Text(qty.toString()),
+      ));
+    }
+    return items;
+  }
+
+  void changeDropDownItem(int selectedQty){
+    setState(() {
+      currQty = selectedQty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,16 +64,27 @@ class _ProductDetailsState extends State<ProductDetails> {
           onTap: (){
             Navigator.pop(context);
           },
-          child: Text('Product Detail')
+          child: Text('Product Detail',
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold
+            ),
+          )
         ),
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: Colors.white70,
+        leading: IconButton(
+          icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+            color: Colors.black87,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         elevation: 0.0,
         actions: <Widget>[
          IconButton(
            icon: Icon(
             Icons.search
            ),
-           color: Colors.white,
+           color: Colors.black87,
            onPressed: (){},
          ),
         ],
@@ -51,157 +97,136 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: GridTile(
               child: Container(
                 color: Colors.white,
-                child: Hero(
-                  tag: 'prod$widget.ID',
-                  child: Image.asset(widget.product_detail_picture)
-                ),
+                child: Image.asset(widget.imageUrl)
               ),
               footer: Container(
                 color: Colors.white70,
                 child: ListTile(
-                  leading: Text(widget.product_detail_name,
+                  leading: Text(widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.0
+                      fontSize: 18.0
                     ),
                   ),
                   title: Row(
                     children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 50.0),
+                      ),
                        Expanded(
-                         child: Text("\$${widget.product_detail_old_price}",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough
-                          ),
-                        ),
-                       ),
-                       Expanded(
-                         child: Text("\$${widget.product_detail_new_price}",
+                         child: Text("₹ ${widget.price}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.pinkAccent
+                            color: Colors.black87,
+                            fontSize: 18.0
                           )
                         ),
                        ),
+
+                      Text('Qty: ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 5.0),
+                      ),
+
+                      isIOS ?
+                        GestureDetector(
+                          onTap: (){
+                            showCupertinoModalPopup(
+                                context: context,
+                                builder: (context){
+                                  return CupertinoActionSheet(
+                                    title: Text('Select quantity'),
+                                    actions: <Widget>[
+                                      CupertinoActionSheetAction(
+                                        child: Text('1'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 1;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('2'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 2;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('3'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 3;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('5'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 5;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('10'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 10;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('15'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 15;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      CupertinoActionSheetAction(
+                                        child: Text('25'),
+                                        onPressed: (){
+                                          setState(() {
+                                            currQty = 25;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                    cancelButton: CupertinoActionSheetAction(
+                                      child: Text('Cancel'),
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+                                });
+                          },
+                          child: Text(currQty.toString()),
+                        )
+                      : DropdownButton(
+                        value: currQty,
+                        items: _dropDownMenuItems,
+                        onChanged: changeDropDownItem,
+                      )
                     ],
                   ),
                 ),
               ),
             ),
-          ),
-
-          // the first buttons
-          Row(
-            children: <Widget>[
-              // the size button
-              Expanded(
-                child: MaterialButton(
-                  onPressed: (){
-                    showDialog(
-                      context: context,
-                      builder: (context){
-                        return AlertDialog(
-                          title: Text('Qty'),
-                          content: Text('Choose the size'),
-                          actions: <Widget>[
-                            MaterialButton(
-                              onPressed: (){
-                                Navigator.of(context).pop(context);
-                              },
-                              child: Text('Close'),)
-                          ],
-                        );
-                      }
-                    );
-                  },
-                  color: Colors.white,
-                  elevation: 0.2,
-                  textColor: Colors.grey,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('Size'),
-                      ),
-                      Expanded(
-                        child: Icon(Icons.arrow_drop_down),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // the size button
-              Expanded(
-                child: MaterialButton(
-                  onPressed: (){
-                    showDialog(
-                      context: context,
-                      builder: (context){
-                        return AlertDialog(
-                          title: Text('Qty'),
-                          content: Text('Choose the color'),
-                          actions: <Widget>[
-                            MaterialButton(
-                              onPressed: (){
-                                Navigator.of(context).pop(context);
-                              },
-                              child: Text('Close'),)
-                          ],
-                        );
-                      }
-                    );
-                  },
-                  color: Colors.white,
-                  elevation: 0.2,
-                  textColor: Colors.grey,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('Color'),
-                      ),
-                      Expanded(
-                        child: Icon(Icons.arrow_drop_down),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              Expanded(
-                child: MaterialButton(
-                  onPressed: (){
-                    showDialog(
-                      context: context,
-                      builder: (context){
-                        return AlertDialog(
-                          title: Text('Qty'),
-                          content: Text('Choose the qty'),
-                          actions: <Widget>[
-                            MaterialButton(
-                              onPressed: (){
-                                Navigator.of(context).pop(context);
-                              },
-                              child: Text('Close'),)
-                          ],
-                        );
-                      }
-                    );
-                  },
-                  color: Colors.white,
-                  elevation: 0.2,
-                  textColor: Colors.grey,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('Size'),
-                      ),
-                      Expanded(
-                        child: Icon(Icons.arrow_drop_down),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
           ),
 
           // the second button
@@ -210,24 +235,27 @@ class _ProductDetailsState extends State<ProductDetails> {
               // the size button
               Expanded(
                 child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
                   onPressed: (){},
-                  color: Colors.pinkAccent,
+                  color: Colors.white70,
                   elevation: 0.2,
-                  textColor: Colors.white,
+                  textColor: Colors.black87,
                   child: Text('Buy Now')
                 ),
               ),
 
               IconButton(
                 icon: Icon(Icons.add_shopping_cart,
-                  color: Colors.pinkAccent,
+                  color: Colors.black87,
                 ),
                 onPressed: (){},
               ),
 
               IconButton(
                 icon: Icon(Icons.favorite_border,
-                  color: Colors.pinkAccent,
+                  color: Colors.black87,
                 ),
                 onPressed: (){},
               ),
@@ -238,7 +266,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
           ListTile(
             title: Text('Product Details'),
-            subtitle: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+            contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+            subtitle: Text(widget.desc),
           ),
 
           Divider(),
@@ -255,7 +284,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
               Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text(widget.product_detail_name),
+                child: Text(widget.title),
               )
             ],
           ),
@@ -360,7 +389,6 @@ class _SimilarProductsState extends State<SimilarProducts> {
           prod_picture: product_list[index]['picture'],
           prod_old_price: product_list[index]['old_price'],
           prod_price: product_list[index]['price'],
-          simID: index.toString(),
         );
       },
     );
@@ -372,14 +400,12 @@ class SimilarSingleProd extends StatelessWidget {
   final prod_picture;
   final prod_old_price;
   final prod_price;
-  final String simID;
 
   SimilarSingleProd({
     this.prod_name,
     this.prod_price,
     this.prod_picture,
     this.prod_old_price,
-    this.simID
   });
 
   @override
@@ -390,11 +416,9 @@ class SimilarSingleProd extends StatelessWidget {
             onTap: () => Navigator.of(context).push(new MaterialPageRoute(
               // passing the details of the product to Product Details screen
               builder: (BuildContext context) => ProductDetails(
-                product_detail_name: prod_name,
-                product_detail_picture: prod_picture,
-                product_detail_new_price: prod_price,
-                product_detail_old_price: prod_old_price,
-                ID: simID,
+                title: prod_name,
+                imageUrl: prod_picture,
+                price: prod_price,
               )
             )),
             child: GridTile(
@@ -411,7 +435,7 @@ class SimilarSingleProd extends StatelessWidget {
                       ),
                     ),
 
-                    Text("\$$prod_price",
+                    Text("₹ $prod_price",
                       style: TextStyle(
                         color: Colors.pinkAccent,
                         fontWeight: FontWeight.bold,
@@ -420,11 +444,8 @@ class SimilarSingleProd extends StatelessWidget {
                   ],
                 )
               ),
-              child: Hero(
-                tag: 'prod$simID',
-                child: Image.asset(prod_picture,
-                  fit: BoxFit.cover,
-            ),
+              child: Image.asset(prod_picture,
+                fit: BoxFit.cover,
               ),
           ),
         )

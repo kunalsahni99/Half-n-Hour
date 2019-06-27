@@ -7,12 +7,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 import 'home_page.dart';
 
 import 'phone.dart';
 import 'signup.dart';
 
+bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class Login extends StatefulWidget {
   @override
@@ -149,7 +152,24 @@ class _LoginState extends State<Login> {
       showDialog(
           context: context,
           builder: (context){
-            return AlertDialog(
+            return isIOS ?
+                CupertinoAlertDialog(
+                  title: Text('No Connection'),
+                  content: Text('Please connect to a network to continue'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK',
+                        style: TextStyle(
+                            color: Colors.blue
+                        ),
+                      ),
+                    )
+                  ],
+                )
+                : AlertDialog(
               title: Text('No Connection'),
               content: Text('Please connect to a network to continue'),
               actions: <Widget>[
@@ -173,20 +193,35 @@ class _LoginState extends State<Login> {
   Future<bool> _onWillPop() {
     return showDialog(
       context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Yes'),
-          ),
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
-          ),
+      builder: (context) => isIOS ?
+          CupertinoAlertDialog(
+              title: Text("Are you sure?"),
+            content: Text("Do you really want to exit the App?"),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text("Yes"),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text("No"),
+              ),
+            ],
+          )
+          : new AlertDialog(
+              title: new Text('Are you sure?'),
+              content: new Text('Do you want to exit an App'),
+              actions: <Widget>[
+                new FlatButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: new Text('Yes'),
+                ),
+                new FlatButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: new Text('No'),
+                ),
         ],
-      ),
+      )
     ) ?? false;
   }
 
@@ -195,299 +230,594 @@ class _LoginState extends State<Login> {
     // TODO: implement build
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: new Scaffold(
-          key: scaffoldKey,
-          appBar: new AppBar(
-            title: Text('Half n Hour',
-              style: TextStyle(
-                  color: Colors.black87
+      child: isIOS ?
+          new CupertinoPageScaffold(
+            key: scaffoldKey,
+            navigationBar: CupertinoNavigationBar(
+              middle: Text("Half n Hour",
+                style: TextStyle(
+                    color: Colors.black87
+                ),
               ),
+              backgroundColor: CupertinoColors.white,
             ),
-            backgroundColor: Colors.white,
-          ),
-          body: SafeArea(
-              child: new SingleChildScrollView(
-                child: new Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    new Container(
-                      height: 50.0,
-                      alignment: Alignment.topLeft,
-                      margin: EdgeInsets.only(top: 7.0),
-                      child: new Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          new GestureDetector(
-                            onTap: () {
-                              /* Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => login_screen()));*/
-                            },
-                            child: new Text(
-                              'Login',
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          _verticalD(),
-                          new GestureDetector(
-                            onTap: () {
-                              Navigator.push(
+            child: SafeArea(
+                child: new SingleChildScrollView(
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      new Container(
+                        height: 50.0,
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(top: 7.0),
+                        child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            new GestureDetector(
+                              onTap: () {
+                                /* Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SignUp()));
-                            },
-                            child: new Text(
-                              'Signup',
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black26,
-                                  fontWeight: FontWeight.bold),
+                                      builder: (context) => login_screen()));*/
+                              },
+                              child: new Text(
+                                'Login',
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: CupertinoColors.black.withOpacity(0.8),
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                        ],
+                            _verticalD(),
+                            new GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => SignUp()));
+                              },
+                              child: new Text(
+                                'Signup',
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: CupertinoColors.black.withOpacity(0.2),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    new SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: Stack(
-                          children: <Widget>[
-                            Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                elevation: 5.0,
-                                child: Form(
-                                    key: _formKey,
-                                    autovalidate: _autovalidate,
-                                    child: SingleChildScrollView(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: <Widget>[
-                                            const SizedBox(height: 24.0),
-                                            TextFormField(
-                                              decoration: const InputDecoration(
-                                                  border: UnderlineInputBorder(
-                                                    borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                  ),
-                                                  focusedBorder:  UnderlineInputBorder(
-                                                    borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                  ),
-                                                  icon: Icon(Icons.email,color: Colors.black38,),
-                                                  labelText: 'E-mail',
-                                                  labelStyle: TextStyle(color: Colors.black54)
-                                              ),
-                                              keyboardType: TextInputType.emailAddress,
-                                              validator: (val) =>
-                                              !val.contains('@') ? 'Not a valid email.' : null,
-                                              onSaved: (val) => _email = val,
-                                            ),
-
-                                            const SizedBox(height: 24.0),
-                                            Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: TextFormField(
-                                                    obscureText: hidePass,
-                                                    decoration: const InputDecoration(
-                                                        border: UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                        ),
-                                                        focusedBorder:  UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
-                                                        ),
-                                                        icon: Icon(Icons.lock,color: Colors.black38,),
-                                                        labelText: 'Password',
-                                                        labelStyle: TextStyle(color: Colors.black54)
+                      new SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: Stack(
+                            children: <Widget>[
+                              Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0)
+                                  ),
+                                  elevation: 5.0,
+                                  child: Form(
+                                      key: _formKey,
+                                      autovalidate: _autovalidate,
+                                      child: SingleChildScrollView(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              const SizedBox(height: 24.0),
+                                              TextFormField(
+                                                decoration: const InputDecoration(
+                                                    border: UnderlineInputBorder(
+                                                      borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
                                                     ),
-
-                                                    validator: (val) =>
-                                                    val.length < 6 ? 'Password too short.' : null,
-                                                    onSaved: (val) => _password = val,
-                                                  ),
+                                                    focusedBorder:  UnderlineInputBorder(
+                                                      borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                    ),
+                                                    icon: Icon(Icons.email,color: Colors.black38,),
+                                                    labelText: 'E-mail',
+                                                    labelStyle: TextStyle(color: Colors.black54)
                                                 ),
+                                                keyboardType: TextInputType.emailAddress,
+                                                validator: (val) =>
+                                                !val.contains('@') ? 'Not a valid email.' : null,
+                                                onSaved: (val) => _email = val,
+                                              ),
 
-                                                IconButton(
-                                                  icon: Icon(Icons.remove_red_eye,
-                                                    color: Colors.black38,
-                                                  ),
-                                                  onPressed: (){
-                                                    setState(() {
-                                                      if (hidePass){
-                                                        hidePass = false;
-                                                      }
-                                                      else{
-                                                        hidePass = true;
-                                                      }
-                                                    });
-                                                  },
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(height: 35.0,),
-                                            new Container(
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              const SizedBox(height: 24.0),
+                                              Row(
                                                 children: <Widget>[
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: TextFormField(
+                                                      obscureText: hidePass,
+                                                      decoration: const InputDecoration(
+                                                          border: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                          ),
+                                                          focusedBorder:  UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                          ),
+                                                          icon: Icon(Icons.lock,color: Colors.black38,),
+                                                          labelText: 'Password',
+                                                          labelStyle: TextStyle(color: Colors.black54)
+                                                      ),
 
-                                                  new Container(
-                                                    alignment: Alignment.bottomLeft,
+                                                      validator: (val) =>
+                                                      val.length < 6 ? 'Password too short.' : null,
+                                                      onSaved: (val) => _password = val,
+                                                    ),
+                                                  ),
 
-                                                    margin: EdgeInsets.only(left: 10.0),
-
-                                                    child: new GestureDetector(
-
-                                                      onTap: () async {
-                                                        _formKey.currentState.save();
-                                                        try{
-                                                          await firebaseAuth.sendPasswordResetEmail(email: _email);
-                                                          showInSnackBar('Please check your email');}
-                                                        catch (e){
-                                                          String msg=e.toString();
-                                                          showInSnackBar("No User Found!");
+                                                  IconButton(
+                                                    icon: Icon(Icons.remove_red_eye,
+                                                      color: Colors.black38,
+                                                    ),
+                                                    onPressed: (){
+                                                      setState(() {
+                                                        if (hidePass){
+                                                          hidePass = false;
                                                         }
-
-
-
-                                                      },
-                                                      child: Text('FORGOT PASSWORD?',style: TextStyle(
-                                                          color: Colors.blueAccent,fontSize: 13.0
-                                                      ),),
-                                                    ),
-                                                  ),
-                                                  new Container(
-                                                    alignment: Alignment.bottomRight,
-                                                    child: new InkWell(
-                                                      splashColor: Colors.pinkAccent,
-                                                      onTap: (){
-                                                        _submit();
-                                                      },
-                                                      child: Text('LOGIN',style: TextStyle(
-                                                          color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
-                                                      ),),
-                                                    ),
-                                                  ),
-
-
-
-
+                                                        else{
+                                                          hidePass = true;
+                                                        }
+                                                      });
+                                                    },
+                                                  )
                                                 ],
                                               ),
-                                            ),
+                                              SizedBox(height: 35.0,),
+                                              new Container(
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+
+                                                    new Container(
+                                                      alignment: Alignment.bottomLeft,
+
+                                                      margin: EdgeInsets.only(left: 10.0),
+
+                                                      child: new GestureDetector(
+
+                                                        onTap: () async {
+                                                          _formKey.currentState.save();
+                                                          try{
+                                                            await firebaseAuth.sendPasswordResetEmail(email: _email);
+                                                            showInSnackBar('Please check your email');}
+                                                          catch (e){
+                                                            String msg=e.toString();
+                                                            showInSnackBar("No User Found!");
+                                                          }
 
 
-                                            Divider(color: Colors.grey,),
-                                            SizedBox(height: 35.0,),
-                                            new Container(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Material(
-                                                  borderRadius: BorderRadius.circular(25.0),
-                                                  color: Colors.white,
-                                                  elevation: 5.0,
-                                                  child: MaterialButton(
+
+                                                        },
+                                                        child: Text('FORGOT PASSWORD?',style: TextStyle(
+                                                            color: Colors.blueAccent,fontSize: 13.0
+                                                        ),),
+                                                      ),
+                                                    ),
+                                                    new Container(
+                                                      alignment: Alignment.bottomRight,
+                                                      child: new InkWell(
+                                                        splashColor: Colors.pinkAccent,
+                                                        onTap: (){
+                                                          _submit();
+                                                        },
+                                                        child: Text('LOGIN',style: TextStyle(
+                                                            color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
+                                                        ),),
+                                                      ),
+                                                    ),
+
+
+
+
+                                                  ],
+                                                ),
+                                              ),
+
+
+                                              Divider(color: Colors.grey,),
+                                              SizedBox(height: 35.0,),
+                                              new Container(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Material(
+                                                    borderRadius: BorderRadius.circular(25.0),
+                                                    color: Colors.white,
+                                                    elevation: 5.0,
+                                                    child: MaterialButton(
+                                                        onPressed: (){
+                                                          Navigator.push(context, MaterialPageRoute(
+                                                              builder: (context) => SignInPage()
+                                                          ));
+                                                        },
+                                                        minWidth: MediaQuery.of(context).size.width,
+                                                        child: Row(
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: EdgeInsets.all(4.0),
+                                                              child: Icon(Icons.phone),
+                                                            ),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(left: 38.0),
+                                                            ),
+
+                                                            Text('Sign in With Phone',
+                                                              textAlign: TextAlign.left,
+                                                              style: TextStyle(
+                                                                  color: Colors.black87,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  fontSize: 18.0
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Material(
+                                                    borderRadius: BorderRadius.circular(25.0),
+                                                    color: Colors.white,
+                                                    elevation: 5.0,
+                                                    child: MaterialButton(
                                                       onPressed: (){
-                                                        Navigator.push(context, MaterialPageRoute(
-                                                            builder: (context) => SignInPage()
-                                                        ));
+                                                        handleSignIn();
                                                       },
                                                       minWidth: MediaQuery.of(context).size.width,
                                                       child: Row(
                                                         children: <Widget>[
                                                           Padding(
-                                                            padding: EdgeInsets.all(4.0),
-                                                            child: Icon(Icons.phone),
+                                                            padding: const EdgeInsets.all(4.0),
+                                                            child: Image.asset('images/g_logo.png',
+                                                              width: 30.0,
+                                                              height: 30.0,
+                                                            ),
                                                           ),
 
                                                           Padding(
-                                                            padding: const EdgeInsets.only(left: 38.0),
+                                                            padding: const EdgeInsets.only(left: 32.0),
                                                           ),
-
-                                                          Text('Sign in With Phone',
+                                                          Text('Sign in with Google',
                                                             textAlign: TextAlign.left,
                                                             style: TextStyle(
                                                                 color: Colors.black87,
                                                                 fontWeight: FontWeight.w400,
                                                                 fontSize: 18.0
                                                             ),
-                                                          ),
+                                                          )
                                                         ],
-                                                      )
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Material(
-                                                  borderRadius: BorderRadius.circular(25.0),
-                                                  color: Colors.white,
-                                                  elevation: 5.0,
-                                                  child: MaterialButton(
-                                                    onPressed: (){
-                                                      handleSignIn();
-                                                    },
-                                                    minWidth: MediaQuery.of(context).size.width,
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding: const EdgeInsets.all(4.0),
-                                                          child: Image.asset('images/g_logo.png',
-                                                            width: 30.0,
-                                                            height: 30.0,
-                                                          ),
-                                                        ),
-
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(left: 32.0),
-                                                        ),
-                                                        Text('Sign in with Google',
-                                                          textAlign: TextAlign.left,
-                                                          style: TextStyle(
-                                                              color: Colors.black87,
-                                                              fontWeight: FontWeight.w400,
-                                                              fontSize: 18.0
-                                                          ),
-                                                        )
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ]
-                                      ),
-                                    )
-                                )        //login,
-                            ),
-                            Visibility(
-                              visible: loading ?? true,
-                              child: Center(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  color: Colors.white.withOpacity(0.9),
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                                            ]
+                                        ),
+                                      )
+                                  )        //login,
+                              ),
+                              Visibility(
+                                visible: loading ?? true,
+                                child: Center(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    color: Colors.white.withOpacity(0.9),
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
-                        )
-                    )
-                  ],
+                              )
+                            ],
+                          )
+                      )
+                    ],
+                  ),
+                )
+            ),
+          )
+          :
+          new Scaffold(
+              key: scaffoldKey,
+              appBar: new AppBar(
+                title: Text('Half n Hour',
+                  style: TextStyle(
+                      color: Colors.black87
+                  ),
                 ),
+                backgroundColor: Colors.white70,
+              ),
+              body: SafeArea(
+                  child: new SingleChildScrollView(
+                    child: new Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        new Container(
+                          height: 50.0,
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(top: 7.0),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new GestureDetector(
+                                onTap: () {
+                                  /* Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => login_screen()));*/
+                                },
+                                child: new Text(
+                                  'Login',
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              _verticalD(),
+                              new GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SignUp()));
+                                },
+                                child: new Text(
+                                  'Signup',
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black26,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        new SafeArea(
+                            top: false,
+                            bottom: false,
+                            child: Stack(
+                              children: <Widget>[
+                                Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.0)
+                                    ),
+                                    elevation: 5.0,
+                                    child: Form(
+                                        key: _formKey,
+                                        autovalidate: _autovalidate,
+                                        child: SingleChildScrollView(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                              children: <Widget>[
+                                                const SizedBox(height: 24.0),
+                                                TextFormField(
+                                                  decoration: const InputDecoration(
+                                                      border: UnderlineInputBorder(
+                                                        borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                      ),
+                                                      focusedBorder:  UnderlineInputBorder(
+                                                        borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                      ),
+                                                      icon: Icon(Icons.email,color: Colors.black38,),
+                                                      labelText: 'E-mail',
+                                                      labelStyle: TextStyle(color: Colors.black54)
+                                                  ),
+                                                  keyboardType: TextInputType.emailAddress,
+                                                  validator: (val) =>
+                                                  !val.contains('@') ? 'Not a valid email.' : null,
+                                                  onSaved: (val) => _email = val,
+                                                ),
+
+                                                const SizedBox(height: 24.0),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: TextFormField(
+                                                        obscureText: hidePass,
+                                                        decoration: const InputDecoration(
+                                                            border: UnderlineInputBorder(
+                                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                            ),
+                                                            focusedBorder:  UnderlineInputBorder(
+                                                              borderSide: BorderSide(color: Colors.black87,style: BorderStyle.solid),
+                                                            ),
+                                                            icon: Icon(Icons.lock,color: Colors.black38,),
+                                                            labelText: 'Password',
+                                                            labelStyle: TextStyle(color: Colors.black54)
+                                                        ),
+
+                                                        validator: (val) =>
+                                                        val.length < 6 ? 'Password too short.' : null,
+                                                        onSaved: (val) => _password = val,
+                                                      ),
+                                                    ),
+
+                                                    IconButton(
+                                                      icon: Icon(Icons.remove_red_eye,
+                                                        color: Colors.black38,
+                                                      ),
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          if (hidePass){
+                                                            hidePass = false;
+                                                          }
+                                                          else{
+                                                            hidePass = true;
+                                                          }
+                                                        });
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(height: 35.0,),
+                                                new Container(
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: <Widget>[
+
+                                                      new Container(
+                                                        alignment: Alignment.bottomLeft,
+
+                                                        margin: EdgeInsets.only(left: 10.0),
+
+                                                        child: new GestureDetector(
+
+                                                          onTap: () async {
+                                                            _formKey.currentState.save();
+                                                            try{
+                                                              await firebaseAuth.sendPasswordResetEmail(email: _email);
+                                                              showInSnackBar('Please check your email');}
+                                                            catch (e){
+                                                              String msg=e.toString();
+                                                              showInSnackBar("No User Found!");
+                                                            }
+
+
+
+                                                          },
+                                                          child: Text('FORGOT PASSWORD?',style: TextStyle(
+                                                              color: Colors.blueAccent,fontSize: 13.0
+                                                          ),),
+                                                        ),
+                                                      ),
+                                                      new Container(
+                                                        alignment: Alignment.bottomRight,
+                                                        child: new InkWell(
+                                                          splashColor: Colors.pinkAccent,
+                                                          onTap: (){
+                                                            _submit();
+                                                          },
+                                                          child: Text('LOGIN',style: TextStyle(
+                                                              color: Colors.pinkAccent,fontSize: 20.0,fontWeight: FontWeight.bold
+                                                          ),),
+                                                        ),
+                                                      ),
+
+
+
+
+                                                    ],
+                                                  ),
+                                                ),
+
+
+                                                Divider(color: Colors.grey,),
+                                                SizedBox(height: 35.0,),
+                                                new Container(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Material(
+                                                      borderRadius: BorderRadius.circular(25.0),
+                                                      color: Colors.white,
+                                                      elevation: 5.0,
+                                                      child: MaterialButton(
+                                                          onPressed: (){
+                                                            Navigator.push(context, MaterialPageRoute(
+                                                                builder: (context) => SignInPage()
+                                                            ));
+                                                          },
+                                                          minWidth: MediaQuery.of(context).size.width,
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              Padding(
+                                                                padding: EdgeInsets.all(4.0),
+                                                                child: Icon(Icons.phone),
+                                                              ),
+
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left: 38.0),
+                                                              ),
+
+                                                              Text('Sign in With Phone',
+                                                                textAlign: TextAlign.left,
+                                                                style: TextStyle(
+                                                                    color: Colors.black87,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    fontSize: 18.0
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Material(
+                                                      borderRadius: BorderRadius.circular(25.0),
+                                                      color: Colors.white,
+                                                      elevation: 5.0,
+                                                      child: MaterialButton(
+                                                        onPressed: (){
+                                                          handleSignIn();
+                                                        },
+                                                        minWidth: MediaQuery.of(context).size.width,
+                                                        child: Row(
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(4.0),
+                                                              child: Image.asset('images/g_logo.png',
+                                                                width: 30.0,
+                                                                height: 30.0,
+                                                              ),
+                                                            ),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(left: 32.0),
+                                                            ),
+                                                            Text('Sign in with Google',
+                                                              textAlign: TextAlign.left,
+                                                              style: TextStyle(
+                                                                  color: Colors.black87,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  fontSize: 18.0
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ]
+                                          ),
+                                        )
+                                    )        //login,
+                                ),
+                                Visibility(
+                                  visible: loading ?? true,
+                                  child: Center(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      color: Colors.white.withOpacity(0.9),
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                        )
+                      ],
+                    ),
+                  )
               )
           )
-      ),
     );
   }
 

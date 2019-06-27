@@ -19,6 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^0.4.0+6
   carousel_pro: ^0.0.13
   cloud_firestore: ^0.12.1
   firebase_auth: ^0.11.1+6
@@ -96,6 +97,7 @@ flutter:
     - images/daily.png
     - images/med.png
     - images/location.png
+    - images/
   
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
           title: 'Half n Hour',
           theme: CupertinoThemeData(
             primaryColor: Colors.pinkAccent,
+            barBackgroundColor: Colors.pinkAccent
           ),
           home: SplashScreen(),
         )
@@ -102,16 +103,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return isIOS ?
         CupertinoPageScaffold(
           child: Stack(
+            fit: StackFit.expand,
             children: <Widget>[
               Container(
-              decoration: BoxDecoration(
-                color: Color(0xff622F74),
-                gradient: LinearGradient(
-                  colors: [Color(0xff6094e8), Color(0xffde5cbc)],
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft
-                )
-              ),
+                decoration: BoxDecoration(
+                    color: Color(0xff622F74),
+                    gradient: LinearGradient(
+                        colors: [Color(0xff6094e8), Color(0xffde5cbc)],
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft
+                    )
+                ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -123,7 +125,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           CircleAvatar(
-                              backgroundColor: CupertinoColors.white,
+                              backgroundColor: Colors.white,
                               radius: 50.0,
                               child: Image.asset('images/launcher_icon.png',
                                 fit: BoxFit.cover,
@@ -138,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                           Text('Half n Hour',
                             style: TextStyle(
-                                color: CupertinoColors.white,
+                                color: Colors.white,
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold
                             ),
@@ -153,15 +155,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        CircularProgressIndicator(
-                          backgroundColor: CupertinoColors.white,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 20.0),
-                        ),
                         Text('Online Store\nfor Everyone',
                           style: TextStyle(
-                              color: CupertinoColors.white,
+                              color: Colors.white,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold
                           ),
