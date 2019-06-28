@@ -36,7 +36,7 @@ class home extends State<ProductNew> {
       category: 'Fruits & Vegetables',
       price: '75',
       Prod_id: '009',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
       imageUrl: 'images/frozen.jpg',
@@ -44,7 +44,7 @@ class home extends State<ProductNew> {
       category: 'Frozen Veg',
       price: '100',
       Prod_id: '010',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
       imageUrl: 'images/bev.jpg',
@@ -52,7 +52,7 @@ class home extends State<ProductNew> {
       category: 'Beverages',
       price: '100',
       Prod_id: '011',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
     ),
     Photo(
       imageUrl: 'images/brand_f.jpg',
@@ -60,7 +60,7 @@ class home extends State<ProductNew> {
       category: 'Brannded Food',
       price: '500',
       Prod_id: '012',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
       imageUrl: 'images/be.jpg',
@@ -68,7 +68,7 @@ class home extends State<ProductNew> {
       category: 'Beauty & Personal Care',
       price: '200',
       Prod_id: '013',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
       imageUrl: 'images/home.jpg',
@@ -76,7 +76,7 @@ class home extends State<ProductNew> {
       category: 'Home Care & Fashion',
       price: '10000',
       Prod_id: '014',
-      desc: ""
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     )
   ];
   SharedPreferences _preferences;
@@ -438,11 +438,9 @@ class home extends State<ProductNew> {
                         new Row(
                           children: <Widget>[
                             new GestureDetector(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               child: new Text(
-                                'Whats New',
+                                'What\'s New',
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Colors.black87,
@@ -455,7 +453,8 @@ class home extends State<ProductNew> {
                 ),
                 new Container(
                   alignment: Alignment.topCenter,
-                  height: 700.0,
+                  height: isIOS ? MediaQuery.of(context).size.height*photos.length/2.25 :
+                  MediaQuery.of(context).size.height*photos.length/2.15,
 
                   child: new GridView.builder(
                       itemCount: photos.length,
@@ -463,87 +462,78 @@ class home extends State<ProductNew> {
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10.0),
                       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
+                          crossAxisCount: 1),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
                             onTap: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => ProductDetails(
-                                  imageUrl: photos[index].imageUrl,
-                                  title: photos[index].title,
-                                  category: photos[index].category,
-                                  price: photos[index].price,
-                                  desc: photos[index].desc,
-                                  Prod_id: photos[index].Prod_id,
-                                )
+                                  builder: (context) => ProductDetails(
+                                    imageUrl: photos[index].imageUrl,
+                                    title: photos[index].title,
+                                    price: photos[index].price,
+                                    Prod_id: photos[index].Prod_id,
+                                    category: photos[index].category,
+                                    desc: photos[index].desc,
+                                  )
                               ));
                             },
                             child: new Container(
                                 margin: EdgeInsets.all(5.0),
+                                height: 100.0,
+                                width: MediaQuery.of(context).size.width,
                                 child: new Card(
-                                  shape: shapeBorder,
-                                  elevation: 5.0,
-                                  child: new Container(
-                                    //  mainAxisSize: MainAxisSize.max,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.0)
+                                    ),
+                                    elevation: 5.0,
+                                    child: Stack(
                                       children: <Widget>[
-                                        SizedBox(
-                                          height: 152.0,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Positioned.fill(
-                                                  child: Image.asset(
-                                                    photos[index].imageUrl,
-                                                    fit: BoxFit.cover,
-                                                  )),
-                                              Container(
-                                                color: Colors.black26,
-                                              ),
-                                              Container(
-                                                //margin: EdgeInsets.only(left: 10.0),
-                                                padding: EdgeInsets.only(
-                                                    left: 3.0, bottom: 3.0),
-                                                alignment: Alignment.bottomLeft,
-                                                child: new Text(
-                                                  photos[index].title,
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                              ),
-
-                                              Container(
-                                                //margin: EdgeInsets.only(left: 10.0),
-                                                padding: EdgeInsets.only(right: 3.0),
-                                                alignment: Alignment.bottomRight,
-                                                child: new Text(
-                                                  "₹ " + photos[index].price,
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
+                                        Container(
+                                            height:MediaQuery.of(context).size.width * 5,
+                                            width: MediaQuery.of(context).size.width,
+                                            alignment: Alignment.topCenter,
+                                            child: Image.asset(
+                                              photos[index].imageUrl,
+                                              fit: BoxFit.fitWidth,
+                                            )
                                         ),
 
-                                        // new Text(photos[index].title.toString()),
+                                        Container(
+                                          padding: EdgeInsets.only(top: 10.0),
+                                          alignment: Alignment.bottomCenter,
+                                          child: ListTile(
+                                            contentPadding: EdgeInsets.only(left: 10.0),
+                                            title: Text(photos[index].title,
+                                              style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 15.0
+                                              ),
+                                            ),
+                                            subtitle: Container(
+                                              padding: EdgeInsets.only(top: 10.0),
+                                              child: Text("₹" + photos[index].price,
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 15.0
+                                                ),
+                                              ),
+                                            ),
+                                            trailing: IconButton(
+                                              icon: Icon(Icons.favorite_border,
+                                                color: Colors.black87,
+                                              ),
+                                              onPressed: (){},
+                                            ),
+                                          ),
+                                        )
                                       ],
-                                    ),
-                                  ),
+                                    )
                                 )
                             )
 
                         );
                       }),
-                ),
+                )
 
               ]),
             ),

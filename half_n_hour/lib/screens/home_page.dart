@@ -30,14 +30,8 @@ class home extends State<MyHomePage> {
   List list = ['12', '11'];
 
   SharedPreferences _preferences;
-  String uid,
-      uname = "",
-      email = "",
-      avatar;
-  bool hasUID = false,
-      isLoggedIn,
-      loggedwithMail,
-      loggedwithPhone;
+  String uid, uname = "", email = "", avatar;
+  bool hasUID = false, isLoggedIn, loggedwithMail, loggedwithPhone;
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -52,48 +46,48 @@ class home extends State<MyHomePage> {
     _preferences = await SharedPreferences.getInstance();
     uid = _preferences.getString("id") ?? null;
     isLoggedIn = _preferences.getBool("isLoggedIn") ?? false;
-    loggedwithMail =  _preferences.getBool("LoggedInwithMail") ?? false;
+    loggedwithMail = _preferences.getBool("LoggedInwithMail") ?? false;
     loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
 
-    setState((){
-      if (uid != null) { // for google sign in
+    setState(() {
+      if (uid != null) {
+        // for google sign in
         uname = user.displayName;
         email = user.email;
         avatar = user.photoUrl;
-      }
-      else if (isLoggedIn) { // for email(signup)
+      } else if (isLoggedIn) {
+        // for email(signup)
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("SignUname");
 
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
+        email = user.email != null
+            ? user.email.toString()
+            : _preferences.getString("SignEmail");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithMail) { // for email(login)
+      } else if (loggedwithMail) {
+        // for email(login)
         print("hello" + user.displayName);
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("LogUname");
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
+        email = user.email != null
+            ? user.email.toString()
+            : _preferences.getString("SignEmail");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithPhone) { // for phone
+      } else if (loggedwithPhone) {
+        // for phone
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("Phone");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else {
+      } else {
         uname = "Guest User";
         email = "guest@example.com";
       }
@@ -102,27 +96,28 @@ class home extends State<MyHomePage> {
 
   Future<bool> _onWillPop() {
     return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Yes'),
-          ),
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
-          ),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: new Text('Are you sure?'),
+                content: new Text('Do you want to exit an App'),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: new Text('Yes'),
+                  ),
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text('No'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
   }
 
   final List<String> items = ['Balbhadra', 'Maulik', 'Roshi'];
   static const double height = 366.0;
-  String name ='My Wishlist';
+  String name = 'My Wishlist';
 
   List<Photo> photos_popular = <Photo>[
     Photo(
@@ -131,64 +126,64 @@ class home extends State<MyHomePage> {
         category: 'Fruits & Vegetables',
         Prod_id: '001',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/frozen.jpg',
         title: 'Peas',
         category: 'Frozen Veg',
         Prod_id: '002',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/bev.jpg',
         title: 'Juice',
         category: 'Beverages',
         Prod_id: '003',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/brand_f.jpg',
         title: 'Grocery',
         category: 'Brannded Food',
         Prod_id: '004',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/be.jpg',
         title: 'Cosmetics',
         category: 'Beauty & Personal Care',
         Prod_id: '005',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/home.jpg',
         title: 'Furniture',
         category: 'Home Care & Fashion',
         Prod_id: '006',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/nonveg.jpg',
         title: 'Chicken',
         category: 'Non Veg',
         Prod_id: '007',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/eggs.jpg',
         title: 'Cake',
         category: 'Dairy, Bakery & Eggs',
         Prod_id: '008',
         price: '100',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
   ];
 
   @override
@@ -197,7 +192,7 @@ class home extends State<MyHomePage> {
     final Orientation orientation = MediaQuery.of(context).orientation;
     final ThemeData theme = Theme.of(context);
     final TextStyle titleStyle =
-    theme.textTheme.headline.copyWith(color: Colors.black54);
+        theme.textTheme.headline.copyWith(color: Colors.black54);
     final TextStyle descriptionStyle = theme.textTheme.subhead;
     Widget image_carousel = new Container(
       height: 200.0,
@@ -219,17 +214,15 @@ class home extends State<MyHomePage> {
       ),
     );
 
-
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
           appBar: new AppBar(
             iconTheme: IconThemeData(color: Colors.black87),
             backgroundColor: Colors.white70,
-
-            title: Text("Half n Hour",style: TextStyle(
-                color: Colors.black87,fontWeight: FontWeight.bold)),
-
+            title: Text("Half n Hour",
+                style: TextStyle(
+                    color: Colors.black87, fontWeight: FontWeight.bold)),
             actions: <Widget>[
               IconButton(
                 tooltip: 'Search',
@@ -240,7 +233,6 @@ class home extends State<MyHomePage> {
                     context: context,
                     //delegate: _delegate,
                   );
-
                 },
               ),
               new Padding(
@@ -250,12 +242,8 @@ class home extends State<MyHomePage> {
                   width: 30.0,
                   child: new GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          new MaterialPageRoute(
-                              builder:(BuildContext context) =>
-                                  Cart()
-                          )
-                      );
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => Cart()));
                     },
                     child: Stack(
                       children: <Widget>[
@@ -264,35 +252,32 @@ class home extends State<MyHomePage> {
                               Icons.shopping_cart,
                               color: Colors.black87,
                             ),
-                            onPressed: (){
-                              Navigator.of(context).push(
-                                  new MaterialPageRoute(
-                                      builder:(BuildContext context) =>
-                                          Cart()
-                                  )
-                              );
+                            onPressed: () {
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) => Cart()));
                             }),
                         list.length == 0
                             ? new Container()
                             : new Positioned(
-                            child: new Stack(
-                              children: <Widget>[
-                                new Icon(Icons.brightness_1,
-                                    size: 20.0, color: Colors.orange.shade500),
-                                new Positioned(
-                                    top: 4.0,
-                                    right: 5.5,
-                                    child: new Center(
-                                      child: new Text(
-                                        list.length.toString(),
-                                        style: new TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11.0,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )),
-                              ],
-                            )),
+                                child: new Stack(
+                                children: <Widget>[
+                                  new Icon(Icons.brightness_1,
+                                      size: 20.0,
+                                      color: Colors.orange.shade500),
+                                  new Positioned(
+                                      top: 4.0,
+                                      right: 5.5,
+                                      child: new Center(
+                                        child: new Text(
+                                          list.length.toString(),
+                                          style: new TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      )),
+                                ],
+                              )),
                       ],
                     ),
                   ),
@@ -305,22 +290,19 @@ class home extends State<MyHomePage> {
               children: <Widget>[
                 // header
                 UserAccountsDrawerHeader(
-                  accountName: Text(uname,
-                    style: TextStyle(
-                        color: Colors.black87
-                    ),
+                  accountName: Text(
+                    uname,
+                    style: TextStyle(color: Colors.black87),
                   ),
-                  accountEmail: Text(email,
-                    style: TextStyle(
-                        color: Colors.black87
-                    ),
+                  accountEmail: Text(
+                    email,
+                    style: TextStyle(color: Colors.black87),
                   ),
                   currentAccountPicture: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => Account()
-                        ));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Account()));
                       },
                       child: ClipOval(
                         child: CachedNetworkImage(
@@ -330,56 +312,57 @@ class home extends State<MyHomePage> {
                               ? avatar
                               : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
                         ),
-                      )
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.white70
-                  ),
+                      )),
+                  decoration: BoxDecoration(color: Colors.white70),
                 ),
                 // body
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Account()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Account()));
                   },
                   child: ListTile(
                       title: Text('My Account'),
-                      leading: Icon(Icons.person, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.person,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () {},
                   child: ListTile(
                       title: Text('My Orders'),
                       leading: Icon(
-                        Icons.shopping_basket, color: Colors.black87,)
-                  ),
+                        Icons.shopping_basket,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Cart()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Cart()));
                   },
                   child: ListTile(
                       title: Text('My Cart'),
-                      leading: Icon(Icons.shopping_cart, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () async {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Maps()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Maps()));
                   },
                   child: ListTile(
                       title: Text('Maps'),
-                      leading: Icon(Icons.map, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.map,
+                        color: Colors.black87,
+                      )),
                 ),
 
                 Divider(),
@@ -388,27 +371,28 @@ class home extends State<MyHomePage> {
                   onTap: () {},
                   child: ListTile(
                       title: Text('Settings'),
-                      leading: Icon(Icons.settings, color: Colors.black87,)
-                  ),
-                ), InkWell(
+                      leading: Icon(
+                        Icons.settings,
+                        color: Colors.black87,
+                      )),
+                ),
+                InkWell(
                   onTap: () {},
                   child: ListTile(
                       title: Text('About'),
-                      leading: Icon(Icons.help, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.help,
+                        color: Colors.black87,
+                      )),
                 ),
               ],
             ),
           ),
-
           body: new SingleChildScrollView(
             child: Container(
               child: new Column(children: <Widget>[
                 _verticalD(),
                 image_carousel,
-
-
-
                 new Container(
                   margin: EdgeInsets.only(top: 7.0),
                   child: new Row(
@@ -429,8 +413,10 @@ class home extends State<MyHomePage> {
                         _verticalD(),
                         new GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                                builder: (context) => ProductPopular()));
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductPopular()));
                           },
                           child: new Text(
                             'Popular',
@@ -451,7 +437,7 @@ class home extends State<MyHomePage> {
                                         builder: (context) => ProductNew()));
                               },
                               child: new Text(
-                                'Whats New',
+                                'What\'s New',
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Colors.black26,
@@ -465,86 +451,58 @@ class home extends State<MyHomePage> {
                 new Container(
                   alignment: Alignment.topCenter,
                   height: 700.0,
-
                   child: new GridView.builder(
                       itemCount: photos_popular.length,
                       primary: false,
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10.0),
-                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
+                      gridDelegate:
+                          new SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
-                            onTap: (){},
+                            onTap: () {},
                             child: new Container(
                                 margin: EdgeInsets.all(5.0),
                                 child: new Card(
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0)
-                                  ),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
                                   elevation: 5.0,
-                                  child: new Container(
-                                    //  mainAxisSize: MainAxisSize.max,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 152.0,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Positioned.fill(
-                                                  child: Image.asset(
-                                                    photos_popular[index].imageUrl,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                              ),
-
-                                              Container(
-                                                color: Colors.black26,
-                                              ),
-
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 3.0, bottom: 3.0),
-                                                alignment: Alignment.bottomLeft,
-                                                child: new Text(
-                                                  photos_popular[index].category,
-                                                  style: TextStyle(
-                                                      fontSize: 18.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Positioned.fill(
+                                          child: Image.asset(
+                                        photos_popular[index].imageUrl,
+                                        fit: BoxFit.fitHeight,
+                                      )),
+                                      Container(
+                                        color: Colors.black26,
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            left: 3.0, bottom: 3.0),
+                                        alignment: Alignment.bottomLeft,
+                                        child: new Text(
+                                          photos_popular[index].category,
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
                                         ),
-
-                                        // new Text(photos[index].title.toString()),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                )
-                            )
-
-                        );
+                                )));
                       }),
                 ),
-
               ]),
             ),
           ),
         ));
   }
 
-
-
-
-
   _verticalD() => Container(
-    margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
-  );
-
-
+        margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
+      );
 }

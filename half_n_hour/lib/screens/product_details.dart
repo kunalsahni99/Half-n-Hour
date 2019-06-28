@@ -102,17 +102,14 @@ class _ProductDetailsState extends State<ProductDetails> {
               footer: Container(
                 color: Colors.white70,
                 child: ListTile(
-                  leading: Text(widget.title,
+                  title: Text(widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0
                     ),
                   ),
-                  title: Row(
+                  subtitle: Row(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 50.0),
-                      ),
                        Expanded(
                          child: Text("₹ ${widget.price}",
                           style: TextStyle(

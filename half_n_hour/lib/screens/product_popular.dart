@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
@@ -28,8 +29,7 @@ class ProductPopular extends StatefulWidget {
 
 class home extends State<ProductPopular> {
   List list = ['12', '11'];
-
-
+  GlobalKey sizeKey;
 
   List<Photo> photos_popular = <Photo>[
     Photo(
@@ -95,6 +95,14 @@ class home extends State<ProductPopular> {
       Prod_id: '008',
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    ),
+    Photo(
+        imageUrl: 'images/eggs.jpg',
+        title: 'Cake',
+        category: 'Dairy, Bakery & Eggs',
+        Prod_id: '009',
+        price: '200',
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
   ];
   SharedPreferences _preferences;
@@ -435,10 +443,7 @@ class home extends State<ProductPopular> {
                         ),
                         _verticalD(),
                         new GestureDetector(
-                          onTap: () {
-
-
-                          },
+                          onTap: () {},
                           child: new Text(
                             'Popular',
                             style: TextStyle(
@@ -458,7 +463,7 @@ class home extends State<ProductPopular> {
                                         builder: (context) => ProductNew()));
                               },
                               child: new Text(
-                                'Whats New',
+                                'What\'s New',
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Colors.black26,
@@ -471,7 +476,8 @@ class home extends State<ProductPopular> {
                 ),
                 new Container(
                   alignment: Alignment.topCenter,
-                  height: 700.0,
+                  height: isIOS ? MediaQuery.of(context).size.height*photos_popular.length/2.25 :
+                                MediaQuery.of(context).size.height*photos_popular.length/2.15,
 
                   child: new GridView.builder(
                       itemCount: photos_popular.length,
@@ -479,7 +485,7 @@ class home extends State<ProductPopular> {
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10.0),
                       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
+                          crossAxisCount: 1),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
                             onTap: (){
@@ -496,69 +502,55 @@ class home extends State<ProductPopular> {
                             },
                             child: new Container(
                                 margin: EdgeInsets.all(5.0),
+                                height: 100.0,
+                                width: MediaQuery.of(context).size.width,
                                 child: new Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0)
                                   ),
                                   elevation: 5.0,
-                                  child: new Container(
-                                    //  mainAxisSize: MainAxisSize.max,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Container(
+                                        height:MediaQuery.of(context).size.width * 5,
+                                        width: MediaQuery.of(context).size.width,
+                                        alignment: Alignment.topCenter,
+                                        child: Image.asset(
+                                          photos_popular[index].imageUrl,
+                                          fit: BoxFit.fitWidth,
+                                        )
+                                      ),
 
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 152.0,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Positioned.fill(
-                                                  child: Image.asset(
-                                                    photos_popular[index].imageUrl,
-                                                    fit: BoxFit.cover,
-                                                  )
+                                      Container(
+                                        padding: EdgeInsets.only(top: 10.0),
+                                        alignment: Alignment.bottomCenter,
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.only(left: 10.0),
+                                          title: Text(photos_popular[index].title,
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 15.0
+                                            ),
+                                          ),
+                                          subtitle: Container(
+                                            padding: EdgeInsets.only(top: 10.0),
+                                            child: Text("₹" + photos_popular[index].price,
+                                              style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 15.0
                                               ),
-
-                                              Container(
-                                                color: Colors.black26,
-                                              ),
-
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 3.0, bottom: 3.0),
-                                                alignment: Alignment.bottomLeft,
-                                                child: new Text(
-                                                  photos_popular[index].title,
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                              ),
-
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 5.0),
-                                                alignment: Alignment.bottomRight,
-                                                child: new Text(
-                                                  "₹ " + photos_popular[index].price,
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                      FontWeight.bold),
-                                                ),
-                                              ),
-
-
-                                            ],
+                                            ),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: Icon(Icons.favorite_border,
+                                              color: Colors.black87,
+                                            ),
+                                            onPressed: (){},
                                           ),
                                         ),
-
-                                        // new Text(photos[index].title.toString()),
-                                      ],
-                                    ),
-                                  ),
+                                      )
+                                    ],
+                                  )
                                 )
                             )
 
