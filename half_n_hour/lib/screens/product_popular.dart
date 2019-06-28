@@ -541,12 +541,6 @@ class home extends State<ProductPopular> {
                                               ),
                                             ),
                                           ),
-                                          trailing: IconButton(
-                                            icon: Icon(Icons.favorite_border,
-                                              color: Colors.black87,
-                                            ),
-                                            onPressed: (){},
-                                          ),
                                         ),
                                       )
                                     ],
