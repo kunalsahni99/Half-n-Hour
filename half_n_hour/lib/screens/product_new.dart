@@ -77,7 +77,15 @@ class home extends State<ProductNew> {
       price: '10000',
       Prod_id: '014',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    )
+    ),
+    Photo(
+        imageUrl: 'images/eggs.jpg',
+        title: 'Cake',
+        category: 'Dairy, Bakery & Eggs',
+        Prod_id: '009',
+        price: '200',
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    ),
   ];
   SharedPreferences _preferences;
   String uid,
@@ -478,10 +486,8 @@ class home extends State<ProductNew> {
                               ));
                             },
                             child: new Container(
-                                margin: EdgeInsets.all(5.0),
-                                height: 100.0,
-                                width: MediaQuery.of(context).size.width,
-                                child: new Card(
+                                padding: EdgeInsets.only(bottom: 50.0),
+                                child: new Material(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20.0)
                                     ),
@@ -489,32 +495,52 @@ class home extends State<ProductNew> {
                                     child: Stack(
                                       children: <Widget>[
                                         Container(
-                                            height:MediaQuery.of(context).size.width * 5,
+                                            height:MediaQuery.of(context).size.width,
                                             width: MediaQuery.of(context).size.width,
                                             alignment: Alignment.topCenter,
-                                            child: Image.asset(
-                                              photos[index].imageUrl,
-                                              fit: BoxFit.fitWidth,
-                                            )
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(photos[index].imageUrl),
+                                                fit: BoxFit.cover
+                                              )
+                                            ),
                                         ),
 
                                         Container(
                                           padding: EdgeInsets.only(top: 10.0),
                                           alignment: Alignment.bottomCenter,
-                                          child: ListTile(
-                                            contentPadding: EdgeInsets.only(left: 10.0),
-                                            title: Text(photos[index].title,
-                                              style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15.0
-                                              ),
-                                            ),
-                                            subtitle: Container(
-                                              padding: EdgeInsets.only(top: 10.0),
-                                              child: Text("₹" + photos[index].price,
+                                          child: Container(
+                                            color: Colors.white70,
+                                            child: ListTile(
+                                              contentPadding: EdgeInsets.only(left: 10.0),
+                                              title: Text(photos[index].title,
                                                 style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 15.0
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18.0
+                                                ),
+                                              ),
+                                              subtitle: Container(
+                                                padding: EdgeInsets.only(top: 12.0),
+                                                child: Text("₹" + photos[index].price,
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 15.0
+                                                  ),
+                                                ),
+                                              ),
+                                              trailing: Padding(
+                                                padding: const EdgeInsets.only(right: 20.0),
+                                                child: MaterialButton(
+                                                  onPressed: (){},
+                                                  color: Colors.black45,
+                                                  elevation: 3.0,
+                                                  textColor: Colors.white,
+                                                  child: Text("ADD",
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -534,10 +560,6 @@ class home extends State<ProductNew> {
           ),
         ));
   }
-
-
-
-
 
   _verticalD() => Container(
     margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),

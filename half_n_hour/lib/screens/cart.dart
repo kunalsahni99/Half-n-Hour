@@ -60,10 +60,10 @@ class _CartState extends State<Cart> {
             Expanded(
               child: MaterialButton(
                   onPressed: (){},
-                  color: Colors.pinkAccent,
+                  color: Colors.white70,
                   child: Text('Check Out',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black87,
                         fontWeight: FontWeight.bold
                     ),
                   )

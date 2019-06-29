@@ -25,16 +25,16 @@ class CartProducts extends StatefulWidget {
 class _CartProductsState extends State<CartProducts> {
   var Products_on_Cart = [
     {
-      "name": 'Orange',
+      "name": 'This is a very very very very long text',
       "picture": 'images/products/fruits1.jpg',
       "price": '85',
       "quantity": 1
     },
     {
-      "name": 'Capsicum',
-      "picture": 'images/products/veg1.jpeg',
-      "price": '50',
-      "quantity": 2
+      "name": 'Parle Hide & Seek Chocolate and Cream',
+      "picture": 'images/groceries.jpg',
+      "price": '500',
+      "quantity": 1
     },
   ];
 
@@ -75,7 +75,7 @@ class SingleCartProduct extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
         elevation: 3.0,
         child: Container(
-          padding: EdgeInsets.only(left: 15.0, right: 10.0),
+          padding: EdgeInsets.only(left: 5.0, right: 10.0),
           width: MediaQuery.of(context).size.width - 20.0,
           height: 150.0,
           decoration: BoxDecoration(
@@ -96,32 +96,69 @@ class SingleCartProduct extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(width: 4.0),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0, left: 2.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text("₹ " + cart_prod_price,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30.0),
+                        child: Text("₹ " + cart_prod_price,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0
+                          ),
+                        ),
                       ),
-                    ),
 
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                    ),
-
-                    Text(cart_prod_name,
-                      style: TextStyle(
-                          fontSize: 15.0,
-                          color: Colors.black26
+                      Container(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Text(cart_prod_name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: Colors.black26,
+                              fontSize: 15.0
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.remove_circle_outline,
+                                color: Colors.redAccent,
+                              ),
+                              onPressed: (){},
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text(cart_prod_qty.toString(),
+                                style: TextStyle(
+                                    color: Colors.black45
+                                ),
+                              ),
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: IconButton(
+                                icon: Icon(Icons.add_circle_outline,
+                                  color: Colors.lightGreen,
+                                ),
+                                onPressed: (){},
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),

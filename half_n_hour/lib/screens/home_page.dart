@@ -147,7 +147,7 @@ class home extends State<MyHomePage> {
     Photo(
         imageUrl: 'images/brand_f.jpg',
         title: 'Grocery',
-        category: 'Brannded Food',
+        category: 'Branded Food',
         Prod_id: '004',
         price: '100',
         desc:
