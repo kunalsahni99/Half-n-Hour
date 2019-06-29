@@ -231,6 +231,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             children: <Widget>[
               // the size button
               Expanded(
+                flex: 2,
                 child: MaterialButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)
@@ -243,18 +244,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
 
-              IconButton(
-                icon: Icon(Icons.add_shopping_cart,
-                  color: Colors.black87,
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  icon: Icon(Icons.add_shopping_cart,
+                    color: Colors.black87,
+                  ),
+                  onPressed: (){},
                 ),
-                onPressed: (){},
-              ),
-
-              IconButton(
-                icon: Icon(Icons.favorite_border,
-                  color: Colors.black87,
-                ),
-                onPressed: (){},
               ),
             ],
           ),
