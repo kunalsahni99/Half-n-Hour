@@ -37,28 +37,7 @@ class SignInPageState extends State<SignInPage> {
           },
         ),
         backgroundColor: Colors.white70,
-        actions: <Widget>[
-          Builder(builder: (BuildContext context) {
-            return FlatButton(
-              child: const Text('Sign out',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold  )),
-              textColor: Theme.of(context).buttonColor,
-              onPressed: () async {
-                final FirebaseUser user = await _auth.currentUser();
-                if (user == null) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: const Text('No one has signed in.'),
-                  ));
-                  return;
-                }
-                _signOut();
-                final String uid = user.uid;
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(uid + ' has successfully signed out.'),
-                ));
-              },
-            );
-          })
-        ],
+
       ),
       body: Builder(builder: (BuildContext context) {
         return ListView(
@@ -73,10 +52,8 @@ class SignInPageState extends State<SignInPage> {
     );
   }
 
-  // Example code for sign out.
-  void _signOut() async {
-    await _auth.signOut();
-  }
+
+
 }
 
 
@@ -297,7 +274,7 @@ class _PhoneSignInSectionState extends State<_PhoneSignInSection> {
 
 
 
-        Fluttertoast.showToast(msg: "Welcome"+_phoneNumberController.text,
+        Fluttertoast.showToast(msg: "Welcome "+_phoneNumberController.text,
             fontSize: 14.0,
             backgroundColor: Colors.black87
         );
