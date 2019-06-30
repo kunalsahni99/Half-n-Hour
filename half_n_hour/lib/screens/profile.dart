@@ -142,7 +142,7 @@ class _AccountState extends State<Account> {
       _preferences.remove("address2pin");
     }
     else{
-      Fluttertoast.showToast(msg: "You need to login first",
+      Fluttertoast.showToast(msg: "You have successfully signed out.",
           fontSize: 14.0,
           backgroundColor: Colors.black87
       );
@@ -415,7 +415,7 @@ class _AccountState extends State<Account> {
                 content: Form(
                   key: Form3Key,
                   child: Container(
-                    height: MediaQuery.of(context).size.height/10,
+                    height: MediaQuery.of(context).size.height/9,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -523,7 +523,7 @@ class _AccountState extends State<Account> {
                   new Container(
                     margin: EdgeInsets.all(7.0),
                     alignment: Alignment.topCenter,
-                    height: 260.0,
+                    height: 310.0,
                     child: new Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)
@@ -545,7 +545,6 @@ class _AccountState extends State<Account> {
                                   ),
                                 ),
                               )),
-
                           new FlatButton(
                             onPressed: ()async{
                               final FirebaseUser User = await _auth.currentUser();
@@ -557,13 +556,38 @@ class _AccountState extends State<Account> {
                               }
                             },
                             child: Text(
-                              'Change',
+                              'Gallery',
                               style:
-                              TextStyle(fontSize: 13.0, color: Colors.blueAccent),
+                              TextStyle(fontSize: 16.0, color: Colors.pink,fontWeight: FontWeight.bold
+                              ),
                             ),
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.blueAccent)),
+                                side: BorderSide(color: Colors.pink)),
+                            color: Colors.white,
+
+                          ),
+                          new FlatButton(
+                            onPressed: ()async{
+                              final FirebaseUser User = await _auth.currentUser();
+                              if (User != null){
+                                _takeAndUploadPicture();
+                              }
+                              else{
+                                Fluttertoast.showToast(msg: "You need to login first");
+                              }
+                            },
+                            child: Text(
+                              'Camera',
+                              style:
+                              TextStyle(fontSize: 16.0, color: Colors.pink,fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                                side: BorderSide(color: Colors.pink)),
+                            color: Colors.white,
+
                           ),
 
                           new Row(
@@ -638,7 +662,7 @@ class _AccountState extends State<Account> {
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           Container(
-                            width: MediaQuery.of(context).size.width/1.25,
+                            width: MediaQuery.of(context).size.width/1.2,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                                 shape: RoundedRectangleBorder(
@@ -780,7 +804,7 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width/1.25,
+                            width: MediaQuery.of(context).size.width/1.2,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                                 shape: RoundedRectangleBorder(
@@ -977,7 +1001,8 @@ class _AccountState extends State<Account> {
                     Navigator.pop(context);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => Login()
-                    ));},
+                    ));}
+                    ,
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)
@@ -1025,15 +1050,17 @@ class _AccountState extends State<Account> {
   }
 
   Future _takeProfilePicture() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(source: ImageSource.camera,maxHeight:  400 , maxWidth: 400);
+
 
     setState((){
+      loading = true;
       _image = image;
     });
   }
 
   Future _selectProfilePicture() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error){
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery,maxHeight:  400 , maxWidth: 400).catchError((error){
       setState(() {
         loading = false;
       });
