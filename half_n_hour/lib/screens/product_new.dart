@@ -304,12 +304,12 @@ class home extends State<ProductNew> {
                 UserAccountsDrawerHeader(
                   accountName: Text(uname,
                     style: TextStyle(
-                      color: Colors.black87
+                      color: Colors.black87,fontWeight: FontWeight.bold
                     ),
                   ),
                   accountEmail: Text(email,
                     style: TextStyle(
-                        color: Colors.black87
+                        color: Colors.black26
                     ),
                   ),
                   currentAccountPicture: GestureDetector(
@@ -330,7 +330,7 @@ class home extends State<ProductNew> {
                       )
                   ),
                   decoration: BoxDecoration(
-                      color: Colors.white70
+                      color: Colors.grey[300]
                   ),
                 ),
                 // body
@@ -408,7 +408,7 @@ class home extends State<ProductNew> {
                   margin: EdgeInsets.only(top: 7.0),
                   child: new Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         _verticalD(),
                         new GestureDetector(
@@ -419,7 +419,7 @@ class home extends State<ProductNew> {
                                     builder: (context) => MyHomePage()));
                           },
                           child: new Text(
-                            'Categories',
+                            'Categories   ',
                             style: TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.black26,
@@ -427,25 +427,13 @@ class home extends State<ProductNew> {
                           ),
                         ),
                         _verticalD(),
-                        new GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProductPopular()));
-                          },
-                          child: new Text(
-                            'Popular',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black26,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        _verticalD(),
+
+
                         new Row(
+
                           children: <Widget>[
                             new GestureDetector(
+
                               onTap: () {},
                               child: new Text(
                                 'What\'s New',
@@ -453,7 +441,9 @@ class home extends State<ProductNew> {
                                     fontSize: 20.0,
                                     color: Colors.black87,
                                     fontWeight: FontWeight.bold),
+
                               ),
+
                             ),
                           ],
                         )
