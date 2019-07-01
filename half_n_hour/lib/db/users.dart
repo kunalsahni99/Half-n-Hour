@@ -4,6 +4,8 @@ class UserServices{
   FirebaseDatabase _database = FirebaseDatabase.instance;
   String ref = "users";
 
+  var CartList = [];
+
   void createUser(String id, Map value){
     _database.reference().child("$ref/$id")
         .set(value)
@@ -11,5 +13,4 @@ class UserServices{
           print(e.toString());
         });
   }
-
 }

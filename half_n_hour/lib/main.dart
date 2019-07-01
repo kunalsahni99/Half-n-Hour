@@ -4,38 +4,44 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:provider/provider.dart';
 
 import './screens/home_page.dart';
 import './screens/onboard.dart';
 import 'package:flutter/rendering.dart';
 
+import 'components/photo.dart';
+
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
-void main() => runApp(MyApp());
+void main() => runApp(HalfnHour());
 
-class MyApp extends StatelessWidget {
+class HalfnHour extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return isIOS ?
-        CupertinoApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Half n Hour',
-          theme: CupertinoThemeData(
-            primaryColor: Colors.pinkAccent,
-            barBackgroundColor: Colors.pinkAccent
+    return ChangeNotifierProvider<CartModel>(
+      builder: (context) => CartModel(),
+      child: isIOS ?
+          CupertinoApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Half n Hour',
+            theme: CupertinoThemeData(
+              primaryColor: Colors.white70,
+              barBackgroundColor: Colors.white70
+            ),
+            home: SplashScreen()
+          )
+          :MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Half n Hour',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              primaryColor: Colors.white,
+              fontFamily: 'Product Sans'
+            ),
+            home: SplashScreen()
           ),
-          home: SplashScreen(),
-        )
-        :MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Half n Hour',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            primaryColor: Colors.pinkAccent,
-            fontFamily: 'Product Sans'
-          ),
-          home: SplashScreen(),
-        );
+    );
   }
 }
 

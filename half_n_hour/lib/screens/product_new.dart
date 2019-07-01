@@ -31,62 +31,63 @@ class home extends State<ProductNew> {
 
   List<Photo> photos = <Photo>[
     Photo(
-      imageUrl: 'images/veg.jpg',
-      title: 'Fruits',
-      category: 'Fruits & Vegetables',
-      price: '75',
-      Prod_id: '009',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        imageUrl: 'images/veg.jpg',
+        title: 'Fruits',
+        category: 'Fruits & Vegetables',
+        price: '75',
+        Prod_id: 9,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
-      imageUrl: 'images/frozen.jpg',
-      title: 'Peas',
-      category: 'Frozen Veg',
-      price: '100',
-      Prod_id: '010',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        imageUrl: 'images/frozen.jpg',
+        title: 'Peas',
+        category: 'Frozen Veg',
+        price: '100',
+        Prod_id: 10,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
-      imageUrl: 'images/bev.jpg',
-      title: 'Tea',
-      category: 'Beverages',
-      price: '100',
-      Prod_id: '011',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        imageUrl: 'images/bev.jpg',
+        title: 'Tea',
+        category: 'Beverages',
+        price: '100',
+        Prod_id: 11,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
     ),
     Photo(
-      imageUrl: 'images/brand_f.jpg',
-      title: 'Shaktibhog Atta',
-      category: 'Brannded Food',
-      price: '500',
-      Prod_id: '012',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        imageUrl: 'images/brand_f.jpg',
+        title: 'Shaktibhog Atta',
+        category: 'Brannded Food',
+        price: '500',
+        Prod_id: 12,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
-      imageUrl: 'images/be.jpg',
-      title: 'Lipstick',
-      category: 'Beauty & Personal Care',
-      price: '200',
-      Prod_id: '013',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        imageUrl: 'images/be.jpg',
+        title: 'Lipstick',
+        category: 'Beauty & Personal Care',
+        price: '200',
+        Prod_id: 13,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
-      imageUrl: 'images/home.jpg',
-      title: 'Table',
-      category: 'Home Care & Fashion',
-      price: '10000',
-      Prod_id: '014',
-      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        imageUrl: 'images/home.jpg',
+        title: 'Table',
+        category: 'Home Care & Fashion',
+        price: '10000',
+        Prod_id: 14,
+        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
     Photo(
         imageUrl: 'images/eggs.jpg',
         title: 'Cake',
         category: 'Dairy, Bakery & Eggs',
-        Prod_id: '009',
+        Prod_id: 15,
         price: '200',
         desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
   ];
+
   SharedPreferences _preferences;
   String uid,
       uname = "",
@@ -222,8 +223,8 @@ class home extends State<ProductNew> {
 
             title: Text("Half n Hour",
                 style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold
                 )
             ),
 
@@ -304,7 +305,7 @@ class home extends State<ProductNew> {
                 UserAccountsDrawerHeader(
                   accountName: Text(uname,
                     style: TextStyle(
-                      color: Colors.black87,fontWeight: FontWeight.bold
+                        color: Colors.black87,fontWeight: FontWeight.bold
                     ),
                   ),
                   accountEmail: Text(email,
@@ -485,15 +486,15 @@ class home extends State<ProductNew> {
                                     child: Stack(
                                       children: <Widget>[
                                         Container(
-                                            height:MediaQuery.of(context).size.width,
-                                            width: MediaQuery.of(context).size.width,
-                                            alignment: Alignment.topCenter,
-                                            decoration: BoxDecoration(
+                                          height:MediaQuery.of(context).size.width,
+                                          width: MediaQuery.of(context).size.width,
+                                          alignment: Alignment.topCenter,
+                                          decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                image: AssetImage(photos[index].imageUrl),
-                                                fit: BoxFit.cover
+                                                  image: AssetImage(photos[index].imageUrl),
+                                                  fit: BoxFit.cover
                                               )
-                                            ),
+                                          ),
                                         ),
 
                                         Container(
@@ -528,7 +529,7 @@ class home extends State<ProductNew> {
                                                   textColor: Colors.white,
                                                   child: Text("ADD",
                                                     style: TextStyle(
-                                                      fontWeight: FontWeight.bold
+                                                        fontWeight: FontWeight.bold
                                                     ),
                                                   ),
                                                 ),

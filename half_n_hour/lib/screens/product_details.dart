@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+
+import '../components/photo.dart';
+
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
@@ -11,7 +15,8 @@ class ProductDetails extends StatefulWidget {
   final String title;
   final String desc;
   final String price;
-  final String Prod_id;
+  final int Prod_id;
+  final int index;
 
   ProductDetails({
     this.imageUrl,
@@ -19,7 +24,8 @@ class ProductDetails extends StatefulWidget {
     this.title,
     this.desc,
     this.price,
-    this.Prod_id
+    this.Prod_id,
+    this.index
   });
 
   @override
@@ -58,6 +64,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
+    var cart = Provider.of<CartModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: InkWell(
@@ -250,8 +258,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                   icon: Icon(Icons.add_shopping_cart,
                     color: Colors.black87,
                   ),
-                  onPressed: (){},
-                ),
+                  onPressed: (){
+                    Photo photo = Photo(
+                        imageUrl: widget.imageUrl,
+                        title: widget.title,
+                        price: widget.price,
+                        qty: currQty,
+                        Prod_id: widget.Prod_id
+                    );
+                    cart.add(photo);
+                  },
+                )
               ),
             ],
           ),
@@ -383,6 +400,7 @@ class _SimilarProductsState extends State<SimilarProducts> {
           prod_picture: product_list[index]['picture'],
           prod_old_price: product_list[index]['old_price'],
           prod_price: product_list[index]['price'],
+          index: index,
         );
       },
     );
@@ -394,12 +412,14 @@ class SimilarSingleProd extends StatelessWidget {
   final prod_picture;
   final prod_old_price;
   final prod_price;
+  final int index;
 
   SimilarSingleProd({
     this.prod_name,
     this.prod_price,
     this.prod_picture,
     this.prod_old_price,
+    this.index
   });
 
   @override
@@ -413,6 +433,7 @@ class SimilarSingleProd extends StatelessWidget {
                 title: prod_name,
                 imageUrl: prod_picture,
                 price: prod_price,
+                index: index,
               )
             )),
             child: GridTile(

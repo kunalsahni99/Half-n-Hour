@@ -142,7 +142,7 @@ class _AccountState extends State<Account> {
       _preferences.remove("address2pin");
     }
     else{
-      Fluttertoast.showToast(msg: "You have successfully signed out.",
+      Fluttertoast.showToast(msg: "You need to login first",
           fontSize: 14.0,
           backgroundColor: Colors.black87
       );
@@ -415,7 +415,7 @@ class _AccountState extends State<Account> {
                 content: Form(
                   key: Form3Key,
                   child: Container(
-                    height: MediaQuery.of(context).size.height/9,
+                    height: MediaQuery.of(context).size.height/10,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -523,7 +523,7 @@ class _AccountState extends State<Account> {
                   new Container(
                     margin: EdgeInsets.all(7.0),
                     alignment: Alignment.topCenter,
-                    height: 310.0,
+                    height: 260.0,
                     child: new Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)
@@ -545,6 +545,7 @@ class _AccountState extends State<Account> {
                                   ),
                                 ),
                               )),
+
                           new FlatButton(
                             onPressed: ()async{
                               final FirebaseUser User = await _auth.currentUser();
@@ -558,12 +559,12 @@ class _AccountState extends State<Account> {
                             child: Text(
                               'Gallery',
                               style:
-                              TextStyle(fontSize: 16.0, color: Colors.pink,fontWeight: FontWeight.bold
+                              TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
                               ),
                             ),
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.pink)),
+                                side: BorderSide(color: Colors.blueAccent)),
                             color: Colors.white,
 
                           ),
@@ -580,12 +581,12 @@ class _AccountState extends State<Account> {
                             child: Text(
                               'Camera',
                               style:
-                              TextStyle(fontSize: 16.0, color: Colors.pink,fontWeight: FontWeight.bold
+                              TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
                               ),
                             ),
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.pink)),
+                                side: BorderSide(color: Colors.blueAccent)),
                             color: Colors.white,
 
                           ),
@@ -662,7 +663,7 @@ class _AccountState extends State<Account> {
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
                           Container(
-                            width: MediaQuery.of(context).size.width/1.2,
+                            width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                                 shape: RoundedRectangleBorder(
@@ -804,7 +805,7 @@ class _AccountState extends State<Account> {
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width/1.2,
+                            width: MediaQuery.of(context).size.width/1.25,
                             margin: EdgeInsets.all(7.0),
                             child: Card(
                                 shape: RoundedRectangleBorder(
@@ -1001,8 +1002,7 @@ class _AccountState extends State<Account> {
                     Navigator.pop(context);
                     Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => Login()
-                    ));}
-                    ,
+                    ));},
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)
@@ -1050,17 +1050,15 @@ class _AccountState extends State<Account> {
   }
 
   Future _takeProfilePicture() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.camera,maxHeight:  400 , maxWidth: 400);
-
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState((){
-      loading = true;
       _image = image;
     });
   }
 
   Future _selectProfilePicture() async{
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery,maxHeight:  400 , maxWidth: 400).catchError((error){
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error){
       setState(() {
         loading = false;
       });

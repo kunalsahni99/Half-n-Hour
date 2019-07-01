@@ -36,7 +36,7 @@ class home extends State<ProductPopular> {
         imageUrl: 'images/veg.jpg',
         title: 'Fruits',
         category: 'Fruits & Vegetables',
-        Prod_id: '001',
+        Prod_id: 1,
         price: '100',
         desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -44,7 +44,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/frozen.jpg',
       title: 'Peas',
       category: 'Frozen Veg',
-      Prod_id: '002',
+      Prod_id: 2,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -52,7 +52,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/bev.jpg',
       title: 'Juice',
       category: 'Beverages',
-      Prod_id: '003',
+      Prod_id: 3,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -60,7 +60,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/brand_f.jpg',
       title: 'Grocery',
       category: 'Brannded Food',
-      Prod_id: '004',
+      Prod_id: 4,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -68,7 +68,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/be.jpg',
       title: 'Cosmetics',
       category: 'Beauty & Personal Care',
-      Prod_id: '005',
+      Prod_id: 5,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -76,7 +76,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/home.jpg',
       title: 'Furniture',
       category: 'Home Care & Fashion',
-      Prod_id: '006',
+      Prod_id: 6,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -84,7 +84,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/nonveg.jpg',
       title: 'Chicken',
       category: 'Non Veg',
-      Prod_id: '007',
+      Prod_id: 7,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -92,7 +92,7 @@ class home extends State<ProductPopular> {
       imageUrl: 'images/eggs.jpg',
       title: 'Cake',
       category: 'Dairy, Bakery & Eggs',
-      Prod_id: '008',
+      Prod_id: 8,
       price: '100',
       desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),
@@ -100,7 +100,7 @@ class home extends State<ProductPopular> {
         imageUrl: 'images/eggs.jpg',
         title: 'Cake',
         category: 'Dairy, Bakery & Eggs',
-        Prod_id: '009',
+        Prod_id: 9,
         price: '200',
         desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     ),

@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
+import 'package:provider/provider.dart';
+
+import 'photo.dart';
+
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class CartProducts extends StatefulWidget {
 
   final String imageUrl;
   final String title;
-  final String qty;
+  final int qty;
   final String price;
 
   CartProducts({
@@ -23,31 +27,25 @@ class CartProducts extends StatefulWidget {
 }
 
 class _CartProductsState extends State<CartProducts> {
-  var Products_on_Cart = [
-    {
-      "name": 'This is a very very very very long text',
-      "picture": 'images/products/fruits1.jpg',
-      "price": '85',
-      "quantity": 1
-    },
-    {
-      "name": 'Parle Hide & Seek Chocolate and Cream',
-      "picture": 'images/groceries.jpg',
-      "price": '500',
-      "quantity": 1
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var cart = Provider.of<CartModel>(context);
+
     return ListView.builder(
-      itemCount: Products_on_Cart.length,
+      itemCount: cart.items.length,
       itemBuilder: (context, index){
+        print(cart.items);
         return SingleCartProduct(
-          cart_prod_name: Products_on_Cart[index]['name'],
-          cart_prod_picture: Products_on_Cart[index]['picture'],
-          cart_prod_price: Products_on_Cart[index]['price'],
-          cart_prod_qty: Products_on_Cart[index]['quantity'],
+          cart_prod_name: cart.items[index].title,
+          cart_prod_picture: cart.items[index].imageUrl,
+          cart_prod_price: cart.items[index].price,
+          cart_prod_qty: cart.items[index].qty,
+          cart_prod_id: cart.items[index].Prod_id,
         );
       },
     );
@@ -55,16 +53,18 @@ class _CartProductsState extends State<CartProducts> {
 }
 
 class SingleCartProduct extends StatelessWidget {
-  final cart_prod_name;
-  final cart_prod_picture;
-  final cart_prod_price;
-  final cart_prod_qty;
+  final String cart_prod_name;
+  final String cart_prod_picture;
+  final String cart_prod_price;
+  final int cart_prod_qty;
+  final int cart_prod_id;
 
   SingleCartProduct({
     this.cart_prod_name,
     this.cart_prod_picture,
     this.cart_prod_price,
-    this.cart_prod_qty
+    this.cart_prod_qty,
+    this.cart_prod_id
   });
 
   @override
