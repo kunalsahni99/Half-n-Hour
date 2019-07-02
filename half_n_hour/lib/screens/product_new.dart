@@ -13,8 +13,11 @@ import './profile.dart';
 import 'maps.dart';
 import 'home_page.dart';
 import 'package:HnH/components/photo.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'phone.dart';
+import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
@@ -36,67 +39,61 @@ class home extends State<ProductNew> {
         category: 'Fruits & Vegetables',
         price: '75',
         Prod_id: 9,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/frozen.jpg',
         title: 'Peas',
         category: 'Frozen Veg',
         price: '100',
         Prod_id: 10,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/bev.jpg',
         title: 'Tea',
         category: 'Beverages',
         price: '100',
         Prod_id: 11,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"),
     Photo(
         imageUrl: 'images/brand_f.jpg',
         title: 'Shaktibhog Atta',
         category: 'Brannded Food',
         price: '500',
         Prod_id: 12,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/be.jpg',
         title: 'Lipstick',
         category: 'Beauty & Personal Care',
         price: '200',
         Prod_id: 13,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/home.jpg',
         title: 'Table',
         category: 'Home Care & Fashion',
         price: '10000',
         Prod_id: 14,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
     Photo(
         imageUrl: 'images/eggs.jpg',
         title: 'Cake',
         category: 'Dairy, Bakery & Eggs',
         Prod_id: 15,
         price: '200',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
+        desc:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
   ];
 
   SharedPreferences _preferences;
-  String uid,
-      uname = "",
-      email = "",
-      avatar;
-  bool hasUID = false,
-      isLoggedIn,
-      loggedwithMail,
-      loggedwithPhone;
+  String uid, uname = "", email = "", avatar;
+  bool hasUID = false, isLoggedIn, loggedwithMail, loggedwithPhone;
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -114,83 +111,83 @@ class home extends State<ProductNew> {
     loggedwithMail = await _preferences.getBool("LoggedInwithMail") ?? false;
     loggedwithPhone = _preferences.getBool("LoginPhone") ?? false;
 
-    setState((){
-      if (uid != null) { // for google sign in
+    setState(() {
+      if (uid != null) {
+        // for google sign in
         uname = user.displayName;
         email = user.email;
         avatar = user.photoUrl;
-      }
-      else if (isLoggedIn) { // for email(signup)
+      } else if (isLoggedIn) {
+        // for email(signup)
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("SignUname");
 
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
+        email = user.email != null
+            ? user.email.toString()
+            : _preferences.getString("SignEmail");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithMail) { // for email(login)
+      } else if (loggedwithMail) {
+        // for email(login)
         print("hello" + user.displayName);
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("LogUname");
-        email =
-        user.email != null ? user.email.toString() : _preferences.getString(
-            "SignEmail");
+        email = user.email != null
+            ? user.email.toString()
+            : _preferences.getString("SignEmail");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else if (loggedwithPhone) { // for phone
+      } else if (loggedwithPhone) {
+        // for phone
         uname = user.displayName != null
             ? user.displayName.toString()
             : _preferences.getString("Phone");
         avatar = user.photoUrl != null
             ? user.photoUrl.toString()
             : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png";
-      }
-      else {
+      } else {
         uname = "Guest User";
         email = "guest@example.com";
       }
     });
-
-
   }
 
   Future<bool> _onWillPop() {
     return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Yes'),
-          ),
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
-          ),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: new Text('Are you sure?'),
+                content: new Text('Do you want to exit an App'),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: new Text('Yes'),
+                  ),
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text('No'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
   }
 
   final List<String> items = ['Balbhadra', 'Maulik', 'Roshi'];
   static const double height = 366.0;
-  String name ='My Wishlist';
+  String name = 'My Wishlist';
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     final Orientation orientation = MediaQuery.of(context).orientation;
     final ThemeData theme = Theme.of(context);
     final TextStyle titleStyle =
-    theme.textTheme.headline.copyWith(color: Colors.black54);
+        theme.textTheme.headline.copyWith(color: Colors.black54);
     final TextStyle descriptionStyle = theme.textTheme.subhead;
     ShapeBorder shapeBorder;
     Widget image_carousel = new Container(
@@ -198,11 +195,16 @@ class home extends State<ProductNew> {
       child: Carousel(
         boxFit: BoxFit.cover,
         images: [
-          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi1.jpg?alt=media&token=ba548dea-24e2-41a1-ab49-66eccaf6c4ee'),
-          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi2.jpg?alt=media&token=368c9fd8-b1fc-4d7c-a254-5972f334f2c7'),
-          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi3.jpg?alt=media&token=7c18f1cc-dcfe-4c64-9b1c-621345c29d53'),
-          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi4.jpg?alt=media&token=f27e14f7-36ac-41bb-b8b5-555b027e3d7d'),
-          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi5.jpg?alt=media&token=ac9cc479-b34f-4b02-845b-d172096e54fe'),
+          NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi1.jpg?alt=media&token=ba548dea-24e2-41a1-ab49-66eccaf6c4ee'),
+          NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi2.jpg?alt=media&token=368c9fd8-b1fc-4d7c-a254-5972f334f2c7'),
+          NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi3.jpg?alt=media&token=7c18f1cc-dcfe-4c64-9b1c-621345c29d53'),
+          NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi4.jpg?alt=media&token=f27e14f7-36ac-41bb-b8b5-555b027e3d7d'),
+          NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi5.jpg?alt=media&token=ac9cc479-b34f-4b02-845b-d172096e54fe'),
         ],
         autoplay: true,
         dotSize: 4.0,
@@ -213,21 +215,15 @@ class home extends State<ProductNew> {
       ),
     );
 
-
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
           appBar: new AppBar(
             iconTheme: IconThemeData(color: Colors.black87),
             backgroundColor: Colors.white70,
-
             title: Text("Half n Hour",
                 style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold
-                )
-            ),
-
+                    color: Colors.black87, fontWeight: FontWeight.bold)),
             actions: <Widget>[
               IconButton(
                 tooltip: 'Search',
@@ -238,7 +234,6 @@ class home extends State<ProductNew> {
                     context: context,
                     //delegate: _delegate,
                   );
-
                 },
               ),
               new Padding(
@@ -248,12 +243,8 @@ class home extends State<ProductNew> {
                   width: 30.0,
                   child: new GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          new MaterialPageRoute(
-                              builder:(BuildContext context) =>
-                                  Cart()
-                          )
-                      );
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (BuildContext context) => Cart()));
                     },
                     child: Stack(
                       children: <Widget>[
@@ -262,35 +253,32 @@ class home extends State<ProductNew> {
                               Icons.shopping_cart,
                               color: Colors.black87,
                             ),
-                            onPressed: (){
-                              Navigator.of(context).push(
-                                  new MaterialPageRoute(
-                                      builder:(BuildContext context) =>
-                                          Cart()
-                                  )
-                              );
+                            onPressed: () {
+                              Navigator.of(context).push(new MaterialPageRoute(
+                                  builder: (BuildContext context) => Cart()));
                             }),
                         list.length == 0
                             ? new Container()
                             : new Positioned(
-                            child: new Stack(
-                              children: <Widget>[
-                                new Icon(Icons.brightness_1,
-                                    size: 20.0, color: Colors.orange.shade500),
-                                new Positioned(
-                                    top: 4.0,
-                                    right: 5.5,
-                                    child: new Center(
-                                      child: new Text(
-                                        list.length.toString(),
-                                        style: new TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 11.0,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )),
-                              ],
-                            )),
+                                child: new Stack(
+                                children: <Widget>[
+                                  new Icon(Icons.brightness_1,
+                                      size: 20.0,
+                                      color: Colors.orange.shade500),
+                                  new Positioned(
+                                      top: 4.0,
+                                      right: 5.5,
+                                      child: new Center(
+                                        child: new Text(
+                                          list.length.toString(),
+                                          style: new TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      )),
+                                ],
+                              )),
                       ],
                     ),
                   ),
@@ -303,22 +291,20 @@ class home extends State<ProductNew> {
               children: <Widget>[
                 // header
                 UserAccountsDrawerHeader(
-                  accountName: Text(uname,
+                  accountName: Text(
+                    uname,
                     style: TextStyle(
-                        color: Colors.black87,fontWeight: FontWeight.bold
-                    ),
+                        color: Colors.black87, fontWeight: FontWeight.bold),
                   ),
-                  accountEmail: Text(email,
-                    style: TextStyle(
-                        color: Colors.black26
-                    ),
+                  accountEmail: Text(
+                    email,
+                    style: TextStyle(color: Colors.black26),
                   ),
                   currentAccountPicture: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => Account()
-                        ));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Account()));
                       },
                       child: ClipOval(
                         child: CachedNetworkImage(
@@ -328,56 +314,57 @@ class home extends State<ProductNew> {
                               ? avatar
                               : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
                         ),
-                      )
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300]
-                  ),
+                      )),
+                  decoration: BoxDecoration(color: Colors.grey[300]),
                 ),
                 // body
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Account()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Account()));
                   },
                   child: ListTile(
                       title: Text('My Account'),
-                      leading: Icon(Icons.person, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.person,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () {},
                   child: ListTile(
                       title: Text('My Orders'),
                       leading: Icon(
-                        Icons.shopping_basket, color: Colors.black87,)
-                  ),
+                        Icons.shopping_basket,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Cart()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Cart()));
                   },
                   child: ListTile(
                       title: Text('My Cart'),
-                      leading: Icon(Icons.shopping_cart, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.black87,
+                      )),
                 ),
                 InkWell(
                   onTap: () async {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => Maps()
-                    ));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Maps()));
                   },
                   child: ListTile(
                       title: Text('Maps'),
-                      leading: Icon(Icons.map, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.map,
+                        color: Colors.black87,
+                      )),
                 ),
 
                 Divider(),
@@ -386,25 +373,28 @@ class home extends State<ProductNew> {
                   onTap: () {},
                   child: ListTile(
                       title: Text('Settings'),
-                      leading: Icon(Icons.settings, color: Colors.black87,)
-                  ),
-                ), InkWell(
+                      leading: Icon(
+                        Icons.settings,
+                        color: Colors.black87,
+                      )),
+                ),
+                InkWell(
                   onTap: () {},
                   child: ListTile(
                       title: Text('About'),
-                      leading: Icon(Icons.help, color: Colors.black87,)
-                  ),
+                      leading: Icon(
+                        Icons.help,
+                        color: Colors.black87,
+                      )),
                 ),
               ],
             ),
           ),
-
           body: new SingleChildScrollView(
             child: Container(
               child: new Column(children: <Widget>[
                 _verticalD(),
                 image_carousel,
-
                 new Container(
                   margin: EdgeInsets.only(top: 7.0),
                   child: new Row(
@@ -428,13 +418,9 @@ class home extends State<ProductNew> {
                           ),
                         ),
                         _verticalD(),
-
-
                         new Row(
-
                           children: <Widget>[
                             new GestureDetector(
-
                               onTap: () {},
                               child: new Text(
                                 'What\'s New',
@@ -442,9 +428,7 @@ class home extends State<ProductNew> {
                                     fontSize: 20.0,
                                     color: Colors.black87,
                                     fontWeight: FontWeight.bold),
-
                               ),
-
                             ),
                           ],
                         )
@@ -452,85 +436,133 @@ class home extends State<ProductNew> {
                 ),
                 new Container(
                   alignment: Alignment.topCenter,
-                  height: isIOS ? MediaQuery.of(context).size.height*photos.length/2.25 :
-                  MediaQuery.of(context).size.height*photos.length/2.15,
-
+                  height: isIOS
+                      ? MediaQuery.of(context).size.height *
+                          photos.length /
+                          2.25
+                      : MediaQuery.of(context).size.height *
+                          photos.length /
+                          2.15,
                   child: new GridView.builder(
                       itemCount: photos.length,
                       primary: false,
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10.0),
-                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1),
+                      gridDelegate:
+                          new SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                    imageUrl: photos[index].imageUrl,
-                                    title: photos[index].title,
-                                    price: photos[index].price,
-                                    Prod_id: photos[index].Prod_id,
-                                    category: photos[index].category,
-                                    desc: photos[index].desc,
-                                  )
-                              ));
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProductDetails(
+                                            imageUrl: photos[index].imageUrl,
+                                            title: photos[index].title,
+                                            price: photos[index].price,
+                                            Prod_id: photos[index].Prod_id,
+                                            category: photos[index].category,
+                                            desc: photos[index].desc,
+                                          )));
                             },
                             child: new Container(
                                 padding: EdgeInsets.only(bottom: 50.0),
                                 child: new Material(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.0)
-                                    ),
+                                        borderRadius:
+                                            BorderRadius.circular(20.0)),
                                     elevation: 5.0,
                                     child: Stack(
                                       children: <Widget>[
                                         Container(
-                                          height:MediaQuery.of(context).size.width,
-                                          width: MediaQuery.of(context).size.width,
+                                          height:
+                                              MediaQuery.of(context).size.width,
+                                          width:
+                                              MediaQuery.of(context).size.width,
                                           alignment: Alignment.topCenter,
                                           decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                  image: AssetImage(photos[index].imageUrl),
-                                                  fit: BoxFit.cover
-                                              )
-                                          ),
+                                                  image: AssetImage(
+                                                      photos[index].imageUrl),
+                                                  fit: BoxFit.cover)),
                                         ),
-
                                         Container(
                                           padding: EdgeInsets.only(top: 10.0),
                                           alignment: Alignment.bottomCenter,
                                           child: Container(
                                             color: Colors.white70,
                                             child: ListTile(
-                                              contentPadding: EdgeInsets.only(left: 10.0),
-                                              title: Text(photos[index].title,
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10.0),
+                                              title: Text(
+                                                photos[index].title,
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0
-                                                ),
+                                                    fontSize: 18.0),
                                               ),
                                               subtitle: Container(
-                                                padding: EdgeInsets.only(top: 12.0),
-                                                child: Text("₹" + photos[index].price,
+                                                padding:
+                                                    EdgeInsets.only(top: 12.0),
+                                                child: Text(
+                                                  "₹" + photos[index].price,
                                                   style: TextStyle(
                                                       color: Colors.black87,
-                                                      fontSize: 15.0
-                                                  ),
+                                                      fontSize: 15.0),
                                                 ),
                                               ),
                                               trailing: Padding(
-                                                padding: const EdgeInsets.only(right: 20.0),
+                                                padding: const EdgeInsets.only(
+                                                    right: 20.0),
                                                 child: MaterialButton(
-                                                  onPressed: (){},
+                                                  onPressed: () async {
+                                                    try {
+                                                      FirebaseAuth auth =
+                                                          FirebaseAuth.instance;
+
+                                                      final FirebaseUser _user =
+                                                          await auth
+                                                              .currentUser();
+
+                                                      Firestore.instance
+                                                          .collection("cart")
+                                                          .document(_user.uid)
+                                                          .collection(
+                                                              "cartItem")
+                                                          .document(
+                                                              photos[index]
+                                                                  .Prod_id
+                                                                  .toString())
+                                                          .setData({
+                                                        "imageUrl":
+                                                            photos[index]
+                                                                .imageUrl,
+                                                        "title":
+                                                            photos[index].title,
+                                                        "price":
+                                                            photos[index].price,
+                                                        "qty":
+                                                            photos[index].qty,
+                                                        "Prod_id": photos[index]
+                                                            .Prod_id
+                                                      });
+                                                      Fluttertoast.showToast(
+                                                          msg: "Added to cart");
+                                                    } catch (e) {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Error in Adding");
+                                                    }
+                                                  },
                                                   color: Colors.black45,
                                                   elevation: 3.0,
                                                   textColor: Colors.white,
-                                                  child: Text("ADD",
+                                                  child: Text(
+                                                    "ADD",
                                                     style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
                                                 ),
                                               ),
@@ -538,14 +570,9 @@ class home extends State<ProductNew> {
                                           ),
                                         )
                                       ],
-                                    )
-                                )
-                            )
-
-                        );
+                                    ))));
                       }),
                 )
-
               ]),
             ),
           ),
@@ -553,8 +580,6 @@ class home extends State<ProductNew> {
   }
 
   _verticalD() => Container(
-    margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
-  );
-
-
+        margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
+      );
 }
