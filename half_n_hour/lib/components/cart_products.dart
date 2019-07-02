@@ -5,48 +5,67 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:provider/provider.dart';
 
 import 'photo.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class CartProducts extends StatefulWidget {
-
   final String imageUrl;
   final String title;
   final int qty;
   final String price;
 
-  CartProducts({
-    this.title,
-    this.qty,
-    this.price,
-    this.imageUrl
-  });
+  CartProducts({this.title, this.qty, this.price, this.imageUrl});
 
   @override
   _CartProductsState createState() => _CartProductsState();
 }
 
 class _CartProductsState extends State<CartProducts> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String userid;
+
   @override
   void initState() {
     super.initState();
+    getuid();
+  }
+
+  Future<Null> getuid() async {
+    final FirebaseUser user = await _auth.currentUser();
+    setState(() {
+      userid = user.uid.toString();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var cart = Provider.of<CartModel>(context);
-
-    return ListView.builder(
-      itemCount: cart.items.length,
-      itemBuilder: (context, index){
-        print(cart.items);
-        return SingleCartProduct(
-          cart_prod_name: cart.items[index].title,
-          cart_prod_picture: cart.items[index].imageUrl,
-          cart_prod_price: cart.items[index].price,
-          cart_prod_qty: cart.items[index].qty,
-          cart_prod_id: cart.items[index].Prod_id,
-        );
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance
+          .collection("cart")
+          .document(userid)
+          .collection("cartItem")
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return new Text('Loading...');
+          default:
+            return new ListView(
+              children:
+                  snapshot.data.documents.map((DocumentSnapshot document) {
+                return new SingleCartProduct(
+                  cart_prod_name: document['title'],
+                  cart_prod_picture: document['imageUrl'],
+                  cart_prod_price: document['price'],
+                  cart_prod_qty: document['qty'],
+                  cart_prod_id: document['Prod_id'],
+                );
+              }).toList(),
+            );
+        }
       },
     );
   }
@@ -59,13 +78,12 @@ class SingleCartProduct extends StatelessWidget {
   final int cart_prod_qty;
   final int cart_prod_id;
 
-  SingleCartProduct({
-    this.cart_prod_name,
-    this.cart_prod_picture,
-    this.cart_prod_price,
-    this.cart_prod_qty,
-    this.cart_prod_id
-  });
+  SingleCartProduct(
+      {this.cart_prod_name,
+      this.cart_prod_picture,
+      this.cart_prod_price,
+      this.cart_prod_qty,
+      this.cart_prod_id});
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +97,7 @@ class SingleCartProduct extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 20.0,
           height: 150.0,
           decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(20.0)
-          ),
+              color: Colors.white70, borderRadius: BorderRadius.circular(20.0)),
           child: Row(
             children: <Widget>[
               SizedBox(width: 10.0),
@@ -89,13 +105,10 @@ class SingleCartProduct extends StatelessWidget {
                 height: 150.0,
                 width: 125.0,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(cart_prod_picture),
-                    fit: BoxFit.contain
-                  )
-                ),
+                    image: DecorationImage(
+                        image: AssetImage(cart_prod_picture),
+                        fit: BoxFit.contain)),
               ),
-
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -104,52 +117,58 @@ class SingleCartProduct extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 30.0),
-                        child: Text("₹ " + cart_prod_price,
+                        child: Text(
+                          "₹ " + cart_prod_price,
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0
-                          ),
+                              fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
                       ),
-
                       Container(
                         padding: EdgeInsets.only(top: 10.0),
-                        child: Text(cart_prod_name,
+                        child: Text(
+                          cart_prod_name,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.black26,
-                              fontSize: 15.0
-                          ),
+                          style:
+                              TextStyle(color: Colors.black26, fontSize: 15.0),
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: Row(
                           children: <Widget>[
                             IconButton(
-                              icon: Icon(Icons.remove_circle_outline,
+                              icon: Icon(
+                                Icons.remove_circle_outline,
                                 color: Colors.redAccent,
                               ),
-                              onPressed: (){},
+                              onPressed: () async {
+                                FirebaseAuth auth = FirebaseAuth.instance;
+                                var cart = Provider.of<CartModel>(context);
+                                final FirebaseUser _user =
+                                    await auth.currentUser();
+                                Firestore.instance
+                                    .collection("cart")
+                                    .document(_user.uid)
+                                    .collection("cartItem")
+                                    .document(cart_prod_id.toString())
+                                    .delete();
+                              },
                             ),
-
                             Padding(
                               padding: EdgeInsets.only(left: 10.0),
-                              child: Text(cart_prod_qty.toString(),
-                                style: TextStyle(
-                                    color: Colors.black45
-                                ),
+                              child: Text(
+                                cart_prod_qty.toString(),
+                                style: TextStyle(color: Colors.black45),
                               ),
                             ),
-
                             Padding(
                               padding: EdgeInsets.only(left: 10.0),
                               child: IconButton(
-                                icon: Icon(Icons.add_circle_outline,
+                                icon: Icon(
+                                  Icons.add_circle_outline,
                                   color: Colors.lightGreen,
                                 ),
-                                onPressed: (){},
+                                onPressed: () {},
                               ),
                             )
                           ],
