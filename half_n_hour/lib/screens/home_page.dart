@@ -1,5 +1,6 @@
 import 'package:HnH/screens/product_details.dart';
 import 'package:HnH/screens/product_popular.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -20,6 +21,7 @@ bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
 
 class MyHomePage extends StatefulWidget {
+  int totProd = 0;
   @override
   State<StatefulWidget> createState() => new home();
 // TODO: implement createState
@@ -91,6 +93,13 @@ class home extends State<MyHomePage> {
         uname = "Guest User";
         email = "guest@example.com";
       }
+
+      Firestore.instance.collection("cart").document(user.uid).collection("cartItem")
+          .getDocuments().then((QuerySnapshot value){
+        setState(() {
+          widget.totProd = value.documents.length;
+        });
+      });
     });
   }
 
@@ -256,7 +265,7 @@ class home extends State<MyHomePage> {
                               Navigator.of(context).push(new MaterialPageRoute(
                                   builder: (BuildContext context) => Cart()));
                             }),
-                        list.length == 0
+                        widget.totProd == 0
                             ? new Container()
                             : new Positioned(
                                 child: new Stack(
@@ -269,7 +278,7 @@ class home extends State<MyHomePage> {
                                       right: 5.5,
                                       child: new Center(
                                         child: new Text(
-                                          list.length.toString(),
+                                          widget.totProd.toString(),
                                           style: new TextStyle(
                                               color: Colors.white,
                                               fontSize: 11.0,
@@ -391,13 +400,12 @@ class home extends State<MyHomePage> {
           body: new SingleChildScrollView(
             child: Container(
               child: new Column(children: <Widget>[
-                _verticalD(),
                 image_carousel,
                 new Container(
                   margin: EdgeInsets.only(top: 7.0),
                   child: new Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         _verticalD(),
                         new GestureDetector(
@@ -488,6 +496,6 @@ class home extends State<MyHomePage> {
   }
 
   _verticalD() => Container(
-        margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
+        margin: EdgeInsets.only(left: 10.0, right: 5.0, top: 10.0, bottom: 0.0),
       );
 }

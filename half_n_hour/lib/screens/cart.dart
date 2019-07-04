@@ -20,10 +20,13 @@ class _CartState extends State<Cart> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.white70,
-        title: Text('My Cart',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87
+        title: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Text('My Cart',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87
+            ),
           ),
         ),
         actions: <Widget>[
