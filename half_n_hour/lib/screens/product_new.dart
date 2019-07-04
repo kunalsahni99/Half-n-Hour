@@ -16,6 +16,7 @@ import 'home_page.dart';
 import 'package:HnH/components/photo.dart';
 
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
@@ -164,7 +165,7 @@ class home extends State<ProductNew> {
       Firestore.instance.collection("cart").document(user.uid).collection("cartItem")
           .getDocuments().then((QuerySnapshot value){
         setState(() {
-          widget.totProd = value.documents.length;
+          widget.totProd = value.documents.length;\
         });
       });
     });
@@ -458,15 +459,31 @@ class home extends State<ProductNew> {
                   height: isIOS ? MediaQuery.of(context).size.height*photos.length/2.25 :
                   MediaQuery.of(context).size.height*photos.length/1.8,
 
-                  child: StreamBuilder(
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapShot){
-                      return ListView(
-                        children: <Widget>[
-                          // call SingleProduct here
-                        ],
-                      );
+                  child:  StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection("products")
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return new CircularProgressIndicator();
+                        default:
+                          return new ListView(
+                            children:
+                            snapshot.data.documents.map((DocumentSnapshot document) {
+                              return new SingleProduct(
+                                title: document['title'],
+                                imageUrl: document['imageUrl'],
+                                price: document['price'],
+                                category: document['category'],
+                                Prod_id: document['Prod_id'],
+                              );
+                            }).toList(),
+                          );
+                      }
                     },
-                  )
+                  ),
                 )
 
               ]),
@@ -495,7 +512,7 @@ class SingleProduct extends StatefulWidget {
     this.Prod_id,
     this.category,
     this.desc
-});
+  });
 
   @override
   _SingleProductState createState() => _SingleProductState();
@@ -506,16 +523,78 @@ class _SingleProductState extends State<SingleProduct> {
   Widget build(BuildContext context) {
     return new GestureDetector(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => ProductDetails(
-                imageUrl: widget.imageUrl,
-                title: widget.title,
-                price: widget.price,
-                Prod_id: widget.Prod_id,
-                category: widget.category,
-                desc: widget.desc,
-              )
-          ));
+          /*
+                              FirebaseAuth auth =
+                                  FirebaseAuth.instance;
+
+                              final FirebaseUser _user =
+                                  await auth
+                                  .currentUser();
+
+                              Firestore.instance
+                                  .collection("products")
+                                  .document(
+                                  photos[index]
+                                      .Prod_id
+                                      .toString())
+                                  .setData({
+                                "imageUrl":
+                                photos[index]
+                                    .imageUrl,
+                                "title":
+                                photos[index].title,
+                                "price":
+                                photos[index].price,
+
+                                "Prod_id": photos[index]
+                                    .Prod_id,
+                                "category":photos[index].category,
+                                "desc": photos[index].desc,
+                              });
+                              */
+          Firestore.instance
+              .collection("products")
+              .document(
+              widget.Prod_id
+                  .toString())
+              .get().then((DocumentSnapshot ds){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductDetails(
+
+                      imageUrl: ds.data["imageUrl"],
+                      title: ds.data["title"],
+                      price: ds.data["price"],
+                      Prod_id: ds.data["Prod_id"],
+                      category: ds.data["category"],
+                      desc: ds.data["desc"],
+                    )));});
+
+          /*Future<Null> uploadFile(String filepath) async {
+                                final ByteData bytes = await rootBundle.load(filepath);
+                                final Directory tempDir = Directory.systemTemp;
+                                final String fileName = "${Random().nextInt(10000)}.jpg";
+                                final File file = File('${tempDir.path}/$fileName');
+                                file.writeAsBytes(bytes.buffer.asInt8List(), mode: FileMode.write);
+
+                                final StorageReference ref = FirebaseStorage.instance.ref().child('products/${photos[index].category}/${photos[index].Prod_id}/_prodpicture.jpg');
+                                final StorageUploadTask uploadTask = ref.putFile(file);
+                                await uploadTask.onComplete.then((TaskSnapShot)async{
+                                  URL = await TaskSnapShot.ref.getDownloadURL();
+                                  Firestore.instance
+                                      .collection("cart")
+                                      .document(_user.uid)
+                                      .collection("cartItem")
+                                      .document(photos[index].Prod_id.toString())
+                                      .updateData({
+                                    "imageUrl":
+                                    URL
+                                      });
+
+
+                                });
+                              }*/
         },
         child: new Container(
             padding: EdgeInsets.only(bottom: 50.0),
@@ -531,7 +610,7 @@ class _SingleProductState extends State<SingleProduct> {
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage(widget.imageUrl),
+                              image: AssetImage(widget.imageUrl.toString()),
                               fit: BoxFit.cover
                           )
                       ),
@@ -564,7 +643,45 @@ class _SingleProductState extends State<SingleProduct> {
                           trailing: Padding(
                             padding: const EdgeInsets.only(right: 20.0),
                             child: MaterialButton(
-                              onPressed: (){},
+                              onPressed: ()async{
+                                try {
+                                  FirebaseAuth auth =
+                                      FirebaseAuth.instance;
+
+                                  final FirebaseUser _user =
+                                  await auth
+                                      .currentUser();
+
+                                  Firestore.instance
+                                      .collection("cart")
+                                      .document(_user.uid)
+                                      .collection(
+                                      "cartItem")
+                                      .document(
+                                      widget
+                                          .Prod_id
+                                          .toString())
+                                      .setData({
+                                    "imageUrl":
+                                    widget
+                                        .imageUrl,
+                                    "title":
+                                    widget.title,
+                                    "price":
+                                    widget.price,
+                                    "qty":1,
+
+                                    "Prod_id": widget
+                                        .Prod_id
+                                  });
+                                  Fluttertoast.showToast(
+                                      msg: "Added to cart");
+                                } catch (e) {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                      "Error in Adding");
+                                }
+                              },
                               color: Colors.black45,
                               elevation: 3.0,
                               textColor: Colors.white,
