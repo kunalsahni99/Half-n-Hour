@@ -458,93 +458,15 @@ class home extends State<ProductNew> {
                   height: isIOS ? MediaQuery.of(context).size.height*photos.length/2.25 :
                   MediaQuery.of(context).size.height*photos.length/1.8,
 
-                  child: new ListView.builder(
-                      itemCount: photos.length,
-                      primary: false,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(10.0),
-                      itemBuilder: (BuildContext context, int index) {
-                        return new GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ProductDetails(
-                                    imageUrl: photos[index].imageUrl,
-                                    title: photos[index].title,
-                                    price: photos[index].price,
-                                    Prod_id: photos[index].Prod_id,
-                                    category: photos[index].category,
-                                    desc: photos[index].desc,
-                                  )
-                              ));
-                            },
-                            child: new Container(
-                                padding: EdgeInsets.only(bottom: 50.0),
-                                child: new Material(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.0)
-                                    ),
-                                    elevation: 5.0,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Container(
-                                          height:MediaQuery.of(context).size.width,
-                                          width: MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(photos[index].imageUrl),
-                                                  fit: BoxFit.cover
-                                              )
-                                          ),
-                                        ),
-
-                                        Container(
-                                          padding: EdgeInsets.only(top: 287.0),
-                                          child: Container(
-                                            alignment: Alignment.bottomCenter,
-                                            color: Colors.white70,
-                                            child: ListTile(
-                                              contentPadding: EdgeInsets.only(left: 10.0),
-                                              title: Text(photos[index].title,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0
-                                                ),
-                                              ),
-                                              subtitle: Container(
-                                                padding: EdgeInsets.only(top: 12.0),
-                                                child: Text("₹" + photos[index].price,
-                                                  style: TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 15.0
-                                                  ),
-                                                ),
-                                              ),
-                                              trailing: Padding(
-                                                padding: const EdgeInsets.only(right: 20.0),
-                                                child: MaterialButton(
-                                                  onPressed: (){},
-                                                  color: Colors.black45,
-                                                  elevation: 3.0,
-                                                  textColor: Colors.white,
-                                                  child: Text("ADD",
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                )
-                            )
-
-                        );
-                      }),
+                  child: StreamBuilder(
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapShot){
+                      return ListView(
+                        children: <Widget>[
+                          // call SingleProduct here
+                        ],
+                      );
+                    },
+                  )
                 )
 
               ]),
@@ -556,6 +478,111 @@ class home extends State<ProductNew> {
   _verticalD() => Container(
     margin: EdgeInsets.only(left: 10.0, right: 0.0, top: 10.0, bottom: 0.0),
   );
+}
 
+class SingleProduct extends StatefulWidget {
+  final String imageUrl;
+  final String title;
+  final String price;
+  final int Prod_id;
+  final String category;
+  final String desc;
 
+  SingleProduct({
+    this.imageUrl,
+    this.title,
+    this.price,
+    this.Prod_id,
+    this.category,
+    this.desc
+});
+
+  @override
+  _SingleProductState createState() => _SingleProductState();
+}
+
+class _SingleProductState extends State<SingleProduct> {
+  @override
+  Widget build(BuildContext context) {
+    return new GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => ProductDetails(
+                imageUrl: widget.imageUrl,
+                title: widget.title,
+                price: widget.price,
+                Prod_id: widget.Prod_id,
+                category: widget.category,
+                desc: widget.desc,
+              )
+          ));
+        },
+        child: new Container(
+            padding: EdgeInsets.only(bottom: 50.0),
+            child: new Material(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)
+                ),
+                elevation: 5.0,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height:MediaQuery.of(context).size.width,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(widget.imageUrl),
+                              fit: BoxFit.cover
+                          )
+                      ),
+                    ),
+
+                    Container(
+                      padding: EdgeInsets.only(top: 287.0),
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        color: Colors.white70,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.only(left: 10.0),
+                          title: Text(widget.title,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0
+                            ),
+                          ),
+                          subtitle: Container(
+                            padding: EdgeInsets.only(top: 12.0),
+                            child: Text("₹" + widget.price,
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 15.0
+                              ),
+                            ),
+                          ),
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: MaterialButton(
+                              onPressed: (){},
+                              color: Colors.black45,
+                              elevation: 3.0,
+                              textColor: Colors.white,
+                              child: Text("ADD",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            )
+        )
+
+    );
+  }
 }
