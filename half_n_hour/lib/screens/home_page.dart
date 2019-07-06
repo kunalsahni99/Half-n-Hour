@@ -1,5 +1,3 @@
-import 'package:HnH/screens/product_details.dart';
-import 'package:HnH/screens/product_popular.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -11,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
+import 'categories.dart';
 import 'maps.dart';
 import 'product_new.dart';
 import 'package:HnH/components/photo.dart';
@@ -454,7 +453,11 @@ class home extends State<MyHomePage> {
                               crossAxisCount: 2),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
-                            onTap: () {},
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => CategoriesList(title: photos_popular[index].category,)
+                              ));
+                            },
                             child: new Container(
                                 margin: EdgeInsets.all(5.0),
                                 child: new Card(
