@@ -263,6 +263,11 @@ class Price extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setPrice(int price){
+    totPrice = price;
+    notifyListeners();
+  }
+
   void decrease(int price){
     totPrice -= price;
     notifyListeners();

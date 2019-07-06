@@ -27,7 +27,7 @@ class _CartProductsState extends State<CartProducts> {
       snapShot.documents.forEach((document){
         sum += document['price'] * document['qty'];
         setState(() {
-          cart.totPrice = sum;
+          cart.setPrice(sum);
         });
       });
     });
