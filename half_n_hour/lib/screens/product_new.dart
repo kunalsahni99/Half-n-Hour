@@ -1,4 +1,4 @@
-import 'package:HnH/screens/product_popular.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -19,10 +19,10 @@ import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
-const String _kGalleryAssetsPackage = 'flutter_gallery_assets';
+
 
 class ProductNew extends StatefulWidget {
-  int totProd = 0;
+
 
   @override
   State<StatefulWidget> createState() => new home();
@@ -31,72 +31,13 @@ class ProductNew extends StatefulWidget {
 }
 
 class home extends State<ProductNew> {
-  List list = ['12', '11'];
-
-  List<Photo> photos = <Photo>[
-    Photo(
-        imageUrl: 'images/veg.jpg',
-        title: 'Fruits',
-        category: 'Fruits & Vegetables',
-        price: '75',
-        Prod_id: 9,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-    Photo(
-        imageUrl: 'images/frozen.jpg',
-        title: 'Peas',
-        category: 'Frozen Veg',
-        price: '100',
-        Prod_id: 10,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-    Photo(
-        imageUrl: 'images/bev.jpg',
-        title: 'Tea',
-        category: 'Beverages',
-        price: '100',
-        Prod_id: 11,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
-    ),
-    Photo(
-        imageUrl: 'images/brand_f.jpg',
-        title: 'Shaktibhog Atta',
-        category: 'Brannded Food',
-        price: '500',
-        Prod_id: 12,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-    Photo(
-        imageUrl: 'images/be.jpg',
-        title: 'Lipstick',
-        category: 'Beauty & Personal Care',
-        price: '200',
-        Prod_id: 13,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-    Photo(
-        imageUrl: 'images/home.jpg',
-        title: 'Table',
-        category: 'Home Care & Fashion',
-        price: '10000',
-        Prod_id: 14,
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-    Photo(
-        imageUrl: 'images/eggs.jpg',
-        title: 'Cake',
-        category: 'Dairy, Bakery & Eggs',
-        Prod_id: 15,
-        price: '200',
-        desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    ),
-  ];
 
   SharedPreferences _preferences;
   String uid,
       uname = "",
       email = "",
       avatar;
+  int totProd =0;
   bool hasUID = false,
       isLoggedIn,
       loggedwithMail,
@@ -165,7 +106,7 @@ class home extends State<ProductNew> {
       Firestore.instance.collection("cart").document(user.uid).collection("cartItem")
           .getDocuments().then((QuerySnapshot value){
         setState(() {
-          widget.totProd = value.documents.length;\
+          totProd = value.documents.length;
         });
       });
     });
@@ -227,6 +168,7 @@ class home extends State<ProductNew> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
+
           appBar: new AppBar(
             iconTheme: IconThemeData(color: Colors.black87),
             backgroundColor: Colors.white70,
@@ -280,7 +222,7 @@ class home extends State<ProductNew> {
                                   )
                               );
                             }),
-                        widget.totProd == 0
+                        totProd == 0
                             ? new Container()
                             : new Positioned(
                             child: new Stack(
@@ -292,7 +234,7 @@ class home extends State<ProductNew> {
                                     right: 5.5,
                                     child: new Center(
                                       child: new Text(
-                                        widget.totProd.toString(),
+                                        totProd.toString(),
                                         style: new TextStyle(
                                             color: Colors.white,
                                             fontSize: 11.0,
@@ -410,7 +352,7 @@ class home extends State<ProductNew> {
           ),
 
           body: new SingleChildScrollView(
-            child: Container(
+
               child: new Column(children: <Widget>[
                 image_carousel,
 
@@ -457,7 +399,7 @@ class home extends State<ProductNew> {
                 new Container(
                   alignment: Alignment.topCenter,
                   height: isIOS ? MediaQuery.of(context).size.height*photos.length/2.25 :
-                  MediaQuery.of(context).size.height*photos.length/1.8,
+                 400.0,
 
                   child:  StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance
@@ -489,7 +431,7 @@ class home extends State<ProductNew> {
               ]),
             ),
           ),
-        ));
+        );
   }
 
   _verticalD() => Container(
@@ -500,8 +442,8 @@ class home extends State<ProductNew> {
 class SingleProduct extends StatefulWidget {
   final String imageUrl;
   final String title;
-  final String price;
-  final int Prod_id;
+  final int price;
+  final String Prod_id;
   final String category;
   final String desc;
 
@@ -521,10 +463,12 @@ class SingleProduct extends StatefulWidget {
 class _SingleProductState extends State<SingleProduct> {
   @override
   Widget build(BuildContext context) {
-    return new GestureDetector(
-        onTap: (){
-          /*
-                              FirebaseAuth auth =
+    return new Container(
+
+    child: new GestureDetector(
+        onTap: ()async{
+
+                             /* FirebaseAuth auth =
                                   FirebaseAuth.instance;
 
                               final FirebaseUser _user =
@@ -534,24 +478,24 @@ class _SingleProductState extends State<SingleProduct> {
                               Firestore.instance
                                   .collection("products")
                                   .document(
-                                  photos[index]
+                                  widget
                                       .Prod_id
                                       .toString())
                                   .setData({
                                 "imageUrl":
-                                photos[index]
+                                widget
                                     .imageUrl,
                                 "title":
-                                photos[index].title,
+                                widget.title,
                                 "price":
-                                photos[index].price,
+                                widget.price,
 
-                                "Prod_id": photos[index]
+                                "Prod_id": widget
                                     .Prod_id,
-                                "category":photos[index].category,
-                                "desc": photos[index].desc,
-                              });
-                              */
+                                "category":widget.category,
+                                "desc": widget.desc,
+                              });*/
+
           Firestore.instance
               .collection("products")
               .document(
@@ -597,26 +541,30 @@ class _SingleProductState extends State<SingleProduct> {
                               }*/
         },
         child: new Container(
+
+          margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
             padding: EdgeInsets.only(bottom: 50.0),
             child: new Material(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)
                 ),
-                elevation: 5.0,
+                elevation: 8.0,
                 child: Stack(
                   children: <Widget>[
                     Container(
+
                       height:MediaQuery.of(context).size.width,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage(widget.imageUrl.toString()),
+                              image:NetworkImage(widget.imageUrl.toString()),
                               fit: BoxFit.cover
                           )
                       ),
                     ),
 
                     Container(
+
                       padding: EdgeInsets.only(top: 287.0),
                       child: Container(
                         alignment: Alignment.bottomCenter,
@@ -633,10 +581,10 @@ class _SingleProductState extends State<SingleProduct> {
                           ),
                           subtitle: Container(
                             padding: EdgeInsets.only(top: 12.0),
-                            child: Text("₹" + widget.price,
+                            child: Text("₹" + widget.price.toString(),
                               style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 15.0
+                                  color: Colors.black26,
+                                  fontSize: 16.0,fontWeight: FontWeight.w900
                               ),
                             ),
                           ),
@@ -700,6 +648,7 @@ class _SingleProductState extends State<SingleProduct> {
             )
         )
 
-    );
+    ));
+
   }
 }
