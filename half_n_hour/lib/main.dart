@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:HnH/screens/cart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +20,8 @@ void main() => runApp(HalfnHour());
 class HalfnHour extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CartModel>(
-      builder: (context) => CartModel(),
+    return ChangeNotifierProvider<Price>(
+      builder: (context) => Price(),
       child: isIOS ?
           CupertinoApp(
             debugShowCheckedModeBanner: false,
