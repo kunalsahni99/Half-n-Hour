@@ -97,9 +97,7 @@ class _CartProductsState extends State<CartProducts> {
                       ));
                     });
 
-                    setState(() {
-                      cart.totPrice = cart.totPrice - (document['price'] * document['qty']);
-                    });
+                    cart.decrease((document['qty'] * document['price']));
                   },
                   child: new SingleCartProduct(
                     cart_prod_name: document['title'],
