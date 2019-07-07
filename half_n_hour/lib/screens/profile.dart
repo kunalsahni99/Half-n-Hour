@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'cart.dart';
 import 'login.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
@@ -82,75 +84,77 @@ class _AccountState extends State<Account> {
   }
 
   Future _signOut()async{
-    try{final FirebaseUser user = await auth.currentUser();
-    isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
-    isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
-    isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
-    isLoggedWithPhone = await _preferences.getBool("loggedwithPhone") ?? false;  // phone login in
-    UID = await _preferences.getString("id") ?? "";
-    await _auth.signOut();
+    var cart = Provider.of<Price>(context);
+    try{
+      isLoggedIn = await _googleSignIn.isSignedIn();       // google sign in
+      isSignUpWithEmail = await _preferences.getBool("isLoggedIn") ?? false;  // email sign up
+      isLoggedwithEmail = await _preferences.getBool("LoggedInwithMail")?? false;  // email log in
+      isLoggedWithPhone = await _preferences.getBool("loggedwithPhone") ?? false;  // phone login in
+      UID = await _preferences.getString("id") ?? "";
+      await _auth.signOut();
 
-    if (isLoggedIn){
-      await _googleSignIn.signOut();
-      _preferences.remove("id");
-      _preferences.remove("username");
-      _preferences.remove("email");
-      _preferences.remove("photoUrl");
-      _preferences.remove("address1Line1");
-      _preferences.remove("address1Line2");
-      _preferences.remove("address1pin");
+      if (isLoggedIn){
+        await _googleSignIn.signOut();
+        _preferences.remove("id");
+        _preferences.remove("username");
+        _preferences.remove("email");
+        _preferences.remove("photoUrl");
+        _preferences.remove("address1Line1");
+        _preferences.remove("address1Line2");
+        _preferences.remove("address1pin");
 
-      _preferences.remove("address2Line1");
-      _preferences.remove("address2Line2");
-      _preferences.remove("address2pin");
-    }
-    else if (isSignUpWithEmail){
-      _preferences.setBool("isLoggedIn", false);
-      _preferences.remove("SignUname");
-      _preferences.remove("SignEmail");
-      _preferences.remove("photoUrl");
-      _preferences.remove("address1Line1");
-      _preferences.remove("address1Line2");
-      _preferences.remove("address1pin");
+        _preferences.remove("address2Line1");
+        _preferences.remove("address2Line2");
+        _preferences.remove("address2pin");
+      }
+      else if (isSignUpWithEmail){
+        _preferences.setBool("isLoggedIn", false);
+        _preferences.remove("SignUname");
+        _preferences.remove("SignEmail");
+        _preferences.remove("photoUrl");
+        _preferences.remove("address1Line1");
+        _preferences.remove("address1Line2");
+        _preferences.remove("address1pin");
 
-      _preferences.remove("address2Line1");
-      _preferences.remove("address2Line2");
-      _preferences.remove("address2pin");
-    }
-    else if (isLoggedwithEmail){
-      _preferences.setBool("LoggedInwithMail", false);
-      _preferences.remove("LogUname");
-      _preferences.remove("photoUrl");
-      _preferences.remove("address1Line1");
-      _preferences.remove("address1Line2");
-      _preferences.remove("address1pin");
+        _preferences.remove("address2Line1");
+        _preferences.remove("address2Line2");
+        _preferences.remove("address2pin");
+      }
+      else if (isLoggedwithEmail){
+        _preferences.setBool("LoggedInwithMail", false);
+        _preferences.remove("LogUname");
+        _preferences.remove("photoUrl");
+        _preferences.remove("address1Line1");
+        _preferences.remove("address1Line2");
+        _preferences.remove("address1pin");
 
-      _preferences.remove("address2Line1");
-      _preferences.remove("address2Line2");
-      _preferences.remove("address2pin");
-    }
-    else if (isLoggedWithPhone){
-      _preferences.setBool("loggedwithPhone", false);
-      _preferences.remove("Phone");
-      _preferences.remove("photoUrl");
-      _preferences.remove("address1Line1");
-      _preferences.remove("address1Line2");
-      _preferences.remove("address1pin");
+        _preferences.remove("address2Line1");
+        _preferences.remove("address2Line2");
+        _preferences.remove("address2pin");
+      }
+      else if (isLoggedWithPhone){
+        _preferences.setBool("loggedwithPhone", false);
+        _preferences.remove("Phone");
+        _preferences.remove("photoUrl");
+        _preferences.remove("address1Line1");
+        _preferences.remove("address1Line2");
+        _preferences.remove("address1pin");
 
-      _preferences.remove("address2Line1");
-      _preferences.remove("address2Line2");
-      _preferences.remove("address2pin");
-    }
-    else{
-      Fluttertoast.showToast(msg: "You need to login first",
-          fontSize: 14.0,
-          backgroundColor: Colors.black87
-      );
-    }
-    }
-    catch (e){
-      e.toString();
-    }
+        _preferences.remove("address2Line1");
+        _preferences.remove("address2Line2");
+        _preferences.remove("address2pin");
+      }
+      else{
+        Fluttertoast.showToast(msg: "You need to login first",
+            fontSize: 14.0,
+            backgroundColor: Colors.black87
+        );
+      }
+      }
+      catch (e){
+        e.toString();
+      }
+    cart.setPrice(0);
   }
 
   addAddress1(bool isEdit){
@@ -498,10 +502,13 @@ class _AccountState extends State<Account> {
 
     return new Scaffold(
       appBar: new AppBar(
-        title: Text('My Account',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87
+        title: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Text('My Account',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87
+            ),
           ),
         ),
         backgroundColor: Colors.white70,
@@ -546,49 +553,60 @@ class _AccountState extends State<Account> {
                                 ),
                               )),
 
-                          new FlatButton(
-                            onPressed: ()async{
-                              final FirebaseUser User = await _auth.currentUser();
-                              if (User != null){
-                                _selectAndUploadPicture();
-                              }
-                              else{
-                                Fluttertoast.showToast(msg: "You need to login first");
-                              }
-                            },
-                            child: Text(
-                              'Gallery',
-                              style:
-                              TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.blueAccent)),
-                            color: Colors.white,
+                          Container(
+                            padding: EdgeInsets.only(left: 70.0),
+                            child: Row(
+                              children: <Widget>[
+                                new FlatButton(
+                                  onPressed: ()async{
+                                    final FirebaseUser User = await _auth.currentUser();
+                                    if (User != null){
+                                      _selectAndUploadPicture();
+                                    }
+                                    else{
+                                      Fluttertoast.showToast(msg: "You need to login first");
+                                    }
+                                  },
+                                  child: Text(
+                                    'Gallery',
+                                    style:
+                                    TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.blueAccent)),
+                                  color: Colors.white,
+                                ),
 
-                          ),
-                          new FlatButton(
-                            onPressed: ()async{
-                              final FirebaseUser User = await _auth.currentUser();
-                              if (User != null){
-                                _takeAndUploadPicture();
-                              }
-                              else{
-                                Fluttertoast.showToast(msg: "You need to login first");
-                              }
-                            },
-                            child: Text(
-                              'Camera',
-                              style:
-                              TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.blueAccent)),
-                            color: Colors.white,
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                ),
 
+                                new FlatButton(
+                                  onPressed: ()async{
+                                    final FirebaseUser User = await _auth.currentUser();
+                                    if (User != null){
+                                      _takeAndUploadPicture();
+                                    }
+                                    else{
+                                      Fluttertoast.showToast(msg: "You need to login first");
+                                    }
+                                  },
+                                  child: Text(
+                                    'Camera',
+                                    style:
+                                    TextStyle(fontSize: 16.0, color: Colors.blueAccent,fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.blueAccent)),
+                                  color: Colors.white,
+
+                                ),
+                              ],
+                            ),
                           ),
 
                           new Row(
@@ -1031,7 +1049,7 @@ class _AccountState extends State<Account> {
                         alignment: Alignment.center,
                         color: Colors.white.withOpacity(0.9),
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
                         ),
                       ),
                     ),
