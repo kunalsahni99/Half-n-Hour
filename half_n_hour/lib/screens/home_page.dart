@@ -243,54 +243,6 @@ class home extends State<MyHomePage> {
                   );
                 },
               ),
-              new Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: new Container(
-                  height: 150.0,
-                  width: 30.0,
-                  child: new GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (BuildContext context) => Cart()));
-                    },
-                    child: Stack(
-                      children: <Widget>[
-                        new IconButton(
-                            icon: new Icon(
-                              Icons.shopping_cart,
-                              color: Colors.black87,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(new MaterialPageRoute(
-                                  builder: (BuildContext context) => Cart()));
-                            }),
-                        widget.totProd == 0
-                            ? new Container()
-                            : new Positioned(
-                                child: new Stack(
-                                children: <Widget>[
-                                  new Icon(Icons.brightness_1,
-                                      size: 20.0,
-                                      color: Colors.orange.shade500),
-                                  new Positioned(
-                                      top: 4.0,
-                                      right: 5.5,
-                                      child: new Center(
-                                        child: new Text(
-                                          widget.totProd.toString(),
-                                          style: new TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11.0,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      )),
-                                ],
-                              )),
-                      ],
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
           drawer: Drawer(
@@ -315,7 +267,9 @@ class home extends State<MyHomePage> {
                       child: ClipOval(
                         child: CachedNetworkImage(
                           placeholder: (context, val) =>
-                              CircularProgressIndicator(),
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                              ),
                           imageUrl: avatar != null
                               ? avatar
                               : "https://cdn4.iconfinder.com/data/icons/avatars-gray/500/avatar-12-512.png",
@@ -396,6 +350,54 @@ class home extends State<MyHomePage> {
               ],
             ),
           ),
+
+          floatingActionButton: FloatingActionButton(
+            onPressed: (){
+              Navigator.push(context, FadeRouteBuilder(page: Cart()));
+            },
+            child: Stack(
+              children: <Widget>[
+                Center(
+                  child: new IconButton(
+                      icon: new Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ),
+                      onPressed: (){
+                        Navigator.of(context).push(
+                            new MaterialPageRoute(
+                                builder:(BuildContext context) =>
+                                    Cart()
+                            )
+                        );
+                      }),
+                ),
+                widget.totProd == 0
+                    ? new Container()
+                    : new Positioned(
+                    child: new Stack(
+                      children: <Widget>[
+                        new Icon(Icons.brightness_1,
+                            size: 20.0, color: Colors.orange.shade500),
+                        new Positioned(
+                            top: 3.0,
+                            right: 5.5,
+                            child: new Center(
+                              child: new Text(
+                                widget.totProd.toString(),
+                                style: new TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11.0,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            )),
+                      ],
+                    )),
+              ],
+            ),
+            backgroundColor: Colors.black87,
+          ),
+
           body: new SingleChildScrollView(
             child: Container(
               child: new Column(children: <Widget>[
