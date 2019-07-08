@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'as foundation;
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class Cart extends StatefulWidget {
@@ -138,11 +138,23 @@ class _SingleCartProductState extends State<SingleCartProduct> {
               Container(
                 height: 150.0,
                 width: 125.0,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(widget.cart_prod_picture),
-                        fit: BoxFit.contain
-                    )
+                child:ClipRRect(
+
+
+
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                    placeholder: (context, val) => Container(
+                      width: 100,
+                      height: 100,
+
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+                      ),
+                    ),
+                    imageUrl: widget.cart_prod_picture,
+                  ),
                 ),
               ),
 
