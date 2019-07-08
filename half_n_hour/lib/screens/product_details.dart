@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../components/photo.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'cart.dart';
@@ -170,17 +170,17 @@ class _ProductDetailsState extends State<ProductDetails> {
             height: 300.0,
             child: GridTile(
               child: Container(
-                  color: Colors.white,
-                  child: CachedNetworkImage(
-                    placeholder: (context, val) => Container(
-                      width: 20.0,
-                      height: 20.0,
-                      child: CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
-                      ),
+                color: Colors.white,
+                child: CachedNetworkImage(
+                  placeholder: (context, val) => Container(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
                     ),
-                    imageUrl: widget.imageUrl,
                   ),
+                  imageUrl: widget.imageUrl,
+                ),
               ),
               footer: Container(
                 color: Colors.white70,
@@ -311,12 +311,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                 flex: 2,
                 child: MaterialButton(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                        borderRadius: BorderRadius.circular(15.0)),
                     onPressed: () {},
-                    color: Colors.white70,
-                    elevation: 0.2,
-                    textColor: Colors.black87,
-                    child: Text('Buy Now')),
+                    color: Colors.blueAccent,
+                    elevation: 1,
+                    textColor: Colors.white,
+                    child: Text('Buy Now',style: TextStyle(fontWeight: FontWeight.bold),)),
               ),
 
               Expanded(
@@ -415,13 +415,13 @@ class _ProductDetailsState extends State<ProductDetails> {
 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Similar Products'),
+            child: Text('Similar Products',style: TextStyle(color: Colors.blueAccent,fontSize: 15,fontWeight: FontWeight.bold),),
           ),
-
+          Divider(),
           // similar products section
           Container(
             height: 340.0,
-            child: SimilarProducts(),
+            child: SimilarProducts(category: widget.category,),
           ),
         ],
       ),
@@ -430,53 +430,54 @@ class _ProductDetailsState extends State<ProductDetails> {
 }
 
 class SimilarProducts extends StatefulWidget {
+  final String category;
+  SimilarProducts({
+    this.category
+  });
+
   @override
   _SimilarProductsState createState() => _SimilarProductsState();
 }
 
 class _SimilarProductsState extends State<SimilarProducts> {
-  var product_list = [
-    {
-      "name": 'Fruits',
-      "picture": 'images/products/fruits2.jpg',
-      "old_price": '120',
-      "price": '85',
-    },
-    {
-      "name": 'Flour Powder',
-      "picture": 'images/products/daily2.jpg',
-      "old_price": '100',
-      "price": '50',
-    },
-    {
-      "name": 'Meds',
-      "picture": 'images/products/med2.jpg',
-      "old_price": '100',
-      "price": '50',
-    },
-    {
-      "name": 'Veggies',
-      "picture": 'images/products/veg2.jpg',
-      "old_price": '100',
-      "price": '50',
-    },
-  ];
+
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      itemCount: product_list.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return SimilarSingleProd(
-          prod_name: product_list[index]['name'],
-          prod_picture: product_list[index]['picture'],
-          prod_old_price: product_list[index]['old_price'],
-          prod_price: product_list[index]['price'],
-          index: index,
-        );
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance
+          .collection("products").where("category", isEqualTo: widget.category)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return new CircularProgressIndicator();
+          default:
+            return new GridView(
+
+              primary: false,
+              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(10.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+
+
+
+              children:
+              snapshot.data
+                  .documents.map((DocumentSnapshot document) {
+                return new
+                SimilarSingleProd(
+                 prod_name: document['title'],
+                  prod_picture: document['imageUrl'],
+                  prod_price: document['price'],
+                  category: document['category'],
+                  prod_id: document['Prod_id'],
+                );
+              }).toList(),
+            );
+        }
       },
     );
   }
@@ -485,60 +486,45 @@ class _SimilarProductsState extends State<SimilarProducts> {
 class SimilarSingleProd extends StatelessWidget {
   final prod_name;
   final prod_picture;
-  final prod_old_price;
-  final prod_price;
-  final int index;
+  final String category;
+
+  final int prod_price;
+  final String prod_id;
 
   SimilarSingleProd(
       {this.prod_name,
         this.prod_price,
         this.prod_picture,
-        this.prod_old_price,
-        this.index});
+        this.category,
+        this.prod_id
+
+        });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+      elevation: 8,
+
       child: Material(
+
+          shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0)
+          ),
           child: InkWell(
             onTap: ()async{
-              FirebaseAuth auth =
-                  FirebaseAuth.instance;
 
-              final FirebaseUser _user =
-              await auth
-                  .currentUser();
-
-              Firestore.instance
-                  .collection("products")
-                  .document(
-                  photos[index]
-                      .Prod_id
-                      .toString())
-                  .setData({
-                "imageUrl":
-                photos[index]
-                    .imageUrl,
-                "title":
-                photos[index].title,
-                "price":
-                photos[index].price,
-
-                "Prod_id": photos[index]
-                    .Prod_id,
-                "category":photos[index].category,
-                "desc": photos[index].desc,
-              });
               Navigator.of(context).push(new MaterialPageRoute(
                 // passing the details of the product to Product Details screen
                   builder: (BuildContext context) => ProductDetails(
                     title: prod_name,
                     imageUrl: prod_picture,
                     price: prod_price,
-                    index: index,
+
                   )));},
             child: GridTile(
               footer: Container(
+
                   color: Colors.white70,
                   child: Row(
                     children: <Widget>[
@@ -558,12 +544,25 @@ class SimilarSingleProd extends StatelessWidget {
                       )
                     ],
                   )),
-              child: Image.asset(
-                prod_picture,
-                fit: BoxFit.cover,
-              ),
+              child: ClipRRect(
+
+
+
+    borderRadius: BorderRadius.circular(8.0),
+    child: CachedNetworkImage(
+    fit: BoxFit.cover,
+    placeholder: (context, val) => Container(
+    width: 100,
+    height: 100,
+
+    child: CircularProgressIndicator(
+    valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+    ),
+    ),
+    imageUrl: prod_picture,
+    ),
             ),
           )),
-    );
+    ));
   }
 }
