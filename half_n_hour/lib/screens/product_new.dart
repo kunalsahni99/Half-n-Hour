@@ -440,6 +440,7 @@ class FadeRouteBuilder<T> extends PageRouteBuilder<T>{
 
   FadeRouteBuilder({@required this.page})
       : super(
+        transitionDuration: Duration(seconds: 2),
         pageBuilder: (context, anim1, anim2) => page,
         transitionsBuilder: (context, a1, a2, child){
           return FadeTransition(opacity: a1 , child: child);
@@ -496,17 +497,18 @@ class _SingleProductState extends State<SingleProduct> {
                       .toString())
                   .get().then((DocumentSnapshot ds){
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProductDetails(
-                          imageUrl: ds.data["imageUrl"],
-                          title: ds.data["title"],
-                          price: ds.data["price"],
-                          Prod_id: ds.data["Prod_id"],
-                          category: ds.data["category"],
-                          desc: ds.data["desc"],
-                          index: widget.index,
-                        )));});
+                    context, FadeRouteBuilder(
+                  page: ProductDetails(
+                    imageUrl: ds.data["imageUrl"],
+                    title: ds.data["title"],
+                    price: ds.data["price"],
+                    Prod_id: ds.data["Prod_id"],
+                    category: ds.data["category"],
+                    desc: ds.data["desc"],
+                    index: widget.index,
+                  )
+                ));
+              });
             },
             child: new Container(
                 margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -528,29 +530,6 @@ class _SingleProductState extends State<SingleProduct> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(20.0),
                                   child: Hero(
-                                    flightShuttleBuilder: (BuildContext flightContext,
-                                        Animation<double> animation,
-                                        HeroFlightDirection flightDirection,
-                                        BuildContext fromHeroContext,
-                                        BuildContext toHeroContext){
-                                      final Hero toHero = toHeroContext.widget;
-
-                                      return FadeTransition(
-                                        opacity: animation.drive(
-                                          Tween<double>(begin: 0.0, end: 1.0).chain(
-                                              CurveTween(
-                                                  curve: Interval(0.0, 1.0,
-                                                      curve: ValleyQuadraticCurve()
-                                                  )
-                                              )
-                                          ),
-                                        ),
-                                        child: toHero.child,
-                                      );
-                                    },
-                                    placeholderBuilder: (context, child){
-                                      return Opacity(opacity: 0.2, child: child,);
-                                    },
                                     tag: 'prod ${widget.index}',
                                     child: CachedNetworkImage(
                                       placeholder: (context, val) => Container(
