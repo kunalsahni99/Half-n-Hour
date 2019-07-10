@@ -79,6 +79,19 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
   }
 }
 
+class FadeRouteBuilder<T> extends PageRouteBuilder<T>{
+  final Widget page;
+
+  FadeRouteBuilder({@required this.page})
+      : super(
+      transitionDuration: Duration(seconds: 1),
+      pageBuilder: (context, anim1, anim2) => page,
+      transitionsBuilder: (context, a1, a2, child){
+        return FadeTransition(opacity: a1 , child: child);
+      }
+  );
+}
+
 class SlidingCard extends StatelessWidget {
   final String name;
   final String imageUrl;
@@ -109,8 +122,8 @@ class SlidingCard extends StatelessWidget {
       offset: Offset(-32 * gauss * offset.sign, 0),
       child: InkWell(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ProductDetails(
+          Navigator.push(context, FadeRouteBuilder(
+          page: ProductDetails(
               imageUrl: imageUrl,
               title: name,
               price: price,
@@ -136,29 +149,6 @@ class SlidingCard extends StatelessWidget {
                         top: Radius.circular(32)
                     ),
                     child: Hero(
-                      flightShuttleBuilder: (BuildContext flightContext,
-                          Animation<double> animation,
-                          HeroFlightDirection flightDirection,
-                          BuildContext fromHeroContext,
-                          BuildContext toHeroContext){
-                        final Hero toHero = toHeroContext.widget;
-
-                        return FadeTransition(
-                          opacity: animation.drive(
-                            Tween<double>(begin: 0.0, end: 1.0).chain(
-                              CurveTween(
-                                curve: Interval(0.0, 1.0,
-                                  curve: ValleyQuadraticCurve()
-                                )
-                              )
-                            ),
-                          ),
-                          child: toHero.child,
-                        );
-                      },
-                      placeholderBuilder: (context, child){
-                        return Opacity(opacity: 0.2, child: child,);
-                      },
                       tag: 'prod $index',
                       child: CachedNetworkImage(
                         height: MediaQuery.of(context).size.height * 0.3,
