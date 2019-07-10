@@ -6,9 +6,25 @@ import 'package:flutter/foundation.dart'as foundation;
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../animations/fab_fill_transition.dart';
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class Cart extends StatefulWidget {
+  const Cart({Key key, @required this.sourceRect})
+      : assert(sourceRect != null),
+        super(key: key);
+
+  static Route<dynamic> route(BuildContext context, GlobalKey key) {
+    final RenderBox box = key.currentContext.findRenderObject();
+    final Rect sourceRect = box.localToGlobal(Offset.zero) & box.size;
+
+    return PageRouteBuilder<void>(
+      pageBuilder: (BuildContext context, _, __) => Cart(sourceRect: sourceRect),
+      transitionDuration: const Duration(milliseconds: 600),
+    );
+  }
+
+  final Rect sourceRect;
 
   @override
   _CartState createState() => _CartState();
@@ -16,12 +32,15 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
 
-
+  String fabIcon = 'http://a.rgbimg.com/cache1CzrYE/users/t/ta/tacluda/600/qa7Ndkk.jpg';
   @override
   Widget build(BuildContext context) {
     var cart = Provider.of<Price>(context);
+    return FabFillTransition(
+        source: widget.sourceRect,
+        icon: fabIcon,
 
-    return Scaffold(
+    child: Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0.0,
@@ -82,8 +101,8 @@ class _CartState extends State<Cart> {
           ],
         ),
       ),
-    );
-  }
+    )
+    );}
 }
 
 class SingleCartProduct extends StatefulWidget {
@@ -134,7 +153,7 @@ class _SingleCartProductState extends State<SingleCartProduct> {
           ),
           child: Row(
             children: <Widget>[
-              SizedBox(width: 10.0),
+              SizedBox(width: 0.0),
               Container(
                 height: 150.0,
                 width: 125.0,
@@ -142,12 +161,11 @@ class _SingleCartProductState extends State<SingleCartProduct> {
 
 
 
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   child: CachedNetworkImage(
                       fit: BoxFit.cover,
                     placeholder: (context, val) => Container(
-                      width: 100,
-                      height: 100,
+
 
                       child: CircularProgressIndicator(
                         valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
