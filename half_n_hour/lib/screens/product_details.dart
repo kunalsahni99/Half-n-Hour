@@ -183,29 +183,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               child: Container(
                   color: Colors.white,
                   child: Hero(
-                    flightShuttleBuilder: (BuildContext flightContext,
-                        Animation<double> animation,
-                        HeroFlightDirection flightDirection,
-                        BuildContext fromHeroContext,
-                        BuildContext toHeroContext){
-                      final Hero toHero = toHeroContext.widget;
-
-                      return FadeTransition(
-                        opacity: animation.drive(
-                          Tween<double>(begin: 0.0, end: 1.0).chain(
-                              CurveTween(
-                                  curve: Interval(0.0, 1.0,
-                                      curve: ValleyQuadraticCurve()
-                                  )
-                              )
-                          ),
-                        ),
-                        child: toHero.child,
-                      );
-                    },
-                    placeholderBuilder: (context, child){
-                      return Opacity(opacity: 0.2, child: child,);
-                    },
                     tag: 'prod ${widget.index}',
                     child: CachedNetworkImage(
                       placeholder: (context, val) => Container(
