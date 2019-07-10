@@ -9,7 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import '../animations/styling.dart';
 
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
@@ -20,8 +20,9 @@ import 'package:HnH/components/photo.dart';
 import 'package:flutter/foundation.dart';
 import '../components//category.dart';
 import '../components//brand.dart';
-import '../components//home_category.dart';
+import '../components//home_category1.dart';
 import 'addprod.dart';
+import 'search.dart';
 
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
@@ -45,6 +46,7 @@ class home extends State<MyHomePage> {
   TextEditingController categoryController = TextEditingController();
   TextEditingController brandController = TextEditingController();
   GlobalKey<FormState> _categoryFormKey = GlobalKey();
+  final GlobalKey _fabKey = GlobalKey();
 
 
   CategoryService _categoryService = CategoryService();
@@ -118,22 +120,22 @@ class home extends State<MyHomePage> {
 
   Future<bool> _onWillPop() {
     return showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-                title: new Text('Are you sure?'),
-                content: new Text('Do you want to exit an App'),
-                actions: <Widget>[
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: new Text('Yes'),
-                  ),
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: new Text('No'),
-                  ),
-                ],
-              ),
-        ) ??
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+        ],
+      ),
+    ) ??
         false;
   }
 
@@ -143,46 +145,46 @@ class home extends State<MyHomePage> {
 
   List<Photo> photos_popular = <Photo>[
     Photo(
-        imageUrl: 'images/veg.jpg',
+      imageUrl: 'images/veg.jpg',
 
-        category: 'Fruits & Vegetables',
+      category: 'Fruits & Vegetables',
 
-        ),
+    ),
     Photo(
-        imageUrl: 'images/frozen.jpg',
-        category: 'Frozen Veg',
+      imageUrl: 'images/frozen.jpg',
+      category: 'Frozen Veg',
 
-        ),
+    ),
     Photo(
-        imageUrl: 'images/bev.jpg',
+      imageUrl: 'images/bev.jpg',
 
-        category: 'Beverages',
-        ),
+      category: 'Beverages',
+    ),
     Photo(
-        imageUrl: 'images/brand_f.jpg',
+      imageUrl: 'images/brand_f.jpg',
 
-        category: 'Branded Food',
-        ),
+      category: 'Branded Food',
+    ),
     Photo(
-        imageUrl: 'images/be.jpg',
+      imageUrl: 'images/be.jpg',
 
-        category: 'Beauty & Personal Care',
-       ),
+      category: 'Beauty & Personal Care',
+    ),
     Photo(
-        imageUrl: 'images/home.jpg',
-        title: 'Furniture',
-        category: 'Home Care & Fashion',
-       ),
+      imageUrl: 'images/home.jpg',
+      title: 'Furniture',
+      category: 'Home Care & Fashion',
+    ),
     Photo(
-        imageUrl: 'images/nonveg.jpg',
+      imageUrl: 'images/nonveg.jpg',
 
-        category: 'Non Veg',
-       ),
+      category: 'Non Veg',
+    ),
     Photo(
-        imageUrl: 'images/eggs.jpg',
+      imageUrl: 'images/eggs.jpg',
 
-        category: 'Dairy, Bakery & Eggs',
-       ),
+      category: 'Dairy, Bakery & Eggs',
+    ),
   ];
 
   @override
@@ -191,25 +193,32 @@ class home extends State<MyHomePage> {
     final Orientation orientation = MediaQuery.of(context).orientation;
     final ThemeData theme = Theme.of(context);
     final TextStyle titleStyle =
-        theme.textTheme.headline.copyWith(color: Colors.black54);
+    theme.textTheme.headline.copyWith(color: Colors.black54);
     final TextStyle descriptionStyle = theme.textTheme.subhead;
     Widget image_carousel = new Container(
       height: 200.0,
-      child: Carousel(
-        boxFit: BoxFit.cover,
+      child:  Carousel(
         images: [
-          AssetImage('images/groceries.jpg'),
-          AssetImage('images/grthre.jpg'),
-          AssetImage('images/grtwo.jpg'),
-          AssetImage('images/brand_f.jpg'),
-          AssetImage('images/home.jpg'),
+
+
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi1.jpg?alt=media&token=ba548dea-24e2-41a1-ab49-66eccaf6c4ee'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi2.jpg?alt=media&token=368c9fd8-b1fc-4d7c-a254-5972f334f2c7'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi3.jpg?alt=media&token=7c18f1cc-dcfe-4c64-9b1c-621345c29d53'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi4.jpg?alt=media&token=f27e14f7-36ac-41bb-b8b5-555b027e3d7d'),
+          NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi5.jpg?alt=media&token=ac9cc479-b34f-4b02-845b-d172096e54fe'),
         ],
         autoplay: true,
         dotSize: 4.0,
         indicatorBgPadding: 8.0,
+
         dotBgColor: Colors.transparent,
-        animationCurve: Curves.fastOutSlowIn,
+        animationCurve: Curves.easeInCubic,
         animationDuration: Duration(milliseconds: 1000),
+        noRadiusForIndicator: true,
+        overlayShadow: true,
+        overlayShadowColors: Colors.black12,
+
+        overlayShadowSize:0.5,
       ),
     );
 
@@ -228,6 +237,8 @@ class home extends State<MyHomePage> {
                 icon: const Icon(Icons.search),
                 color: Colors.black87,
                 onPressed: () async {
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context) => Search()));
                   final int selected = await showSearch<int>(
                     context: context,
                     //delegate: _delegate,
@@ -432,6 +443,7 @@ class home extends State<MyHomePage> {
                         ),
                         _verticalD(),
 
+
                         new Row(
                           children: <Widget>[
                             new GestureDetector(
@@ -453,6 +465,7 @@ class home extends State<MyHomePage> {
                         )
                       ]),
                 ),
+
                 new Container(
                   alignment: Alignment.topCenter,
                   height: 700.0,
@@ -462,8 +475,8 @@ class home extends State<MyHomePage> {
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10.0),
                       gridDelegate:
-                          new SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
+                      new SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
                       itemBuilder: (BuildContext context, int index) {
                         return new GestureDetector(
                             onTap: () {
@@ -484,15 +497,15 @@ class home extends State<MyHomePage> {
                                 child: new Card(
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(20.0)),
+                                      BorderRadius.circular(20.0)),
                                   elevation: 5.0,
                                   child: Stack(
                                     children: <Widget>[
                                       Positioned.fill(
                                           child: Image.asset(
-                                        photos_popular[index].imageUrl,
-                                        fit: BoxFit.fitHeight,
-                                      )),
+                                            photos_popular[index].imageUrl,
+                                            fit: BoxFit.fitHeight,
+                                          )),
                                       Container(
                                         color: Colors.black26,
                                       ),
@@ -515,13 +528,83 @@ class home extends State<MyHomePage> {
                 ),
               ]),
             ),
-          ),
+          ),bottomNavigationBar: _bottomNavigation,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: _fab,
+
         ));
+  }
+  Widget get _bottomNavigation {
+    final Animation<Offset> slideIn = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: ModalRoute.of(context).animation, curve: Curves.ease));
+    final Animation<Offset> slideOut = Tween<Offset>(begin: Offset.zero, end: const Offset(0, 1))
+        .animate(CurvedAnimation(parent: ModalRoute.of(context).secondaryAnimation, curve: Curves.fastOutSlowIn));
+
+    return SlideTransition(
+      position: slideIn,
+      child: SlideTransition(
+        position: slideOut,
+        child: BottomAppBar(
+          color: AppTheme.grey,
+          shape: AutomaticNotchedShape(RoundedRectangleBorder(), CircleBorder()),
+          notchMargin: 8,
+          child: SizedBox(
+            height: 48,
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  iconSize: 48,
+                  icon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+
+                    ],
+                  ),
+                  onPressed: () => print('Tap!'),
+                ),
+                Spacer(),
+
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  Widget get _fab {
+    return AnimatedBuilder(
+      animation: ModalRoute.of(context).animation,
+      child: FloatingActionButton(
+
+            key: _fabKey,
+            child: new IconButton(
+
+              icon: Icon(Icons.shopping_cart),
+
+            ),
+
+
+            backgroundColor: AppTheme.orange,
+            onPressed: () => Navigator.of(context).push<void>(
+              Cart.route(context, _fabKey),
+            ),
+          ),
+
+
+      builder: (BuildContext context, Widget fab) {
+        final Animation<double> animation = ModalRoute.of(context).animation;
+        return SizedBox(
+          width: 54 * animation.value,
+          height: 54 * animation.value,
+          child: fab,
+        );
+      },
+    );
   }
 
   _verticalD() => Container(
-        margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
-      );
+    margin: EdgeInsets.only(left: 5.0, right: 0.0, top: 10.0, bottom: 0.0),
+  );
   void _categoryAlert() {
     var alert = new AlertDialog(
       content: Form(
