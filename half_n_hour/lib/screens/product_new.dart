@@ -6,8 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rect_getter/rect_getter.dart';
-
+import 'dart:math' as math;
 
 import 'package:HnH/screens/cart.dart';
 import 'product_details.dart';
@@ -47,54 +46,11 @@ class home extends State<ProductNew> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
 
-  final Duration animationDuration = Duration(milliseconds:700);
-  final Duration delay = Duration(microseconds: 300);
-  GlobalKey rectGetterKey = RectGetter.createGlobalKey();
-  Rect rect;
-
-  void onTap() async {
-    setState(() => rect = RectGetter.getRectFromKey(rectGetterKey));  //<-- set rect to be size of fab
-    WidgetsBinding.instance.addPostFrameCallback((_) {                //<-- on the next frame...
-      setState(() =>
-      rect = rect.inflate(1.3 * MediaQuery.of(context).size.longestSide)); //<-- set rect to be big
-      Future.delayed(animationDuration + delay, _goToNextPage); //<-- after delay, go to next page
-    });
-  }
-
-  void _goToNextPage() {
-    Navigator.of(context)
-        .push(FadeRouteBuilder1(page: Cart()))
-        .then((_) => setState(() => rect = null));
-  }
-  Widget _ripple() {
-    if (rect == null) {
-      return Container();
-    }
-    return AnimatedPositioned( //<--replace Positioned with AnimatedPositioned
-      duration: animationDuration, //<--specify the animation duration
-      left: rect.left,
-      right: MediaQuery.of(context).size.width - rect.right,
-      top: rect.top,
-      bottom: MediaQuery.of(context).size.height - rect.bottom,
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-          backgroundBlendMode: BlendMode.colorBurn
-
-
-        ),
-      ),
-    );
-  }
-
-
   @override
   void initState() {
     super.initState();
     getValues();
   }
-
 
   Future<void> getValues() async {
     final FirebaseUser user = await auth.currentUser();
@@ -189,9 +145,8 @@ class home extends State<ProductNew> {
     Widget image_carousel = new Container(
       height: 200.0,
       child: Carousel(
+        boxFit: BoxFit.cover,
         images: [
-
-
           NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi1.jpg?alt=media&token=ba548dea-24e2-41a1-ab49-66eccaf6c4ee'),
           NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi2.jpg?alt=media&token=368c9fd8-b1fc-4d7c-a254-5972f334f2c7'),
           NetworkImage('https://firebasestorage.googleapis.com/v0/b/half-n-hour-aedef.appspot.com/o/app%2Fcarousel%2Fi3.jpg?alt=media&token=7c18f1cc-dcfe-4c64-9b1c-621345c29d53'),
@@ -208,9 +163,9 @@ class home extends State<ProductNew> {
     );
 
 
-    return Stack( //<-- Wrap Scaffold with a Stack
-        children: <Widget>[
-          Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
 
         appBar: new AppBar(
           iconTheme: IconThemeData(color: Colors.black87),
@@ -263,7 +218,7 @@ class home extends State<ProductNew> {
                       child: CachedNetworkImage(
                         placeholder: (context, val) =>
                             CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black26),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
                             ),
                         imageUrl: avatar != null
                             ? avatar
@@ -341,7 +296,6 @@ class home extends State<ProductNew> {
         ),
 
         body: new SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
 
           child: new Column(children: <Widget>[
             image_carousel,
@@ -408,7 +362,6 @@ class home extends State<ProductNew> {
                       );
                     default:
                       return new ListView(
-                        physics: AlwaysScrollableScrollPhysics(),
                         children:
                         snapshot.data.documents.map((DocumentSnapshot document) {
                           return new SingleProduct(
@@ -417,6 +370,7 @@ class home extends State<ProductNew> {
                             price: document['price'],
                             category: document['category'],
                             Prod_id: document['Prod_id'],
+                            index: snapshot.data.documents.indexOf(document),
                           );
                         }).toList(),
                       );
@@ -426,11 +380,9 @@ class home extends State<ProductNew> {
             )
           ]),
         ),
-        floatingActionButton: RectGetter(           //<-- Wrap Fab with RectGetter
-    key: rectGetterKey,                       //<-- Passing the key
-    child:  FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
           onPressed: (){
-
+           Navigator.push(context, FadeRouteBuilder(page: Cart()));
           },
           child: Stack(
             children: <Widget>[
@@ -441,8 +393,12 @@ class home extends State<ProductNew> {
                       color: Colors.white,
                     ),
                     onPressed: (){
-                     onTap();
-
+                      Navigator.of(context).push(
+                          new MaterialPageRoute(
+                              builder:(BuildContext context) =>
+                                  Cart()
+                          )
+                      );
                     }),
               ),
               totProd == 0
@@ -471,8 +427,8 @@ class home extends State<ProductNew> {
           backgroundColor: Colors.black87,
         ),
       ),
-    ),_ripple()
-    ]);}
+    );
+  }
 
   _verticalD() => Container(
     margin: EdgeInsets.only(left: 10.0, right: 0.0, top: 10.0, bottom: 0.0),
@@ -484,22 +440,11 @@ class FadeRouteBuilder<T> extends PageRouteBuilder<T>{
 
   FadeRouteBuilder({@required this.page})
       : super(
-      pageBuilder: (context, anim1, anim2) => page,
-      transitionsBuilder: (context, a1, a2, child){
-        return FadeTransition(opacity: a1 , child: child);
-      }
-  );
-}
-class FadeRouteBuilder1<T> extends PageRouteBuilder<T> {
-  final Widget page;
-
-  FadeRouteBuilder1({@required this.page})
-      : super(
-    pageBuilder: (context, animation1, animation2) => page,
-    transitionsBuilder: (context, animation1, animation2, child) {
-      return FadeTransition(opacity: animation1, child: child);
-    },
-  );
+        pageBuilder: (context, anim1, anim2) => page,
+        transitionsBuilder: (context, a1, a2, child){
+          return FadeTransition(opacity: a1 , child: child);
+        }
+      );
 }
 
 class SingleProduct extends StatefulWidget {
@@ -509,6 +454,7 @@ class SingleProduct extends StatefulWidget {
   final String Prod_id;
   final String category;
   final String desc;
+  final int index;
 
   SingleProduct({
     this.imageUrl,
@@ -516,11 +462,22 @@ class SingleProduct extends StatefulWidget {
     this.price,
     this.Prod_id,
     this.category,
-    this.desc
+    this.desc,
+    @required this.index
   });
 
   @override
   _SingleProductState createState() => _SingleProductState();
+}
+
+class ValleyQuadraticCurve extends Curve {
+  @override
+  double transform(double t) {
+
+    assert(t >= 0.0 && t <= 1.0);
+
+    return 4 * math.pow(t - 0.5, 2);
+  }
 }
 
 class _SingleProductState extends State<SingleProduct> {
@@ -530,7 +487,6 @@ class _SingleProductState extends State<SingleProduct> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-
         child: new GestureDetector(
             onTap: ()async{
               Firestore.instance
@@ -549,10 +505,10 @@ class _SingleProductState extends State<SingleProduct> {
                           Prod_id: ds.data["Prod_id"],
                           category: ds.data["category"],
                           desc: ds.data["desc"],
+                          index: widget.index,
                         )));});
             },
             child: new Container(
-
                 margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
                 padding: EdgeInsets.only(bottom: 50.0),
                 child: new Material(
@@ -563,20 +519,6 @@ class _SingleProductState extends State<SingleProduct> {
                     child: Stack(
                       children: <Widget>[
                         Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 5, // has the effect of softening the shadow
-                                spreadRadius: 5, // has the effect of extending the shadow
-                                offset: Offset(
-                                  5.0, // horizontal, move right 10
-                                  5.0, // vertical, move down 10
-                                ),
-                              )
-                            ],
-
-                          ),
                           height:MediaQuery.of(context).size.width,
                           width: MediaQuery.of(context).size.width,
                           child: FittedBox(
@@ -585,15 +527,41 @@ class _SingleProductState extends State<SingleProduct> {
                               children: <Widget>[
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(20.0),
-                                  child: CachedNetworkImage(
-                                    placeholder: (context, val) => Container(
-                                      width: 20.0,
-                                      height: 20.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+                                  child: Hero(
+                                    flightShuttleBuilder: (BuildContext flightContext,
+                                        Animation<double> animation,
+                                        HeroFlightDirection flightDirection,
+                                        BuildContext fromHeroContext,
+                                        BuildContext toHeroContext){
+                                      final Hero toHero = toHeroContext.widget;
+
+                                      return FadeTransition(
+                                        opacity: animation.drive(
+                                          Tween<double>(begin: 0.0, end: 1.0).chain(
+                                              CurveTween(
+                                                  curve: Interval(0.0, 1.0,
+                                                      curve: ValleyQuadraticCurve()
+                                                  )
+                                              )
+                                          ),
+                                        ),
+                                        child: toHero.child,
+                                      );
+                                    },
+                                    placeholderBuilder: (context, child){
+                                      return Opacity(opacity: 0.2, child: child,);
+                                    },
+                                    tag: 'prod ${widget.index}',
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, val) => Container(
+                                        width: 20.0,
+                                        height: 20.0,
+                                        child: CircularProgressIndicator(
+                                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+                                        ),
                                       ),
+                                      imageUrl: widget.imageUrl,
                                     ),
-                                    imageUrl: widget.imageUrl,
                                   ),
                                 ),
                               ],
@@ -605,8 +573,8 @@ class _SingleProductState extends State<SingleProduct> {
                           padding: EdgeInsets.only(top: 287.0),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: Colors.white70
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Colors.white70
                             ),
                             alignment: Alignment.bottomCenter,
                             child: ListTile(
@@ -623,8 +591,8 @@ class _SingleProductState extends State<SingleProduct> {
                                 padding: EdgeInsets.only(top: 12.0),
                                 child: Text("₹" + widget.price.toString(),
                                   style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 16.0,
+                                      color: Colors.black87,
+                                      fontSize: 16.0,
                                   ),
                                 ),
                               ),
@@ -716,40 +684,40 @@ class _SingleProductState extends State<SingleProduct> {
                                               ),
                                             );
                                           })
-                                          : selected = await showGeneralDialog<int>(
-                                          barrierColor: Colors.black.withOpacity(0.5),
-                                          context: context,
-                                          transitionBuilder: (context, a1, a2, widget){
-                                            return Transform.scale(
-                                              scale: a1.value,
-                                              child: Opacity(
-                                                opacity: a1.value,
-                                                child: SimpleDialog(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(20.0)
-                                                    ),
-                                                    title: Center(child: Text('Select Quantity')),
-                                                    children: qtyList.map((value){
-                                                      return Align(
-                                                        alignment: Alignment.center,
-                                                        child: new SimpleDialogOption(
-                                                          onPressed: (){
-                                                            Navigator.pop(context, value);
-
-                                                            Fluttertoast.showToast(msg: "Added to cart");
-                                                          },
-                                                          child: Text(value.toString()),
-                                                        ),
-                                                      );
-                                                    }).toList()
+                                        : selected = await showGeneralDialog<int>(
+                                        barrierColor: Colors.black.withOpacity(0.5),
+                                        context: context,
+                                        transitionBuilder: (context, a1, a2, widget){
+                                          return Transform.scale(
+                                            scale: a1.value,
+                                            child: Opacity(
+                                              opacity: a1.value,
+                                              child: SimpleDialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20.0)
                                                 ),
+                                                title: Center(child: Text('Select Quantity')),
+                                                children: qtyList.map((value){
+                                                  return Align(
+                                                    alignment: Alignment.center,
+                                                    child: new SimpleDialogOption(
+                                                      onPressed: (){
+                                                        Navigator.pop(context, value);
+
+                                                        Fluttertoast.showToast(msg: "Added to cart");
+                                                      },
+                                                      child: Text(value.toString()),
+                                                    ),
+                                                  );
+                                                }).toList()
                                               ),
-                                            );
-                                          },
-                                          transitionDuration: Duration(milliseconds: 200),
-                                          barrierDismissible: true,
-                                          barrierLabel: "",
-                                          pageBuilder: (context, anim1, anim2){}
+                                            ),
+                                          );
+                                        },
+                                        transitionDuration: Duration(milliseconds: 200),
+                                        barrierDismissible: true,
+                                        barrierLabel: "",
+                                        pageBuilder: (context, anim1, anim2){}
                                       );
                                       if (selected != null){
                                         setState(() {
@@ -790,5 +758,3 @@ class _SingleProductState extends State<SingleProduct> {
     );
   }
 }
-
-
