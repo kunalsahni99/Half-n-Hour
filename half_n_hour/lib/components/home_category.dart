@@ -31,16 +31,14 @@ class home_category extends State<HomeCategory> {
     return new Scaffold(
       body: Stack(
         children: <Widget>[
+          Header(),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(height: 8),
-                Header(),
-
-                SizedBox(height: 8),
                 Container(
-                    padding: EdgeInsets.only(top: 70),
+                    padding: EdgeInsets.only(top: 180),
                     child: SlidingCardsView(category: widget.category,))
               ],
             ),
@@ -57,23 +55,56 @@ class Header extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 10, left: 30),
-      child: ListTile(
-        leading: Text('Products',
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600
+    return Stack(
+      children: <Widget>[
+        Container(
+          height: 250.0,
+          width: double.infinity,
+          color: Colors.yellow.withOpacity(0.2),
+        ),
+        Positioned(
+          bottom: 50.0,
+          right: 100.0,
+          child: Container(
+            height: 400.0,
+            width: 400.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(200.0),
+              color: Color(0xFEE16D).withOpacity(0.4),
+            ),
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(Icons.close,
-            color: Colors.black87,
-            size: 28,
+        Positioned(
+          bottom: 100.0,
+          left: 150.0,
+          child: Container(
+            height: 300.0,
+            width: 300.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(150.0),
+              color: Color(0xFEE16D).withOpacity(0.5),
+            ),
           ),
-          onPressed: () => Navigator.pop(context),
         ),
-      )
+        Padding(
+            padding: EdgeInsets.only(top: 30, left: 30),
+            child: ListTile(
+              leading: Text('Products',
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.close,
+                  color: Colors.black87,
+                  size: 28,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            )
+        )
+      ],
     );
   }
 }
