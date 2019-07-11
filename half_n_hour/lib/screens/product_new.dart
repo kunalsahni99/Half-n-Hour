@@ -7,14 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
-
+import 'package:flutter/rendering.dart';
 import 'package:HnH/screens/cart.dart';
 import 'product_details.dart';
 import './profile.dart';
 import 'maps.dart';
 import 'home_page.dart';
 import 'package:HnH/components/photo.dart';
-
+import '../animations/styling.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -44,12 +44,36 @@ class home extends State<ProductNew> {
       loggedwithPhone;
   final UserUpdateInfo userUpdateInfo = UserUpdateInfo();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final GlobalKey _fabKey = GlobalKey();
+  ScrollController _hideButtonController;
 
 
+  var _isVisible;
   @override
   void initState() {
     super.initState();
     getValues();
+    super.initState();
+    _isVisible = true;
+    _hideButtonController = new ScrollController();
+    _hideButtonController.addListener(() {
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if(_isVisible)
+          setState(() {
+            _isVisible = false;
+            print("**** $_isVisible up");
+          });
+      }
+      if (_hideButtonController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if(!_isVisible)
+          setState(() {
+            _isVisible = true;
+            print("**** $_isVisible down");
+          });
+      }
+    });
   }
 
   Future<void> getValues() async {
@@ -156,9 +180,15 @@ class home extends State<ProductNew> {
         autoplay: true,
         dotSize: 4.0,
         indicatorBgPadding: 8.0,
+
         dotBgColor: Colors.transparent,
-        animationCurve: Curves.fastOutSlowIn,
+        animationCurve: Curves.easeInCubic,
         animationDuration: Duration(milliseconds: 1000),
+        noRadiusForIndicator: true,
+        overlayShadow: true,
+        overlayShadowColors: Colors.black12,
+
+        overlayShadowSize:0.5,
       ),
     );
 
@@ -297,6 +327,7 @@ class home extends State<ProductNew> {
 
         body: new SingleChildScrollView(
 
+
           child: new Column(children: <Widget>[
             image_carousel,
 
@@ -380,53 +411,78 @@ class home extends State<ProductNew> {
             )
           ]),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-           Navigator.push(context, FadeRouteBuilder(page: Cart()));
-          },
-          child: Stack(
-            children: <Widget>[
-              Center(
-                child: new IconButton(
-                    icon: new Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white,
-                    ),
-                    onPressed: (){
-                      Navigator.of(context).push(
-                          new MaterialPageRoute(
-                              builder:(BuildContext context) =>
-                                  Cart()
-                          )
-                      );
-                    }),
-              ),
-              totProd == 0
-                  ? new Container()
-                  : new Positioned(
-                  child: new Stack(
+
+        bottomNavigationBar: _bottomNavigation,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: _fab,
+      ),
+    );
+  }
+  Widget get _bottomNavigation {
+    final Animation<Offset> slideIn = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: ModalRoute.of(context).animation, curve: Curves.ease));
+    final Animation<Offset> slideOut = Tween<Offset>(begin: Offset.zero, end: const Offset(0, 1))
+        .animate(CurvedAnimation(parent: ModalRoute.of(context).secondaryAnimation, curve: Curves.fastOutSlowIn));
+
+    return SlideTransition(
+      position: slideIn,
+      child: SlideTransition(
+        position: slideOut,
+        child: BottomAppBar(
+          color: AppTheme.grey,
+          shape: AutomaticNotchedShape(RoundedRectangleBorder(), CircleBorder()),
+          notchMargin: 8,
+          child: SizedBox(
+            height: 48,
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  iconSize: 48,
+                  icon: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      new Icon(Icons.brightness_1,
-                          size: 20.0, color: Colors.orange.shade500),
-                      new Positioned(
-                          top: 3.0,
-                          right: 5.5,
-                          child: new Center(
-                            child: new Text(
-                              totProd.toString(),
-                              style: new TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.0,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          )),
+
                     ],
-                  )),
-            ],
+                  ),
+                  onPressed: () => print('Tap!'),
+                ),
+                Spacer(),
+
+              ],
+            ),
           ),
-          backgroundColor: Colors.black87,
         ),
       ),
+    );
+  }
+  Widget get _fab {
+    return AnimatedBuilder(
+      animation: ModalRoute.of(context).animation,
+      child: FloatingActionButton(
+
+        key: _fabKey,
+        child: new IconButton(
+
+          icon: Icon(Icons.shopping_cart),
+
+        ),
+
+
+        backgroundColor: AppTheme.orange,
+        onPressed: () => Navigator.of(context).push<void>(
+          Cart.route(context, _fabKey),
+        ),
+      ),
+
+
+      builder: (BuildContext context, Widget fab) {
+        final Animation<double> animation = ModalRoute.of(context).animation;
+        return SizedBox(
+          width: 54 * animation.value,
+          height: 54 * animation.value,
+          child: fab,
+        );
+      },
     );
   }
 
@@ -440,12 +496,12 @@ class FadeRouteBuilder<T> extends PageRouteBuilder<T>{
 
   FadeRouteBuilder({@required this.page})
       : super(
-        transitionDuration: Duration(seconds: 1),
-        pageBuilder: (context, anim1, anim2) => page,
-        transitionsBuilder: (context, a1, a2, child){
-          return FadeTransition(opacity: a1 , child: child);
-        }
-      );
+      transitionDuration: Duration(seconds: 1),
+      pageBuilder: (context, anim1, anim2) => page,
+      transitionsBuilder: (context, a1, a2, child){
+        return FadeTransition(opacity: a1 , child: child);
+      }
+  );
 }
 
 class SingleProduct extends StatefulWidget {
@@ -487,7 +543,7 @@ class _SingleProductState extends State<SingleProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return new SingleChildScrollView(
         child: new GestureDetector(
             onTap: ()async{
               Firestore.instance
@@ -498,15 +554,15 @@ class _SingleProductState extends State<SingleProduct> {
                   .get().then((DocumentSnapshot ds){
                 Navigator.push(
                     context, FadeRouteBuilder(
-                  page: ProductDetails(
-                    imageUrl: ds.data["imageUrl"],
-                    title: ds.data["title"],
-                    price: ds.data["price"],
-                    Prod_id: ds.data["Prod_id"],
-                    category: ds.data["category"],
-                    desc: ds.data["desc"],
-                    index: widget.index,
-                  )
+                    page: ProductDetails(
+                      imageUrl: ds.data["imageUrl"],
+                      title: ds.data["title"],
+                      price: ds.data["price"],
+                      Prod_id: ds.data["Prod_id"],
+                      category: ds.data["category"],
+                      desc: ds.data["desc"],
+                      index: widget.index,
+                    )
                 ));
               });
             },
@@ -552,8 +608,8 @@ class _SingleProductState extends State<SingleProduct> {
                           padding: EdgeInsets.only(top: 287.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: Colors.white70
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: Colors.white70
                             ),
                             alignment: Alignment.bottomCenter,
                             child: ListTile(
@@ -570,8 +626,8 @@ class _SingleProductState extends State<SingleProduct> {
                                 padding: EdgeInsets.only(top: 12.0),
                                 child: Text("₹" + widget.price.toString(),
                                   style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 16.0,
+                                    color: Colors.black87,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ),
@@ -663,40 +719,40 @@ class _SingleProductState extends State<SingleProduct> {
                                               ),
                                             );
                                           })
-                                        : selected = await showGeneralDialog<int>(
-                                        barrierColor: Colors.black.withOpacity(0.5),
-                                        context: context,
-                                        transitionBuilder: (context, a1, a2, widget){
-                                          return Transform.scale(
-                                            scale: a1.value,
-                                            child: Opacity(
-                                              opacity: a1.value,
-                                              child: SimpleDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20.0)
-                                                ),
-                                                title: Center(child: Text('Select Quantity')),
-                                                children: qtyList.map((value){
-                                                  return Align(
-                                                    alignment: Alignment.center,
-                                                    child: new SimpleDialogOption(
-                                                      onPressed: (){
-                                                        Navigator.pop(context, value);
-
-                                                        Fluttertoast.showToast(msg: "Added to cart");
-                                                      },
-                                                      child: Text(value.toString()),
+                                          : selected = await showGeneralDialog<int>(
+                                          barrierColor: Colors.black.withOpacity(0.5),
+                                          context: context,
+                                          transitionBuilder: (context, a1, a2, widget){
+                                            return Transform.scale(
+                                              scale: a1.value,
+                                              child: Opacity(
+                                                opacity: a1.value,
+                                                child: SimpleDialog(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(20.0)
                                                     ),
-                                                  );
-                                                }).toList()
+                                                    title: Center(child: Text('Select Quantity')),
+                                                    children: qtyList.map((value){
+                                                      return Align(
+                                                        alignment: Alignment.center,
+                                                        child: new SimpleDialogOption(
+                                                          onPressed: (){
+                                                            Navigator.pop(context, value);
+
+                                                            Fluttertoast.showToast(msg: "Added to cart");
+                                                          },
+                                                          child: Text(value.toString()),
+                                                        ),
+                                                      );
+                                                    }).toList()
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                        transitionDuration: Duration(milliseconds: 200),
-                                        barrierDismissible: true,
-                                        barrierLabel: "",
-                                        pageBuilder: (context, anim1, anim2){}
+                                            );
+                                          },
+                                          transitionDuration: Duration(milliseconds: 200),
+                                          barrierDismissible: true,
+                                          barrierLabel: "",
+                                          pageBuilder: (context, anim1, anim2){}
                                       );
                                       if (selected != null){
                                         setState(() {
