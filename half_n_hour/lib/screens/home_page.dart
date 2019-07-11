@@ -1,4 +1,4 @@
-import 'package:HnH/screens/product_details.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -10,17 +10,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../animations/styling.dart';
-
+import '../animations/home.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
 import 'maps.dart';
 import 'product_new.dart';
 import 'package:HnH/components/photo.dart';
-
 import 'package:flutter/foundation.dart';
 import '../components//category.dart';
 import '../components//brand.dart';
-import '../components//home_category1.dart';
 import 'addprod.dart';
 import 'search.dart';
 
@@ -245,7 +243,7 @@ class home extends State<MyHomePage> {
                   );
                 },
               ),
-              new Padding(
+              /*new Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: new Container(
                   height: 150.0,
@@ -291,7 +289,7 @@ class home extends State<MyHomePage> {
                     ),
                   ),
                 ),
-              )
+              )*/
             ],
           ),
           drawer: Drawer(
@@ -299,6 +297,53 @@ class home extends State<MyHomePage> {
               children: <Widget>[
                 // header
                 UserAccountsDrawerHeader(
+                  otherAccountsPictures: <Widget>[Container(
+                    height: 250.0,
+                    width: double.infinity,
+                    color: Colors.deepPurpleAccent.withOpacity(0.2),
+                  ),
+                    Positioned(
+                      bottom: 50.0,
+                      right: 100.0,
+                      child: Container(
+                        height: 400.0,
+                        width: 400.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(200.0),
+                          color: Colors.red.withOpacity(0.3),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 100.0,
+                      left: 150.0,
+                      child: Container(
+                        height: 300.0,
+                        width: 300.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(150.0),
+                          color: Colors.blue[400].withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 30, left: 30),
+                        child: ListTile(
+                          leading: Text('Products',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close,
+                              color: Colors.black87,
+                              size: 28,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        )
+                    )],
                   accountName: Text(
                     uname,
                     style: TextStyle(color: Colors.black87),
@@ -408,7 +453,8 @@ class home extends State<MyHomePage> {
                       )),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () { Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context) => HomeCategory()));},
                   child: ListTile(
                       title: Text('About'),
                       leading: Icon(
