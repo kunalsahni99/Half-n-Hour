@@ -364,11 +364,12 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
 
           Divider(),
-
-          Padding(
+        Container(
+          decoration: BoxDecoration(color: Colors.deepPurpleAccent),
+         child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Center(child:Text('Product Details',style: TextStyle(color:Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
-              )),
+              child: Center(child:Text('Product Details',style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),),
+              ))),
 
           Divider(),
 
@@ -377,13 +378,13 @@ class _ProductDetailsState extends State<ProductDetails> {
               Padding(
                 padding: EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
                 child: Text(
-                  'Name',
+                  'Name       ',
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text(widget.title),
+                child: Text(widget.title,style: TextStyle(fontWeight: FontWeight.bold),),
               )
             ],
           ),
@@ -393,7 +394,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               Padding(
                 padding: EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
                 child: Text(
-                  'Brand',
+                  'Brand       ',
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
@@ -419,17 +420,19 @@ class _ProductDetailsState extends State<ProductDetails> {
               // remember to edit this
               Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text(widget.category),
+                child: Text(widget.category,style: TextStyle(fontWeight: FontWeight.bold),),
               )
             ],
           ),
 
           Divider(),
+              Container(
+                decoration: BoxDecoration(color: Colors.redAccent),
+          child:Padding(
 
-          Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Center(child:Text('Similar Products',style: TextStyle(color:Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
-          )),
+            child: Center(child:Text('Similar Products',style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),),
+          ))),
           Divider(),
 
           // similar products section
@@ -532,6 +535,7 @@ class SimilarSingleProd extends StatelessWidget {
                   )));},
             child: GridTile(
               footer: Container(
+                height: 30,
                   color: Colors.white70,
                   child: Row(
                     children: <Widget>[
@@ -545,7 +549,7 @@ class SimilarSingleProd extends StatelessWidget {
                       Text(
                         "₹ $prod_price",
                         style: TextStyle(
-                          color: Colors.pinkAccent,
+                          color: Colors.redAccent,
                           fontWeight: FontWeight.bold,
                         ),
                       )
