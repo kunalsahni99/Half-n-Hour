@@ -50,6 +50,7 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
               height: MediaQuery.of(context).size.height * 0.6,
 
               child: new PageView.builder(
+                physics: BouncingScrollPhysics(),
                 controller: pageController,
                 scrollDirection: Axis.horizontal,
                 itemCount: snapshot.data.documents.length,
