@@ -1,7 +1,11 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 const double minHeight = 120;
 const double iconStartSize = 44;
@@ -18,6 +22,9 @@ class ExhibitionBottomSheet extends StatefulWidget {
 
 class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with SingleTickerProviderStateMixin{
   AnimationController _controller;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String UID;
+  int totProd = 0;
 
   double get maxHeight => MediaQuery.of(context).size.height;
   double get headerTopMargin => lerp(20, 20 + MediaQuery.of(context).padding.top);
@@ -43,9 +50,18 @@ class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with Sing
   void initState() {
     super.initState();
     _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 600)
+        vsync: this,
+        duration: Duration(milliseconds: 600)
     );
+    getUID();
+  }
+
+  void getUID()async{
+    final FirebaseUser user = await auth.currentUser();
+
+    setState(() {
+      UID = user.uid;
+    });
   }
 
   @override
@@ -76,8 +92,8 @@ class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with Sing
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               decoration: const BoxDecoration(
-                color: Colors.black87,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16))
               ),
               child: Stack(
                 children: <Widget>[
@@ -86,8 +102,58 @@ class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with Sing
                     fontSize: headerFontSize,
                     topMargin: headerTopMargin,
                   ),
-                  for (Event event in events) _buildFullItem(event),
-                  for (Event event in events) _buildIcon(event)
+                  StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection("cart")
+                        .document(UID)
+                        .collection("cartItem")
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                      if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+                      switch (snapshot.connectionState){
+                        case (ConnectionState.waiting):
+                          return Center(child: new CircularProgressIndicator(
+                            backgroundColor: Colors.white70,
+                            valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                          );
+                        default:
+                          return Stack(
+                            overflow: Overflow.clip,
+                            children: snapshot.data.documents.map((document){
+                              return _buildFullItem(document['title'], document['price'], snapshot.data.documents.indexOf(document));
+                            }
+                            ).toList(),
+                          );
+                      }
+                    },
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection("cart")
+                        .document(UID)
+                        .collection("cartItem")
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                      if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+                      switch (snapshot.connectionState){
+                        case (ConnectionState.waiting):
+                          return Center(child: new CircularProgressIndicator(
+                            backgroundColor: Colors.white70,
+                            valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                          );
+                        default:
+                          return Stack(
+                            overflow: Overflow.clip,
+                            children: snapshot.data.documents.map((document){
+                              return _buildIcon(document['imageUrl'], snapshot.data.documents.indexOf(document));
+                            }
+                            ).toList(),
+                          );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -114,8 +180,7 @@ class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with Sing
     else _controller.fling(velocity: _controller.value < 0.5 ? -2.0 : 2.0);
   }
 
-  Widget _buildIcon(Event event){
-    int index = events.indexOf(event);
+  Widget _buildIcon(String imageUrl, int index){
     return Positioned(
       height: iconSize,
       width: iconSize,
@@ -123,28 +188,28 @@ class _ExhibitionBottomSheetState extends State<ExhibitionBottomSheet> with Sing
       left: iconLeftMargin(index),
       child: ClipRRect(
         borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(iconLeftBorderRadius),
-          right: Radius.circular(iconRightBorderRadius)
+            left: Radius.circular(iconLeftBorderRadius),
+            right: Radius.circular(iconRightBorderRadius)
         ),
-        child: Image.asset(
-          'images/${event.imageUrl}',
-          fit: BoxFit.cover,
-          alignment: Alignment(lerp(1, 0), 0),
-        ),
+        child: CachedNetworkImage(
+          placeholder: (context, val) => CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+          ),
+          imageUrl: imageUrl,
+        )
       ),
     );
   }
 
-  Widget _buildFullItem(Event event){
-    int index = events.indexOf(event);
+  Widget _buildFullItem(String title, int price, int index){
     return ExpandedEventItem(
       topMargin: iconTopMargin(index),
       leftMargin: iconLeftMargin(index),
       height: iconSize,
       isVisible: _controller.status == AnimationStatus.completed,
       borderRadius: itemBorderRadius,
-      title: event.title,
-      price: event.price,
+      title: title,
+      price: price,
     );
   }
 }
@@ -170,7 +235,7 @@ class ExpandedEventItem extends StatelessWidget {
   final bool isVisible;
   final double borderRadius;
   final String title;
-  final String price;
+  final int price;
 
   const ExpandedEventItem(
       {Key key,
@@ -194,15 +259,15 @@ class ExpandedEventItem extends StatelessWidget {
         duration: Duration(milliseconds: 200),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius),
-            color: Colors.white
+              borderRadius: BorderRadius.circular(borderRadius),
+              color: Colors.white
           ),
           padding: EdgeInsets.only(left: height).add(EdgeInsets.all(8)),
           child: Column(
             children: <Widget>[
               Text(title,
                 style: TextStyle(
-                  fontSize: 16
+                    fontSize: 16
                 ),
               ),
               SizedBox(height: 8),
@@ -210,17 +275,17 @@ class ExpandedEventItem extends StatelessWidget {
                 children: <Widget>[
                   Text('Qty: 1',
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      color: Colors.grey.shade600
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: Colors.grey.shade600
                     ),
                   ),
                   SizedBox(width: 8),
-                  Text(price,
+                  Text(price.toString(),
                     style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 12,
-                      color: Colors.grey
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12,
+                        color: Colors.grey
                     ),
                   )
                 ],
@@ -266,9 +331,9 @@ class SheetHeader extends StatelessWidget {
       top: topMargin,
       child: Text('My Cart',
         style: TextStyle(
-          color: Colors.white,
-          fontSize: fontSize,
-          fontWeight: FontWeight.w500
+            color: Colors.white,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w500
         ),
       ),
     );
