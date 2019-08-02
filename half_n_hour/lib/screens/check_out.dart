@@ -174,7 +174,9 @@ class _CheckOutState extends State<CheckOut> {
         padding: EdgeInsets.only(left: 50.0, top: 50.0),
         child: MaterialButton(
           onPressed: (){
-
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context) => EditAddress()
+            ));
           },
           color: Colors.black54,
           child: Text('Add a delivery address',
