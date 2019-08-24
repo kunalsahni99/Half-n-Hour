@@ -12,6 +12,10 @@ import 'check_out.dart';
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class EditAddress extends StatefulWidget {
+  final bool isCart;
+
+  EditAddress({this.isCart});
+
   @override
   _EditAddressState createState() => _EditAddressState();
 }
@@ -108,7 +112,7 @@ class _EditAddressState extends State<EditAddress> {
               if (address1Line1 != ""){
                 await _preferences.setInt("DelAdd", 1);
                 Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) => CheckOut()
+                    builder: (context) => CheckOut(isCart: widget.isCart)
                 ));
               }
               else{
@@ -202,7 +206,7 @@ class _EditAddressState extends State<EditAddress> {
               if (address2Line1 != ""){
                 await _preferences.setInt("DelAdd", 2);
                 Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) => CheckOut()
+                    builder: (context) => CheckOut(isCart: widget.isCart)
                 ));
               }
               else{
