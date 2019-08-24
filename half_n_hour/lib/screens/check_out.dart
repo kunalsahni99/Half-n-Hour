@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:provider/provider.dart';
+import 'package:random_string/random_string.dart' as Random;
 
 import 'cart.dart';
 import 'edit_address.dart';
@@ -14,6 +15,22 @@ import 'payments.dart';
 bool get isIOS => foundation.defaultTargetPlatform == TargetPlatform.iOS;
 
 class CheckOut extends StatefulWidget {
+  final bool isCart;
+  final String imageUrl;
+  final String title;
+  final int price;
+  final int qty;
+  final String id;
+
+  CheckOut({
+    @required this.isCart,
+    this.imageUrl,
+    this.title,
+    this.price,
+    this.qty,
+    this.id
+  });
+
   @override
   _CheckOutState createState() => _CheckOutState();
 }
@@ -68,103 +85,129 @@ class _CheckOutState extends State<CheckOut> {
   Widget build(BuildContext context) {
     var cart = Provider.of<Price>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Summary',
-          style: TextStyle(
-            fontWeight: FontWeight.bold
+    return WillPopScope(
+      onWillPop: () async{
+        if (!widget.isCart){
+          cart.setPrice(0);
+        }
+        Navigator.pop(context);
+        return null;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: (){
+              if (!widget.isCart){
+                cart.setPrice(0);
+              }
+              Navigator.pop(context);
+            },
+            icon: Icon(isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
           ),
+          title: Text('Order Summary',
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+          backgroundColor: Colors.white70,
         ),
-        backgroundColor: Colors.white70,
-      ),
 
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: (address1Line1 == "" && address2Line1 == "") ? height : 150.0,
-                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 5.0),
-                      ),
-                      showAddress(),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Visibility(
-                          visible: isLoading,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
-                          ),
+        body: SingleChildScrollView(
+          physics: widget.isCart ? BouncingScrollPhysics() : NeverScrollableScrollPhysics(),
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: (address1Line1 == "" && address2Line1 == "") ? height : 150.0,
+                  padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 5.0),
                         ),
-                      )
-                    ],
+                        showAddress(),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Visibility(
+                            visible: isLoading,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black87),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
+                ),
+
+                // list of products in the cart
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0, left: 20.0),
+                  child: Text('Products',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20.0
+                    ),
+                  ),
+                ),
+
+                Container(
+                  alignment: Alignment.topCenter,
+                  height: 700.0,
+                  child: showProducts()
+                )
+              ],
+            ),
+          )
+        ),
+
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: ListTile(
+                  title: Text('Total'),
+                  subtitle: Text('₹ ${cart.totPrice}'),
                 ),
               ),
 
-              // list of products in the cart
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 20.0, bottom: 10.0, left: 20.0),
-                child: Text('Products',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 20.0
-                  ),
+              Expanded(
+                child: MaterialButton(
+                    height: 50.0,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => ChoosePayments(totPrice: cart.totPrice,
+                          orderId: "ORD" + Random.randomAlphaNumeric(8).toUpperCase(),
+                          isCart: widget.isCart,
+                          title: widget.title,
+                          imageUrl: widget.imageUrl,
+                          qty: widget.qty,
+                          Prod_id: widget.id,
+                          price: widget.price,
+                        )
+                      ));
+                    },
+                    color: Colors.white70,
+                    child: Text('Continue',
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.0
+                      ),
+                    )
                 ),
-              ),
-
-              Container(
-                alignment: Alignment.topCenter,
-                height: 700.0,
-                child: showProducts()
               )
             ],
           ),
         )
       ),
-
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: ListTile(
-                title: Text('Total'),
-                subtitle: Text('₹ ${cart.totPrice}'),
-              ),
-            ),
-
-            Expanded(
-              child: MaterialButton(
-                  height: 50.0,
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ChoosePayments()
-                    ));
-                  },
-                  color: Colors.white70,
-                  child: Text('Continue',
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0
-                    ),
-                  )
-              ),
-            )
-          ],
-        ),
-      )
     );
   }
 
@@ -225,7 +268,7 @@ class _CheckOutState extends State<CheckOut> {
                 ),
                 onPressed: (){
                   Navigator.pushReplacement(context, MaterialPageRoute(
-                      builder: (context) => EditAddress()
+                      builder: (context) => EditAddress(isCart: widget.isCart,)
                   ));
                 },
               ),
@@ -237,40 +280,49 @@ class _CheckOutState extends State<CheckOut> {
   }
 
   Widget showProducts(){
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection("cart")
-          .document(UID)
-          .collection("cartItem")
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: new CircularProgressIndicator(
-              backgroundColor: Colors.white70,
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
-            )
-            );
-          case ConnectionState.none:
-            return Center(child: Text("Your Cart is empty"),);
-          default:
-            return new ListView(
-              physics: NeverScrollableScrollPhysics(),
-              children:
-              snapshot.data.documents.map((DocumentSnapshot document) {
-                return new SingleCartProduct(
-                  cart_prod_name: document['title'],
-                  cart_prod_picture: document['imageUrl'],
-                  cart_prod_price: document['price'],
-                  cart_prod_qty: document['qty'],
-                  cart_prod_id: document['Prod_id'],
-                  isCart: false,
+    return widget.isCart ?
+        StreamBuilder<QuerySnapshot>(
+          stream: Firestore.instance
+              .collection("cart")
+              .document(UID)
+              .collection("cartItem")
+              .snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: new CircularProgressIndicator(
+                  backgroundColor: Colors.white70,
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.black87),
+                )
                 );
-              }).toList(),
-            );
-        }
-      },
-    );
+              case ConnectionState.none:
+                return Center(child: Text("Your Cart is empty"),);
+              default:
+                return new ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children:
+                  snapshot.data.documents.map((DocumentSnapshot document) {
+                    return new SingleCartProduct(
+                      cart_prod_name: document['title'],
+                      cart_prod_picture: document['imageUrl'],
+                      cart_prod_price: document['price'],
+                      cart_prod_qty: document['qty'],
+                      cart_prod_id: document['Prod_id'],
+                      isCart: false,
+                    );
+                  }).toList(),
+                );
+            }
+          },
+        ) :
+        SingleCartProduct(
+          cart_prod_name: widget.title,
+          cart_prod_picture: widget.imageUrl,
+          cart_prod_price: widget.price,
+          cart_prod_qty: widget.qty,
+          isCart: false,
+          cart_prod_id: widget.id,
+        );
   }
 }
