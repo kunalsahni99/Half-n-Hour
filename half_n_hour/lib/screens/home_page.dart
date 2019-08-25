@@ -14,6 +14,7 @@ import '../animations/home.dart';
 import 'package:HnH/screens/cart.dart';
 import './profile.dart';
 import 'maps.dart';
+import 'orders.dart';
 import 'product_new.dart';
 import 'package:HnH/components/photo.dart';
 import 'package:flutter/foundation.dart';
@@ -384,7 +385,11 @@ class home extends State<MyHomePage> {
                       )),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        FadeRouteBuilder(page: Orders()));
+                  },
                   child: ListTile(
                       title: Text('My Orders'),
                       leading: Icon(
